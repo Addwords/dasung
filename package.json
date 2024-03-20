@@ -5,7 +5,7 @@
   "homepage": "https://addwords.github.io/dasung",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export && touch ./out/.nojekyll",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
