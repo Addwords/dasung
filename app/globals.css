@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.wrapper {
+  width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 7fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: repeat(auto, minmax(12.5%, auto));
+  color: #444;
+
+}
+
+.data-grid {
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(5%, auto));
+}
+
+.data-grid div:nth-child(-n+40) {
+  color: white;
+  text-align: center;
+  min-height: 1.75rem;
+  border: 1px solid black;
+  background-color: rgb(31 41 55 / 1);
+}
+
+.data-grid div:nth-child(n+41) {
+  text-align: center;
+  min-height: 1.75rem;
+  border: 1px solid black;
+}
+
+.box {
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.col div {
+  padding-top: 15px;
+}
