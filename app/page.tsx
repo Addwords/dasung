@@ -3,9 +3,7 @@
 import Table from "@/components/Table";
 import InputModal from "@/components/modals/input-modal";
 import Image from "next/image";
-import { Suspense, useEffect, useState } from "react";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { useEffect, useState } from "react";
 
 let jCount = 0;
 let dumpCount = [...Array(40).fill('')];
@@ -13,13 +11,11 @@ let subTot = [];
 let realHH = 6; //업무최초시간
 
 function Dump(name: String, val: string) {
-  console.log(name)
-  console.log(val)
   
   const now = new Date();
   let HH = now.getHours();
-  HH = 15;
-  const 마감시간 = 18;
+  
+  const 마감시간 = 17; //업무종료시간?
 
   if (HH > 마감시간 || jCount > 39) {
     alert('불가능 합니다.');
@@ -40,7 +36,6 @@ function Dump(name: String, val: string) {
       mertalIn.style.backgroundColor = '#00b0f0'; //로우더
     }
   }
-  // !!mertalIn ? mertalIn.textContent = dialogInput : ''; //임시값 입력
   
   dumpCount[jCount] = kind;
   
