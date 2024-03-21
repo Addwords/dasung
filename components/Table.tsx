@@ -1,6 +1,5 @@
 'use client';
 
-import { randomUUID } from "crypto";
 import { useRef } from "react";
 
 const Table = () => {
