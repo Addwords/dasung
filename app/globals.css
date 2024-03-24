@@ -107,7 +107,12 @@ body {
 .col:nth-child(n+3) div:nth-child(n+2) {
   padding-top: 15px;
 }
-
+.rep-list{
+cursor: pointer;
+}
+.rep-list:hover::after{
+content: ' X';
+}
 
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 

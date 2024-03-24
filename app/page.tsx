@@ -14,7 +14,7 @@ let subTot = [];
 let realHH = 6; //업무최초시간
 
 const yyyy = new Date().getFullYear();
-const mm = new Date().getMonth()+1;
+const mm = new Date().getMonth() + 1;
 const dd = new Date().getDate();
 
 /**
@@ -23,11 +23,11 @@ const dd = new Date().getDate();
  * @returns 
  */
 function Dump(kind: string) {
-  
+
   const now = new Date();
   const HH = now.getHours();
   const MM = now.getMinutes();
-  
+
   const 마감시간 = 23; //업무종료시간?
 
   if (HH > 마감시간 || jCount > 39) {
@@ -42,45 +42,27 @@ function Dump(kind: string) {
 
   if (!!mertalIn) {
     mertalIn.textContent = `${MM}'`;  //dialogInput;
-    if (kind == 'o') {
+    if (kind == 'od') {
       mertalIn.style.backgroundColor = '#ffff00'; //외부덤프
     }
-    if (kind == 'r') {
+    if (kind == 'rd') {
       mertalIn.style.backgroundColor = '#00b0f0'; //로우더
     }
   }
-  
+
   dumpCount[jCount] = kind;
-  
-  calculate(kind,String(HH));
+
+  calculate(kind, String(HH));
 
   jCount++;
 }
 
-/**
- * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
- * @param kind : 차량종류
- * @param HH :현재시
- */
-function calculate(kind:string, HH:string) {
-  console.log('dumpCount:', dumpCount);
-
-  let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
-  let subTot  = dumpCount.filter(el => new RegExp(/([j,r,o])/).test(el)).length; //시간별 합계
-
-  let kCount = document.getElementById(`${kind}${HH}`);
-  kCount ? kCount.textContent = String(dumpTot) : 0;
-  
-  let totCal = document.getElementById(`tot${HH}`);
-  totCal ? totCal.textContent = String(subTot) : 0;
-}
 
 /**
- * 수정버튼
- * desc : 현재시간중 마지막 값을 취소한다.
- */
+    * 수정버튼
+    * desc : 현재시간중 마지막 값을 취소한다.
+    */
 function modify() {
-
   --jCount;
   let HH = new Date().getHours();
   let mertalIn = document.getElementById(`t${HH}-${jCount}`) as HTMLElement;
@@ -93,12 +75,55 @@ function modify() {
   }
 }
 
-function repair(res:string) {
+/**
+ * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
+ * @param kind : 차량종류
+ * @param HH :현재시
+ */
+function calculate(kind: string, HH: string) {
+  // console.log('dumpCount:', dumpCount);
+
+  let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
+  let subTot = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
+
+  let kCount = document.getElementById(`${kind}${HH}`);
+  kCount ? kCount.textContent = String(dumpTot) : 0;
+
+  let totCal = document.getElementById(`tot${HH}`);
+  totCal ? totCal.textContent = String(subTot) : 0;
+
+  let jdump:number = 0;
+  let odump:number = 0;
+  let rdump:number = 0;
+
+  document.querySelectorAll('[id^=jd]').forEach((el)=>{
+    jdump += Number(el.textContent);
+  });
+  document.querySelectorAll('[id^=od]').forEach((el)=>{
+    odump += Number(el.textContent);
+  });
+  document.querySelectorAll('[id^=rd]').forEach((el)=>{
+    rdump += Number(el.textContent);
+  });
+
+  let jtot = document.getElementById(`dumpTot-j`) as HTMLElement;
+    jtot.textContent = ` x ${jdump} = ${jdump * 16}`;
+  let otot = document.getElementById(`dumpTot-o`) as HTMLElement;
+    otot.textContent = ` x ${odump} = ${odump * 16}`;
+  let rtot = document.getElementById(`dumpTot-r`) as HTMLElement;
+    rtot.textContent = ` x ${rdump} = ${rdump * 7}`;
+
+  let todayTotal = document.getElementById(`total`) as HTMLElement;
+    todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
+}
+
+function repair(res: string) {
   let HH = new Date().getHours();
   let MM = new Date().getMinutes();
   const rep = document.getElementById('rep') as HTMLElement;
   const appCh = document.createElement('p');
-  appCh.addEventListener('click',(evt)=>{
+  appCh.className = 'rep-list';
+  appCh.addEventListener('click', (evt) => {
     const tgt = evt.target as HTMLElement;
     tgt && tgt.remove();
   });
@@ -108,7 +133,7 @@ function repair(res:string) {
 
 function realTime() {
   const now = new Date();
-  const [hours, minutes, seconds] = [now.getHours(), String(now.getMinutes()).padStart(2,'0'), String(now.getSeconds()).padStart(2,'0')];
+  const [hours, minutes, seconds] = [now.getHours(), String(now.getMinutes()).padStart(2, '0'), String(now.getSeconds()).padStart(2, '0')];
 
   if (realHH < hours) { //변경되는 시간체크
     realHH = hours;
@@ -122,7 +147,7 @@ function realTime() {
 };
 
 export default function Home() {
-  
+
   const [showModal, setModal] = useState(false);
   const [tit, setTit] = useState('');
   const [time, setTime] = useState('');
@@ -133,7 +158,7 @@ export default function Home() {
     setInterval(() => {
       setTime(realTime);
     }, 100);
-  },[]);
+  }, []);
 
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
 
@@ -150,9 +175,9 @@ export default function Home() {
                         border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl
                         dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto
                         lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-            <code className="font-mono font-bold" id="time">{today}&nbsp;&nbsp;{ time }</code>
+            <code className="font-mono font-bold" id="time">{today}&nbsp;&nbsp;{time}</code>
           </p>
-            <p className="text-3xl">작업중🛠</p>
+          <p className="text-3xl">작업중🛠</p>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
               className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
@@ -175,11 +200,11 @@ export default function Home() {
             </a>
           </div>
         </div>
-  
+
         <div className="relative flex place-items-center mt-7 mb-5">
-          <Table/>
+          <Table />
         </div>
-            <Summary/>
+        <Summary />
         {/* {
           showModal && <InputModal
             title={tit}
@@ -188,39 +213,41 @@ export default function Home() {
           />
         } */}
         {
-          jCount!==0 && showModal && <AlertModal
+          showModal && <AlertModal
             // title={tit}
             onHide={() => { setModal(false); }}
-            onInput={() => { setModal(false); modify();}}
+            onInput={() => { setModal(false); modify(); }}
           />
         }
         <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left non-print btn-area">
           <Button
             text='자가덤프'
             subText='16m<sup>3</sup>'
-            func={()=>Dump('j')}
+            func={() => Dump('jd')}
           />
           <Button
             text='외부덤프'
             subText='16m<sup>3</sup>'
-            func={()=>Dump('o')}
+            func={() => Dump('od')}
           />
           <Button
             text='로우더'
             subText='7m<sup>3</sup>'
-            func={()=>Dump('r')}
+            func={() => Dump('rd')}
           />
           <Button
             text='수정'
             desc='(비밀번호)'
-            func={()=>setModal(true)}
+            func={() => {
+              jCount > 0 ? setModal(true) : setModal(false)
+            }}
           />
           {
             btnNm.map((val, idx) => (
               <Button
                 key={val}
                 text={val}
-                func={()=>repair(val)}
+                func={() => repair(val)}
               />
             ))
           }

@@ -64,21 +64,21 @@ const Table = () => {
 				<div className="col">
 					<div className="pt-1">자가덤프</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`j${val+idx}`} className=""></div>
+						<div key={val+idx} id={`jd${val+idx}`} className=""></div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-1">외부덤프</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`o${val+idx}`} className=""></div>
+						<div key={val+idx} id={`od${val+idx}`} className=""></div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-3">로우더</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`r${val+idx}`} className=""></div>
+						<div key={val+idx} id={`rd${val+idx}`} className=""></div>
 						))
 					}
 				</div>

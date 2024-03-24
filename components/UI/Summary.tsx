@@ -1,4 +1,4 @@
-const Summary = () => {
+const Summary = (props:any) => {
 	return (
 		<div className="summary border-4 border-black">
 			<div className="col">
@@ -11,15 +11,15 @@ const Summary = () => {
 			<div className="col">
 				<div className="sum-grid">
 					<div className="font-bold text-xl p-5">
-						<p id="jd">자가덤프</p>
-						<p id="od">외부덤프</p>
-						<p id="rd">로우더</p>
+						<p>자가덤프 {props.j||16}m<sup>3</sup><label id="dumpTot-j"> x 0 = 0</label>m<sup>3</sup></p>
+						<p>외부덤프 {props.o||16}m<sup>3</sup><label id="dumpTot-o"> x 0 = 0</label>m<sup>3</sup></p>
+						<p>로이더 	{props.r||7}m<sup>3</sup><label id="dumpTot-r"> x 0 = 0</label>m<sup>3</sup></p>
 					</div>
 					<div className="">
 						<p className="font-bold text-xl pt-7">총<label id="total" htmlFor=""></label> M<sup>3</sup></p> 
 					</div>
 				</div>
-				<div id="rep" style={{textAlign:'left',paddingLeft:'10%'}} className="text-lg">
+				<div id="rep" style={{textAlign:'left',paddingLeft:'5%',minHeight:'75px'}} className="text-lg">
 					
 				</div>
 			</div>
