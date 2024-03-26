@@ -7,9 +7,12 @@ function setOperator(curOper:string, operNm:string){
 	const operEle = document.getElementById(curOper) as HTMLElement;
 	operEle.textContent = operNm;
 }
+interface TableProps{
 
-const Table = () => {
+}
 
+const Table = ({ }:TableProps) => {
+	
 	const [showModal, setModal] = useState(false);
 	const [curOp,setOp] = useState('');
 

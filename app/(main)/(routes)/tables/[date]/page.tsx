@@ -3,6 +3,7 @@
 import Button from "@/components/UI/Button";
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
+import { TableProvider} from "@/components/providers/table-provider"
 import AlertModal from "@/components/modals/alert-modal";
 import InputModal from "@/components/modals/input-modal";
 import Image from "next/image";
@@ -34,8 +35,6 @@ function Dump(kind: string) {
     alert('불가능 합니다.');
     return
   }
-
-  // let kind = name == '외부' ? 'o' : name == '로우더' ? 'r' : 'j'; //입력받은 차량종류
 
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
   // let dialogInput = String(val); //String(Math.ceil(Math.random() * 10)); //모달창 입력으로 변경예정
@@ -84,7 +83,7 @@ function calculate(kind: string, HH: string) {
   // console.log('dumpCount:', dumpCount);
 
   let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
-  let subTot = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
+  let subTot  = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
 
   let kCount = document.getElementById(`${kind}${HH}`);
   kCount ? kCount.textContent = String(dumpTot) : 0;
@@ -202,9 +201,16 @@ export default function Home() {
         </div>
 
         <div className="relative flex place-items-center mt-7 mb-5">
-          <Table />
+
+          {/* <TableProvider /> */}
+          <Table
+          />
         </div>
-        <Summary />
+        <Summary
+          j={16}
+          o={16}
+          r={16}
+        />
         {/* {
           showModal && <InputModal
             title={tit}
