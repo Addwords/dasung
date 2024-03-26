@@ -1,4 +1,4 @@
-import Home from "@/components/UI/home";
+import Home from "@/components/UI/Home";
 
 export function generateStaticParams() {
   return [{date:'20240326'}]
