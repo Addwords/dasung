@@ -6,15 +6,24 @@ export const currentJobs = async (today: string) => {
     // const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
     const HH = String(new Date().getHours()).padStart(2, '0');
 
-    // 기존작업이 존재하냐
-    const jobs = await db.jobs.findMany({
+    // 현재시간 작업이 존재하냐
+    const daywork = await db.jobs.findMany({
         where: {
             date: today
         }
     });
 
-    if (jobs.length > 0) {
-        return jobs; //있으면
+    // 현재시간 작업이 존재하냐
+    const jobs = await db.jobs.findFirst({
+        where: {
+            date: today,
+            time: HH
+        }
+    });
+
+    if (jobs) {
+        daywork.push(jobs);
+        return daywork; //있으면
     }
 
     //새작업
@@ -32,20 +41,22 @@ export const currentJobs = async (today: string) => {
         }
     });
 
-    //통계등록
-    const newSummary = await db.summary.create({
-        data: {
-            date: '',
-            yyyy: `${today.substring(0, 4)}`,
-            mm: `${today.substring(4, 6)}`,
-            dd: `${today.substring(6, 8)}`,
-            jdump: 0,
-            odump: 0,
-            rdump: 0,
-            total: 0,
-            company: '(주)다성 용인지점'
-        }
-    });
+    // 당일 통계등록
+    if (daywork.length == 0) {
+        const newSummary = await db.summary.create({
+            data: {
+                date: '',
+                yyyy: `${today.substring(0, 4)}`,
+                mm: `${today.substring(4, 6)}`,
+                dd: `${today.substring(6, 8)}`,
+                jdump: 0,
+                odump: 0,
+                rdump: 0,
+                total: 0,
+                company: '(주)다성 용인지점'
+            }
+        });
+    }
 
-    return newJobs;
+    return daywork;
 }

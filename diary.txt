@@ -1,0 +1,26 @@
+개발일지
+---------------
+2024.03.26
+-prisma연결 next빌드할때
+next.config.js에 export가 out인 경우 -> 배포라던가?
+route되는 경로 아래 page.tsx엔 generateStaticParams()가 필수다.
+요녀석은 return이 배열이어야하나?
+
+또한 'use client'와 혼용할 수 없다. ->빌드 때문은 아닌거 같고 use함수들은 개별 component에서 쓰고
+page에 낑겨넣어서 사용해야하는듯 하다.
+
+아직까진 구조를 익히는데 에너지가 많이 들어간다.
+
+page.tsx에 export되는 녀석엔 async를 달수없는거 같다.
+
+planetsacle 요녀석이 매일 껏다 켜졋다 하는녀석같다. mysql 무료버전인데 역시 무료는 무료다.
+
+NEON 요녀석은 postgre 무료버젼인데 좀더 지켜봐야겠따.
+
+ORM lib를 prisma로 선택한게 과연..맞는걸까 하는 의문이 들기 시작했다.
+
+prisma는 SSL이 기본인가?
+
+.env에 secret key값이 들어가면 깃헙에서 push할때 정책에 걸린다.
+그걸 허용하게 할수도 있는데 막는게 맞는거같다.
+

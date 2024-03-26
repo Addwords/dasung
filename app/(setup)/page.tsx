@@ -1,6 +1,4 @@
-import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { intialJobs } from "@/lib/initial-jobs";
 
 // root location에 반응?
 const SetupPage = async () => {
@@ -10,8 +8,6 @@ const SetupPage = async () => {
 	// let today = '20240326';
 
     return redirect(`/tables/${today}`);
-
-    // return <InitialModal/>
 }
  
 export default SetupPage;

@@ -5,6 +5,8 @@ import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
 import { useEffect, useState } from "react";
+import { currentJobs } from "@/lib/current-jobs";
+import { JsonArray } from "@prisma/client/runtime/library";
 
 let jCount = 0;
 let dumpCount = [''];
@@ -142,18 +144,27 @@ function realTime() {
   return `${hours < 10 ? '0' + hours : hours}시 ${minutes}분 ${seconds}초`;
 };
 
-export default function Home() {
+const prender = ()=>{
+	console.log('prender once');
+}
 
+// const getJob = async() => {
+// 	await currentJobs('20240326').then((res:JsonArray) => {
+// 		console.log('getJob:',res)
+// 	});
+// }
+
+export default function Home(props:any) {
+	
   const [showModal, setModal] = useState(false);
-  const [tit, setTit] = useState('');
   const [time, setTime] = useState('');
 
   const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
-
+  
   useEffect(() => {
-    setInterval(() => {
-      setTime(realTime);
-    }, 100);
+	  setInterval(() => {
+		  setTime(realTime);
+	  }, 100);
   }, []);
 
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
