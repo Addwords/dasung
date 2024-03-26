@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { intialJobs } from "@/lib/initial-jobs";
 
-
 // root location에 반응?
 const SetupPage = async () => {
 
