@@ -4,9 +4,7 @@ import Button from "@/components/UI/Button";
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
-import { useEffect, useState } from "react";
-import { currentJobs } from "@/lib/current-jobs";
-import { JsonArray } from "@prisma/client/runtime/library";
+import { useEffect, useRef, useState } from "react";
 
 let jCount = 0;
 let dumpCount = [''];
@@ -144,29 +142,59 @@ function realTime() {
   return `${hours < 10 ? '0' + hours : hours}시 ${minutes}분 ${seconds}초`;
 };
 
-const prender = ()=>{
-	console.log('prender once');
+const prender = (param:any)=>{
+	console.log('get Jobs',param);
+  console.log('그리는 작업해야댐');
 }
 
-// const getJob = async() => {
-// 	await currentJobs('20240326').then((res:JsonArray) => {
-// 		console.log('getJob:',res)
-// 	});
-// }
+// TODO: 전달되는 프로퍼티 대체해야함..ㅠ
+interface jobProps{
+  id: string;
+  date: string
+  operator: string
+  time: string
+  job: JSON
+  jTot: number
+  oTot: number
+  rTot: number
+  maintenance: string
+  company: string
+}
 
-export default function Home(props:any) {
+interface StringDictionary {
+  [key: string]: string;
+}
+
+export default function Home ({
+  jobList,
+  dumpInfo
+}: {jobList:any,dumpInfo:any}){
 	
+  const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
   const [time, setTime] = useState('');
 
-  const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
-  
-  useEffect(() => {
-	  setInterval(() => {
-		  setTime(realTime);
-	  }, 100);
-  }, []);
 
+  // let opList = {[key: string]: string};
+  let opList:StringDictionary = {};
+  jobList.map((obj: { time: string, operator: string }) => {
+    opList[obj.time] = obj.operator;
+  }); //등록된 작업자 목록
+  const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
+
+  useEffect(() => {
+      setMount(true);
+      const intervalId = setInterval(() => {
+        setTime(realTime);
+      }, 100);
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  if (!isMounted) {
+    console.log('isMounted')
+    prender(jobList);
+    return null; 
+  }
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
 
   return (
@@ -212,12 +240,14 @@ export default function Home(props:any) {
 
           {/* <TableProvider /> */}
           <Table
+            joblimit={jobList.length}
+            opLists={opList}
           />
         </div>
         <Summary
-          j={16}
-          o={16}
-          r={16}
+          j={dumpInfo.jd}
+          o={dumpInfo.od}
+          r={dumpInfo.rd}
         />
         {/* {
           showModal && <InputModal

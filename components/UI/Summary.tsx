@@ -1,4 +1,5 @@
-const Summary = (props:any) => {
+const Summary = (props: any) => {
+	// console.log('props:', props);
 	return (
 		<div className="summary border-4 border-black">
 			<div className="col">

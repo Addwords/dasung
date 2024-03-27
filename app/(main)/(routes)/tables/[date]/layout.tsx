@@ -1,20 +1,29 @@
 import { currentJobs } from "@/lib/current-jobs";
+import Home from "@/components/UI/Home";
+import React from "react";
 
 const DateLayout = async ({
     children,
     params,
 }: {
-        children: React.ReactNode;
-        params: {date:string};
+        children: JSX.Element
+		params: any
 	}) => {
 
 	const jobsData = await currentJobs(params.date);
-	
-	return (
-		<>
-		{children}
-		</>
-     );
+	const dumpObj = { jd: 16, od: 16, rd: 7 }; //TODO: asset management 테이블 만들어야할듯
+
+	if (jobsData) {
+		return (
+			<>
+				<Home
+					jobList={jobsData}
+					dumpInfo={dumpObj}
+				/>
+			</>
+		 );
+	}
+
 }
  
 export default DateLayout;

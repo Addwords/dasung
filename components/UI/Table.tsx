@@ -8,19 +8,25 @@ function setOperator(curOper:string, operNm:string){
 	operEle.textContent = operNm;
 }
 interface TableProps{
-
+	joblimit: number
+	opLists: {[key: string]: string;}
 }
 
-const Table = ({ }:TableProps) => {
+const Table = ({
+	joblimit,
+	opLists
+ }:TableProps) => {
 	
 	const [showModal, setModal] = useState(false);
 	const [curOp,setOp] = useState('');
-
+	// const oplist = opLists;
+	// console.log(opLists['11']);
 	const opNmRef = useRef<HTMLDivElement[]>([]);
 	const addPpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
 
-	const man = Array(11).fill(''); //금일 투입인력명
-	const jobTime = Array(14).fill(5);
+	// const man = Array(11).fill(''); //금일 투입인력명
+	// const joblimit = 
+	const jobTime = Array(joblimit > 14 ? joblimit : 14).fill(5);
 	
 	return (
 		<>
@@ -41,7 +47,9 @@ const Table = ({ }:TableProps) => {
 								setOp(cop.id);
 								setModal(true);
 							}}
-						></div>
+						>
+							{opLists[val+idx]}
+						</div>
 					))}
 				</div>
 				<div className="col">

@@ -2,15 +2,13 @@ import { db } from "@/lib/db";
 
 export const currentJobs = async (today: string) => {
 
-    // const date = new Date();
-    // const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
     const HH = String(new Date().getHours()).padStart(2, '0');
 
     // 현재시간 작업이 존재하냐
     const daywork = await db.jobs.findMany({
         where: {
             date: today
-        }
+        },
     });
 
     // 현재시간 작업이 존재하냐
@@ -22,7 +20,6 @@ export const currentJobs = async (today: string) => {
     });
 
     if (jobs) {
-        daywork.push(jobs);
         return daywork; //있으면
     }
 
@@ -45,7 +42,7 @@ export const currentJobs = async (today: string) => {
     if (daywork.length == 0) {
         const newSummary = await db.summary.create({
             data: {
-                date: '',
+                date: today,
                 yyyy: `${today.substring(0, 4)}`,
                 mm: `${today.substring(4, 6)}`,
                 dd: `${today.substring(6, 8)}`,

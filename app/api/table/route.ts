@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
-import { intialJobs } from "@/lib/initial-jobs";
 import { db } from "@/lib/db";
 
 export async function POST(req: Request) {

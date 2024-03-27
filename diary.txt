@@ -1,6 +1,6 @@
 개발일지
 ---------------
-2024.03.26
+24.03.26
 -prisma연결 next빌드할때
 next.config.js에 export가 out인 경우 -> 배포라던가?
 route되는 경로 아래 page.tsx엔 generateStaticParams()가 필수다.
@@ -23,4 +23,13 @@ prisma는 SSL이 기본인가?
 
 .env에 secret key값이 들어가면 깃헙에서 push할때 정책에 걸린다.
 그걸 허용하게 할수도 있는데 막는게 맞는거같다.
+
+------------------------
+24.03.27
+react에서 hook현상 때문인지 component가 두번 mount된다고 한다.
+지금아는 지식으로는 isMounted 상태함수를 사용해서 rendering전 마운트상태에따라 return null 시킨다.
+
+folder구조 layout에서 바로 component호출 형식으로 변경 -> children한테 props 전달이 잘 안댐.
+
+folder구조 page에서 generateStaticParams()은 url매핑되는 부분(라우팅)을 담당하므로 우선적으로 등록되어있는 날짜 가져와서 배열로 return;
 
