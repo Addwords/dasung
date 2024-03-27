@@ -4,6 +4,7 @@ import Button from "@/components/UI/Button";
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
 let jCount = 0;
@@ -76,7 +77,7 @@ function modify() {
  * @param kind : 차량종류
  * @param HH :현재시
  */
-function calculate(kind: string, HH: string) {
+async function calculate(kind: string, HH: string) {
   // console.log('dumpCount:', dumpCount);
 
   let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
@@ -110,7 +111,10 @@ function calculate(kind: string, HH: string) {
     rtot.textContent = ` x ${rdump} = ${rdump * 7}`;
 
   let todayTotal = document.getElementById(`total`) as HTMLElement;
-    todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
+  todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
+  
+  //upsert
+  await axios.post('/api/table', {dump:kind,time:HH});
 }
 
 function repair(res: string) {
@@ -175,11 +179,11 @@ export default function Home ({
   const [time, setTime] = useState('');
 
 
-  // let opList = {[key: string]: string};
+  //등록된 작업자 목록
   let opList:StringDictionary = {};
   jobList.map((obj: { time: string, operator: string }) => {
     opList[obj.time] = obj.operator;
-  }); //등록된 작업자 목록
+  });
   const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
 
   useEffect(() => {
