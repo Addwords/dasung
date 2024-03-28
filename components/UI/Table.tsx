@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import OperatorModal from "../modals/operator-modal";
 import { TableProps } from "@/types/type";
-import axios from "axios";
+import { axios } from "@/lib/axios";
 
 async function setOperator(curOperId:string, operNm:string){
 	const operEle = document.getElementById(curOperId) as HTMLElement;
