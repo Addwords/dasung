@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 // root location에 반응?
+console.log('when render?')
 const SetupPage = async () => {
 
     const date = new Date();

@@ -4,6 +4,7 @@ import Button from "@/components/UI/Button";
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
+import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
@@ -114,7 +115,8 @@ async function calculate(kind: string, HH: string) {
   todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
   
   //upsert
-  await axios.post('/api/table', {dump:kind,time:HH});
+  const test = await axios.post('/api/table', { dump: kind, time: HH });
+  console.log('test:', test);
 }
 
 function repair(res: string) {
@@ -147,32 +149,13 @@ function realTime() {
 };
 
 const prender = (param:any)=>{
-	console.log('get Jobs',param);
   console.log('그리는 작업해야댐');
-}
-
-// TODO: 전달되는 프로퍼티 대체해야함..ㅠ
-interface jobProps{
-  id: string;
-  date: string
-  operator: string
-  time: string
-  job: JSON
-  jTot: number
-  oTot: number
-  rTot: number
-  maintenance: string
-  company: string
-}
-
-interface StringDictionary {
-  [key: string]: string;
 }
 
 export default function Home ({
   jobList,
   dumpInfo
-}: {jobList:any,dumpInfo:any}){
+}: {jobList:jobProps[],dumpInfo:any}){
 	
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
@@ -181,8 +164,11 @@ export default function Home ({
 
   //등록된 작업자 목록
   let opList:StringDictionary = {};
-  jobList.map((obj: { time: string, operator: string }) => {
-    opList[obj.time] = obj.operator;
+  jobList.map((obj: {time: string, id:string, operator: string }) => {
+    opList[obj.time] = {
+      id: obj.id,
+      name: obj.operator
+    };
   });
   const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
 
@@ -250,6 +236,7 @@ export default function Home ({
         </div>
         <Summary
           j={dumpInfo.jd}
+          jtot={` x ${dumpInfo.jd} = ${0}`}
           o={dumpInfo.od}
           r={dumpInfo.rd}
         />

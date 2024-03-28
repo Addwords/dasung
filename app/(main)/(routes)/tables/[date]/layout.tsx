@@ -10,7 +10,7 @@ const DateLayout = async ({
 		params: any
 	}) => {
 
-	const jobsData = await currentJobs(params.date);
+	const jobsData = await currentJobs(params.date,'(주)다성 용인지점');
 	const dumpObj = { jd: 16, od: 16, rd: 7 }; //TODO: asset management 테이블 만들어야할듯
 
 	if (jobsData) {

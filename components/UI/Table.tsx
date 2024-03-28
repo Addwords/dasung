@@ -2,14 +2,14 @@
 
 import { useRef, useState } from "react";
 import OperatorModal from "../modals/operator-modal";
+import { TableProps } from "@/types/type";
+import axios from "axios";
 
-function setOperator(curOper:string, operNm:string){
-	const operEle = document.getElementById(curOper) as HTMLElement;
+async function setOperator(curOperId:string, operNm:string){
+	const operEle = document.getElementById(curOperId) as HTMLElement;
 	operEle.textContent = operNm;
-}
-interface TableProps{
-	joblimit: number
-	opLists: {[key: string]: string;}
+	// axios
+	await axios.post('/api/table', { servNm:'setOperator', jobId: curOperId, operator: operNm });
 }
 
 const Table = ({
@@ -19,14 +19,11 @@ const Table = ({
 	
 	const [showModal, setModal] = useState(false);
 	const [curOp,setOp] = useState('');
-	// const oplist = opLists;
-	// console.log(opLists['11']);
+	
 	const opNmRef = useRef<HTMLDivElement[]>([]);
-	const addPpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
+	const addOpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
 
-	// const man = Array(11).fill(''); //금일 투입인력명
-	// const joblimit = 
-	const jobTime = Array(joblimit > 14 ? joblimit : 14).fill(5);
+	const jobTime = Array(joblimit > 14 ? joblimit : 14).fill(5); //작업기본시간 5~18시..늘려야하나?
 	
 	return (
 		<>
@@ -39,7 +36,7 @@ const Table = ({
 					<div className="min-h-14 text-center pt-1 border border-black">운전자 성명</div>
 					{jobTime.map((val,idx) => (
 						//수정가능해야함
-						<div className="cursor-pointer" key={idx + 1} id={`op${val+idx}`}
+						<div className="cursor-pointer" key={idx + 1} id={opLists[String(val+idx).padStart(2,'0')]?.id}
 							// ref={addPpNmRef}
 							onClick={(evt)=>{
 								console.log('opNmRef:',opNmRef);
@@ -48,14 +45,14 @@ const Table = ({
 								setModal(true);
 							}}
 						>
-							{opLists[val+idx]}
+							{opLists[String(val+idx).padStart(2,'0')]?.name}
 						</div>
 					))}
 				</div>
 				<div className="col">
 					<div className="min-h-14 text-center border border-black">시간</div>
 					{jobTime.map((val,idx) => (
-						<div key={idx} className="time-table">{val+idx}:00</div>
+						<div key={idx} className="time-table">{String(val+idx).padStart(2,'0')}:00</div>
 					))
 					}
 				</div>

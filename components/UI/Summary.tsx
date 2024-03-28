@@ -12,7 +12,7 @@ const Summary = (props: any) => {
 			<div className="col">
 				<div className="sum-grid">
 					<div className="font-bold text-xl p-5">
-						<p>자가덤프 {props.j}m<sup>3</sup><label id="dumpTot-j"> x 0 = 0</label>m<sup>3</sup></p>
+						<p>자가덤프 {props.j}m<sup>3</sup><label id="dumpTot-j">{ props.jtot }</label>m<sup>3</sup></p>
 						<p>외부덤프 {props.o}m<sup>3</sup><label id="dumpTot-o"> x 0 = 0</label>m<sup>3</sup></p>
 						<p>로이더 	{props.r}m<sup>3</sup><label id="dumpTot-r"> x 0 = 0</label>m<sup>3</sup></p>
 					</div>
