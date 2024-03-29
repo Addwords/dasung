@@ -203,6 +203,7 @@ export default function Home ({
             <code className="font-mono font-bold" id="time">{today}&nbsp;&nbsp;{time}</code>
           </p>
           <p className="text-3xl">작업중🛠</p>
+          <p className="text-3xl">달력 들어올곳</p>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
               className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
