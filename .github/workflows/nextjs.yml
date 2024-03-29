@@ -96,6 +96,8 @@ jobs:
       #   uses: actions/deploy-pages@v4
         # env:
         #   NODE_ENV: production
+      - name: List folders
+        run: ls -al .
          # ubuntu 서버에 접속하여 빌드파일을 전송하고 배포된 파일을 교체
       - name: Copy build directory to server
         uses: appleboy/scp-action@v0.1.7
