@@ -98,10 +98,10 @@ jobs:
         #   NODE_ENV: production
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm install
-      - name: Build with Next.js
-        run: npx next build
+      # - name: Install dependencies
+      #   run: npm install
+      # - name: Build with Next.js
+      #   run: npx next build
       - name: List folders
         run: ls -al .
          # ubuntu 서버에 접속하여 빌드파일을 전송하고 배포된 파일을 교체
@@ -112,6 +112,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: ./out
+          source: ./
           target: /var/www/dasung/
           # script: sudo systemctl restart nginx
