@@ -106,4 +106,4 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           source: ./out
           target: /var/www/dasung/
-          script: sudo systemctl restart nginx
+          # script: sudo systemctl restart nginx
