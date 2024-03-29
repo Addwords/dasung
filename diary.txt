@@ -48,3 +48,48 @@ ver.14 부터..?
 운전자명 업데이트 성공
 서비스명으로 분기해서 update하는 작업 진행중
 
+------------------------------------
+24.03.29
+iwinv 호스팅서버 등록함..
+이제부턴 환경설정 해야한다.
+
+
+============서버환경구성=============
+
+1. [NodeJS]
+sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install curl
+curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -- 
+sudo apt-get install nodejs
+	-> node -v 버전확인
+
+2. [GIT]
+sudo apt-get install git
+
+
+3. [NGINX]
+sudo apt-get install nginx
+sudo systemctl status nginx
+	-> 서버접속 후 welcome nginx 확인😎
+
+cd /etc/nginx/conf.d
+touch 도메인명.conf
+vi 도메인명.conf
+
+```
+server {
+        listen 80;
+        listen [::]:80;
+        server_name www.hexastudio.site hexastudio.site;
+   // return 301 https://hexastudio.site
+        root /var/www/dasung/;
+        location / {
+                proxy_pass http://localhost:3000;
+        }
+}
+
+```
+cd..
+vi nginx.conf
+기본설정 conf주석
