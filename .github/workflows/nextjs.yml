@@ -96,6 +96,8 @@ jobs:
       #   uses: actions/deploy-pages@v4
         # env:
         #   NODE_ENV: production
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: npm install
       - name: Build with Next.js
