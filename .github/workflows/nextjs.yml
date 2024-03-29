@@ -104,6 +104,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: ./out
+          source: ./out/*
           target: /var/www/dasung/
           # script: sudo systemctl restart nginx
