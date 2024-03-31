@@ -35,6 +35,7 @@ function InputModal(props: any) {
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-solid border-blueGray-200 rounded-b">
                 <button
+                    id='modi'
                     className="bg-orange-700 text-white active:bg-orange-800 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={() => props.onInput()}

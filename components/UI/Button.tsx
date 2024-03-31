@@ -1,8 +1,16 @@
-const Button = (props: any) => {
+import { LegacyRef, Ref, forwardRef } from "react";
+//buttonRef:LegacyRef<HTMLAnchorElement>
+const Button = (props: any) =>{
 	return ( 
-		<a
+    <>
+		  <a
             className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
 			rel="noopener noreferrer"
+      ref={(el:any)=>{
+        // console.log(props.btnRef);
+        if(typeof props.btnRef == 'function')
+          props.btnRef(el);
+      }}
 			onClick={props.func}
           >
             <h2 className={`mb-3 text-2xl font-semibold`}>
@@ -16,6 +24,7 @@ const Button = (props: any) => {
 				{props.desc}
             </p>
           </a>
+    </>
 	 );
 }
  

@@ -82,8 +82,7 @@ server {
         listen 80;
         listen [::]:80;
         server_name www.hexastudio.site hexastudio.site;
-   // return 301 https://hexastudio.site
-        root /var/www/dasung/;
+        root /var/www/dasung/; // dev켜놓을거라 상관없는듯 static일때 사용하는듯
         location / {
                 proxy_pass http://localhost:3000;
         }
@@ -93,3 +92,13 @@ server {
 cd..
 vi nginx.conf
 기본설정 conf주석
+
+4. [nohup]
+sudo apt-get install nohup
+
+kill명령어 대기
+
+---------------------
+24.03.31
+공장선택하는 첫화면 만들기
+router depth하나 더 생성

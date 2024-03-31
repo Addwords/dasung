@@ -5,7 +5,8 @@ export const currentJobs = async (today: string, company: string) => {
     // 오늘 작업이 존재하냐
     const daywork = await db.jobs.findMany({
         where: {
-            date: today
+            date: today,
+            company:company
         },
     });
 
@@ -41,7 +42,8 @@ export const currentJobs = async (today: string, company: string) => {
 
     const newwork = await db.jobs.findMany({
         where: {
-            date: today
+            date: today,
+            company: company
         },
     });
 

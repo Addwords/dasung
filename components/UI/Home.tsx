@@ -6,7 +6,7 @@ import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
 import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
 
 let jCount = 0;
 let dumpCount = [''];
@@ -94,12 +94,15 @@ async function calculate(kind: string, HH: string) {
   let odump:number = 0;
   let rdump:number = 0;
 
+  //자가덤프 총합
   document.querySelectorAll('[id^=jd]').forEach((el)=>{
     jdump += Number(el.textContent);
   });
+  //외부덤프 총합
   document.querySelectorAll('[id^=od]').forEach((el)=>{
     odump += Number(el.textContent);
   });
+  //로우더 총합
   document.querySelectorAll('[id^=rd]').forEach((el)=>{
     rdump += Number(el.textContent);
   });
@@ -115,6 +118,7 @@ async function calculate(kind: string, HH: string) {
   todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
   
   //upsert
+  dumpCount
   const test = await axios.post('/api/table', { dump: kind, time: HH });
   console.log('test:', test);
 }
@@ -145,22 +149,59 @@ function realTime() {
     subTot = [];
   };
 
-  return `${hours < 10 ? '0' + hours : hours}시 ${minutes}분 ${seconds}초`;
+  return `${hours < 10 ? '0' + hours : hours}:${minutes}:${seconds}`;
 };
+//
 
-const prender = (param:any)=>{
-  console.log('그리는 작업해야댐');
+const prender = (param:any,param2:any)=>{
+  // console.log('그리는 작업해야댐');
+  console.log(param2);
 }
 
 export default function Home ({
   jobList,
+  summInfo,
   dumpInfo
-}: {jobList:jobProps[],dumpInfo:any}){
-	
+}: {jobList:jobProps[], summInfo:any, dumpInfo:any}){
+
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
   const [time, setTime] = useState('');
+  const btnRef = useRef<HTMLAnchorElement[]>([]);
 
+  //단축키 bind
+  const shortcutFunc:{[key:string]:()=>void} = {
+    'F1':()=>{btnRef.current[0].click();},
+    'F2':()=>{btnRef.current[1].click();},
+    'F3':()=>{btnRef.current[2].click();},
+    'F4':()=>{btnRef.current[3].click();},
+    'F5':()=>{btnRef.current[4].click();},
+    'F6':()=>{btnRef.current[5].click();},
+    'F7':()=>{btnRef.current[6].click();},
+    'F8':()=>{btnRef.current[7].click();},
+  };
+
+  // handle what happens on key press
+  const handleKeyPress = useCallback((event: any) => {
+    // console.log(`Key pressed: ${event.key}`);
+    if(event.key == 'Escape'){ //모달 닫기
+      setModal(false);
+    }
+    if(event.key == 'Enter'){ //수정하기
+      document.getElementById('modi')?.click();
+    }
+    if(shortcutFunc[event.key]){
+      event.preventDefault();
+      shortcutFunc[event.key]();
+    };
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   //등록된 작업자 목록
   let opList:StringDictionary = {};
@@ -170,7 +211,7 @@ export default function Home ({
       name: obj.operator
     };
   });
-  const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
+  const btnNm = ['고장(F5)', '청소(F6)', '원자재 불량(F7)', '대석파쇄(F8)'];
 
   useEffect(() => {
       setMount(true);
@@ -181,8 +222,8 @@ export default function Home ({
   }, []);
   
   if (!isMounted) {
-    console.log('isMounted')
-    prender(jobList);
+    // console.log('isMounted');
+    prender(jobList,summInfo);
     return null; 
   }
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
@@ -200,9 +241,9 @@ export default function Home ({
                         border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl
                         dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto
                         lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-            <code className="font-mono font-bold" id="time">{today}&nbsp;&nbsp;{time}</code>
+            <code className="clock" id="time">{time}</code>
           </p>
-          <p className="text-3xl">작업중🛠</p>
+          <p className="text-3xl">{today}</p>
           <p className="text-3xl">달력 들어올곳</p>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
@@ -237,9 +278,12 @@ export default function Home ({
         </div>
         <Summary
           j={dumpInfo.jd}
-          jtot={` x ${dumpInfo.jd} = ${0}`}
           o={dumpInfo.od}
           r={dumpInfo.rd}
+          jtot={` x ${summInfo.jdump} = ${dumpInfo.jd * summInfo.jdump}`}
+          otot={` x ${summInfo.odump} = ${dumpInfo.od * summInfo.odump}`}
+          rtot={` x ${summInfo.rdump} = ${dumpInfo.rd * summInfo.rdump}`}
+          total={(dumpInfo.jd * summInfo.jdump) + (dumpInfo.od * summInfo.odump) + (dumpInfo.rd * summInfo.rdump)}
         />
         {/* {
           showModal && <InputModal
@@ -255,25 +299,41 @@ export default function Home ({
             onInput={() => { setModal(false); modify(); }}
           />
         }
+        <div style={{
+          position:'fixed',
+          marginLeft:'5%',
+          left: '0',
+          backgroundColor: 'white'
+        }}>
+          패치내용
+          <p>운전자명 저장가능</p>
+          <p>단축키 F1~F8</p>
+        </div>
         <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left non-print btn-area">
           <Button
-            text='자가덤프'
-            subText='16m<sup>3</sup>'
+            text='자가덤프(F1)'
+            subText={`${dumpInfo.jd}m<sup>3</sup>`}
+            // ref={(el:JSX.Element)=>btnRef.current.push(el)}
+            // btnRef={(el:any)=>{btnRef.current.push(el)}}
+            btnRef={(el:any)=>{btnRef.current[0] = el;}}
             func={() => Dump('jd')}
           />
           <Button
-            text='외부덤프'
-            subText='16m<sup>3</sup>'
+            text='외부덤프(F2)'
+            subText={`${dumpInfo.od}m<sup>3</sup>`}
+            btnRef={(el:any)=>{btnRef.current[1] = el;}}
             func={() => Dump('od')}
           />
           <Button
-            text='로우더'
-            subText='7m<sup>3</sup>'
+            text='로우더(F3)'
+            subText={`${dumpInfo.rd}m<sup>3</sup>`}
+            btnRef={(el:any)=>{btnRef.current[2] = el;}}
             func={() => Dump('rd')}
           />
           <Button
-            text='수정'
+            text='수정(F4)'
             desc='(비밀번호)'
+            btnRef={(el:any)=>{btnRef.current[3] = el;}}
             func={() => {
               jCount > 0 ? setModal(true) : setModal(false)
             }}
@@ -283,6 +343,7 @@ export default function Home ({
               <Button
                 key={val}
                 text={val}
+                btnRef={(el:any)=>{btnRef.current[idx+4] = el;}}
                 func={() => repair(val)}
               />
             ))

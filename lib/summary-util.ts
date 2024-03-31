@@ -31,9 +31,45 @@ export const monthList = async (today: string) => {
             yyyy: String(new Date().getFullYear())
         },
     });
-
-    return monthList.map((val) => {
+    
+    return monthList.map((val:any) => {
         return { date: `${val.date}` };
     });
 
+}
+
+export const daySummary = async (today: string, company:string) => {
+    // 오늘
+    const day = await db.summary.findFirst({
+        where: {
+            date: today,
+            company: company
+        }
+    });
+    if (day){
+        return day;
+    }
+    else {
+        // 당일 통계등록
+        await db.summary.create({
+            data: {
+                date: today,
+                yyyy: `${today.substring(0, 4)}`,
+                mm: `${today.substring(4, 6)}`,
+                dd: `${today.substring(6, 8)}`,
+                jdump: 0,
+                odump: 0,
+                rdump: 0,
+                total: 0,
+                company: company
+            }
+        });
+    }
+
+    return await db.summary.findFirst({
+        where: {
+            date: today,
+            company: company
+        }
+    });
 }
