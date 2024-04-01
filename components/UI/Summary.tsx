@@ -21,7 +21,12 @@ const Summary = (props: any) => {
 					</div>
 				</div>
 				<div id="rep" style={{textAlign:'left',paddingLeft:'5%',minHeight:'75px'}} className="text-lg">
-					
+					{props.maintenance.split(',').map((txt: string, idx: number) => (
+						<p key={idx} className="rep-list" onClick={evt => {
+							const tgt = evt.target as HTMLElement;
+    						tgt && tgt.remove();
+						} }>{ txt}</p>
+					))}
 				</div>
 			</div>
         </div>

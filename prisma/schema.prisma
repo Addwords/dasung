@@ -26,16 +26,16 @@ generator client {
 
 // 작업테이블
 model Jobs {
-  id          String @id @default(uuid())
-  date        String
-  operator    String
-  time        String
-  job         Json
-  jTot        Int
-  oTot        Int
-  rTot        Int
-  maintenance String
-  company     String
+  id       String @id @default(uuid())
+  date     String
+  operator String
+  time     String
+  job      Json
+  jTot     Int
+  oTot     Int
+  rTot     Int
+  subTot   Int
+  company  String
 
   @@index([date])
 }
@@ -49,16 +49,17 @@ model Operator {
 
 // 통계용
 model Summary {
-  id      String @id @default(uuid())
-  date    String
-  yyyy    String
-  mm      String
-  dd      String
-  company String
-  jdump   Int
-  odump   Int
-  rdump   Int
-  total   Int
+  id          String @id @default(uuid())
+  date        String
+  yyyy        String
+  mm          String
+  dd          String
+  company     String
+  jdump       Int
+  odump       Int
+  rdump       Int
+  total       Int
+  maintenance String
 
   @@index([date])
 }

@@ -6,7 +6,7 @@ export const currentJobs = async (today: string, company: string) => {
     const daywork = await db.jobs.findMany({
         where: {
             date: today,
-            company:company
+            company: company
         },
     });
 
@@ -22,7 +22,7 @@ export const currentJobs = async (today: string, company: string) => {
         , jTot: 0
         , oTot: 0
         , rTot: 0
-        , maintenance: ''
+        , subTot: 0
         , company: company
     };
 

@@ -62,38 +62,40 @@ const Table = ({
 						<div key={i}>{v+i}</div>
 					))}
 					{
-						jobTime.map((val,i) => (
+						jobTime.map((val, i) => (
 							[...Array(40).fill(1)].map((x, idx) => (
-								<div key={val+idx} id={`t${val+i}-${idx}`}></div>
+								<div key={val + idx} id={`t${val + i}-${idx}`} className={opLists[String(val + i).padStart(2, '0')]?.dump[idx]}>
+								{opLists[String(val + i).padStart(2, '0')]?.job[idx]}
+								</div>
 							))
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-1">자가덤프</div>
-					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`jd${val+idx}`} className=""></div>
+					{jobTime.map((val, idx) => (
+						<div key={val + idx} id={`jd${val + idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.jtot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-1">외부덤프</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`od${val+idx}`} className=""></div>
+						<div key={val+idx} id={`od${val+idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.otot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-3">로우더</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`rd${val+idx}`} className=""></div>
+						<div key={val+idx} id={`rd${val+idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.rtot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-3 font-bold">계</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`tot${val+idx}`} className="font-bold"></div>
+						<div key={val+idx} id={`tot${val+idx}`} className="font-bold">{opLists[String(val+idx).padStart(2,'0')]?.subtot}</div>
 						))
 					}
 				</div>

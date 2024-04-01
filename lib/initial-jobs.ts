@@ -27,7 +27,7 @@ export const intialJobs = async () => {
             , jTot: 0
             , oTot: 0
             , rTot: 0
-            , maintenance: ''
+            , subTot: 0
             , company: '(주)다성 용인지점'
         }
     });
@@ -43,6 +43,7 @@ export const intialJobs = async () => {
             odump: 0,
             rdump: 0,
             total: 0,
+            maintenance: '',
             company: '(주)다성 용인지점'
         }
     });

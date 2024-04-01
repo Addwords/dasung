@@ -21,6 +21,7 @@ export const monthList = async (today: string) => {
                 odump: 0,
                 rdump: 0,
                 total: 0,
+                maintenance: '',
                 company: '(주)다성 용인지점'
             }
         });
@@ -31,14 +32,14 @@ export const monthList = async (today: string) => {
             yyyy: String(new Date().getFullYear())
         },
     });
-    
-    return monthList.map((val:any) => {
+
+    return monthList.map((val: any) => {
         return { date: `${val.date}` };
     });
 
 }
 
-export const daySummary = async (today: string, company:string) => {
+export const daySummary = async (today: string, company: string) => {
     // 오늘
     const day = await db.summary.findFirst({
         where: {
@@ -46,7 +47,7 @@ export const daySummary = async (today: string, company:string) => {
             company: company
         }
     });
-    if (day){
+    if (day) {
         return day;
     }
     else {
@@ -61,6 +62,7 @@ export const daySummary = async (today: string, company:string) => {
                 odump: 0,
                 rdump: 0,
                 total: 0,
+                maintenance: '',
                 company: company
             }
         });

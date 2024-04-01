@@ -12,6 +12,10 @@ let jCount = 0;
 let dumpCount = [''];
 let subTot = [];
 let realHH = 6; //업무최초시간
+let summId = '';
+let jobIds: {[key:string]:string} = {};
+let job: { [key: string]: string }[] = [];
+let jsize: number, osize: number, rsize: number;
 
 const yyyy = new Date().getFullYear();
 const mm = new Date().getMonth() + 1;
@@ -36,21 +40,17 @@ function Dump(kind: string) {
   }
 
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
-  // let dialogInput = String(val); //String(Math.ceil(Math.random() * 10)); //모달창 입력으로 변경예정
+  console.log(mertalIn);
 
   if (!!mertalIn) {
     mertalIn.textContent = `${MM}'`;  //dialogInput;
-    if (kind == 'od') {
-      mertalIn.style.backgroundColor = '#ffff00'; //외부덤프
-    }
-    if (kind == 'rd') {
-      mertalIn.style.backgroundColor = '#00b0f0'; //로우더
-    }
+    mertalIn.className = kind; //외부덤프
   }
 
   dumpCount[jCount] = kind;
+  console.log('dumpCount', dumpCount);
 
-  calculate(kind, String(HH));
+  calculate(kind, String(HH),String(MM));
 
   jCount++;
 }
@@ -69,7 +69,7 @@ function modify() {
     mertalIn.textContent = '';
     mertalIn.style.backgroundColor = ``;
     let kind = dumpCount.pop() || '';
-    calculate(kind, String(HH));
+    calculate(kind, String(HH),'');
   }
 }
 
@@ -78,7 +78,7 @@ function modify() {
  * @param kind : 차량종류
  * @param HH :현재시
  */
-async function calculate(kind: string, HH: string) {
+async function calculate(kind: string, HH: string, MM:string) {
   // console.log('dumpCount:', dumpCount);
 
   let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
@@ -108,22 +108,44 @@ async function calculate(kind: string, HH: string) {
   });
 
   let jtot = document.getElementById(`dumpTot-j`) as HTMLElement;
-    jtot.textContent = ` x ${jdump} = ${jdump * 16}`;
+    jtot.textContent = ` x ${jdump} = ${jdump * jsize}`;
   let otot = document.getElementById(`dumpTot-o`) as HTMLElement;
-    otot.textContent = ` x ${odump} = ${odump * 16}`;
+    otot.textContent = ` x ${odump} = ${odump * osize}`;
   let rtot = document.getElementById(`dumpTot-r`) as HTMLElement;
-    rtot.textContent = ` x ${rdump} = ${rdump * 7}`;
+    rtot.textContent = ` x ${rdump} = ${rdump * rsize}`;
 
   let todayTotal = document.getElementById(`total`) as HTMLElement;
-  todayTotal.textContent = `${(jdump * 16) + (odump * 16) + (rdump * 7)}`;
+  todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
   
-  //upsert
-  dumpCount
-  const test = await axios.post('/api/table', { dump: kind, time: HH });
-  console.log('test:', test);
+  MM ? job.push({ [MM+`'`]: kind }) : job.pop();
+  
+  const jobObj:{ [key: string]: any; } = {
+    servNm: 'setJob',
+    jobId: jobIds[HH],
+    job: job.reduce((pre, cur) => {
+      return Object.assign(pre, cur); //job
+    }),
+    subtot:subTot
+  }
+
+  jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
+  await axios.post('/api/table', jobObj);
+  //갱신
+  const summObj = {
+    servNm: 'setSummary',
+    summId: summId,
+    jtot: jdump,
+    otot: odump,
+    rtot: rdump,
+    tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
+  }
+  await axios.post('/api/table', summObj);
+  // dumpCount
+
+  // console.log('test:', test);
 }
 
-function repair(res: string) {
+async function repair(res: string) {
   let HH = new Date().getHours();
   let MM = new Date().getMinutes();
   const rep = document.getElementById('rep') as HTMLElement;
@@ -135,6 +157,19 @@ function repair(res: string) {
   });
   appCh.textContent = `${HH}시 ${MM}분 ${res}`;
   rep.appendChild(appCh);
+  
+  let maintenance:string[] = [];
+  Array.from(rep.children).map((el, idx) => {
+    maintenance.push(el.textContent||'');
+  })
+
+  const repObj = {
+    servNm: 'setRepair',
+    summId: summId,
+    maintenance: maintenance.join(',')
+  }
+  await axios.post('/api/table', repObj);
+
 }
 
 function realTime() {
@@ -147,16 +182,11 @@ function realTime() {
     jCount = 0;
     dumpCount = [];
     subTot = [];
+    job = [];
   };
 
   return `${hours < 10 ? '0' + hours : hours}:${minutes}:${seconds}`;
 };
-//
-
-const prender = (param:any,param2:any)=>{
-  // console.log('그리는 작업해야댐');
-  console.log(param2);
-}
 
 export default function Home ({
   jobList,
@@ -203,15 +233,33 @@ export default function Home ({
     };
   }, [handleKeyPress]);
 
+  // 차량용량
+  jsize = dumpInfo.jd;
+  osize = dumpInfo.od;
+  rsize = dumpInfo.rd;
   //등록된 작업자 목록
   let opList:StringDictionary = {};
-  jobList.map((obj: {time: string, id:string, operator: string }) => {
+  jobList.map((obj: {
+    time: string, id: string,
+    operator: string, job: any,
+    jTot: number, oTot: number, rTot: number,
+    subTot:number
+  }) => {
     opList[obj.time] = {
       id: obj.id,
-      name: obj.operator
+      name: obj.operator,
+      job: Object.keys(obj.job),
+      dump:Object.values(obj.job),
+      jtot:obj.jTot,
+      otot:obj.oTot,
+      rtot:obj.rTot,
+      subtot:obj.subTot,
     };
+    jobIds[obj.time] = obj.id
   });
-  const btnNm = ['고장(F5)', '청소(F6)', '원자재 불량(F7)', '대석파쇄(F8)'];
+  jCount = opList[String(new Date().getHours()).padStart(2, '0')].subtot;
+
+  const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
 
   useEffect(() => {
       setMount(true);
@@ -223,7 +271,7 @@ export default function Home ({
   
   if (!isMounted) {
     // console.log('isMounted');
-    prender(jobList,summInfo);
+    summId = summInfo.id; //업데이트용
     return null; 
   }
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
@@ -277,13 +325,14 @@ export default function Home ({
           />
         </div>
         <Summary
-          j={dumpInfo.jd}
-          o={dumpInfo.od}
-          r={dumpInfo.rd}
-          jtot={` x ${summInfo.jdump} = ${dumpInfo.jd * summInfo.jdump}`}
-          otot={` x ${summInfo.odump} = ${dumpInfo.od * summInfo.odump}`}
-          rtot={` x ${summInfo.rdump} = ${dumpInfo.rd * summInfo.rdump}`}
-          total={(dumpInfo.jd * summInfo.jdump) + (dumpInfo.od * summInfo.odump) + (dumpInfo.rd * summInfo.rdump)}
+          j={jsize}
+          o={osize}
+          r={rsize}
+          jtot={` x ${summInfo.jdump} = ${jsize * summInfo.jdump}`}
+          otot={` x ${summInfo.odump} = ${osize * summInfo.odump}`}
+          rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
+          total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
+          maintenance={summInfo.maintenance}
         />
         {/* {
           showModal && <InputModal
@@ -311,28 +360,28 @@ export default function Home ({
         </div>
         <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left non-print btn-area">
           <Button
-            text='자가덤프(F1)'
-            subText={`${dumpInfo.jd}m<sup>3</sup>`}
+            text='자가덤프'
+            subText={`${jsize}m<sup>3</sup>`}
             // ref={(el:JSX.Element)=>btnRef.current.push(el)}
             // btnRef={(el:any)=>{btnRef.current.push(el)}}
             btnRef={(el:any)=>{btnRef.current[0] = el;}}
             func={() => Dump('jd')}
           />
           <Button
-            text='외부덤프(F2)'
-            subText={`${dumpInfo.od}m<sup>3</sup>`}
+            text='외부덤프'
+            subText={`${osize}m<sup>3</sup>`}
             btnRef={(el:any)=>{btnRef.current[1] = el;}}
             func={() => Dump('od')}
           />
           <Button
-            text='로우더(F3)'
-            subText={`${dumpInfo.rd}m<sup>3</sup>`}
+            text='로우더'
+            subText={`${rsize}m<sup>3</sup>`}
             btnRef={(el:any)=>{btnRef.current[2] = el;}}
             func={() => Dump('rd')}
           />
           <Button
-            text='수정(F4)'
-            desc='(비밀번호)'
+            text='수정'
+            desc=''
             btnRef={(el:any)=>{btnRef.current[3] = el;}}
             func={() => {
               jCount > 0 ? setModal(true) : setModal(false)

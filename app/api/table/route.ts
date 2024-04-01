@@ -9,11 +9,24 @@ export async function POST(req: Request) {
 		// const {id, dump, time } = await req.json();
 		// const body = await req.json();
 		// console.log(body);
-		const { servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance } = await req.json();
-		console.log('post req:', servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
+		const { servNm,
+			jobId,
+			summId,
+			today,
+			operator,
+			curtime,
+			job,
+			jtot,
+			otot,
+			rtot,
+			subtot,
+			tot,
+			maintenance
+		} = await req.json();
+		// console.log('post req:', servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 
-		if (servNm === 'setOperator') {
-			const oper = await db.jobs.update({
+		if (servNm === 'setOperator') { //운전자 갱신
+			await db.jobs.update({
 				where: {
 					id: jobId
 				},
@@ -21,33 +34,41 @@ export async function POST(req: Request) {
 					operator: operator
 				}
 			})
+		} else if (servNm === 'setSummary') { //통계 갱신
+			await db.summary.update({
+				where: {
+					id: summId
+				},
+				data: {
+					jdump: jtot,
+					odump: otot,
+					rdump: rtot,
+					total: tot,
+				}
+			})
+		} else if (servNm === 'setJob') { //작업 갱신
+			await db.jobs.update({
+				where: {
+					id: jobId
+				},
+				data: {
+					job: job,
+					jTot: jtot,
+					oTot: otot,
+					rTot: rtot,
+					subTot: subtot,
+				}
+			})
+		} else if (servNm === 'setRepair') { //고장 갱신
+			await db.summary.update({
+				where: {
+					id: summId
+				},
+				data: {
+					maintenance: maintenance,
+				}
+			})
 		}
-		// const table = await db.jobs.upsert({
-		// 	where: {
-		// 		id: jobId,
-		// 		date: today,
-		// 		time: String(curtime),
-		// 	},
-		// 	update: {
-		// 		job: job,
-		// 		jTot: jtot,
-		// 		oTot: otot,
-		// 		rTot: rtot,
-		// 		maintenance: maintenance
-		// 	},
-		// 	create: {
-		// 		date: today
-		// 		, operator: ''
-		// 		, time: curtime
-		// 		, job: JSON.parse(job)
-		// 		, jTot: 0
-		// 		, oTot: 0
-		// 		, rTot: 0
-		// 		, maintenance: ''
-		// 		, company: '(주)다성 용인지점'
-		// 	},
-		// });
-
 		// return NextResponse.json(table);
 		return NextResponse.json(`success: ${servNm}`);
 	} catch (err) {
@@ -63,7 +84,7 @@ export async function PUT(req: Request) {
 		// const body = await req.json();
 		// console.log(body);
 		const { jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance } = await req.json();
-		console.log('put req:', jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
+		// console.log('put req:', jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 
 		// const table = await db.jobs.upsert({
 		// 	where: {

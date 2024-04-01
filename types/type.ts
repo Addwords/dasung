@@ -9,12 +9,12 @@ export interface jobProps {
 	jTot: number
 	oTot: number
 	rTot: number
-	maintenance: string
+	subTot: number
 	company: string
 }
 
 export interface StringDictionary {
-	[key: string]: { [key: string]: string; }
+	[key: string]: { [key: string]: any; }
 }
 
 export interface TableProps {
@@ -30,6 +30,6 @@ export interface jobObj {
 	jTot: 0
 	oTot: 0
 	rTot: 0
-	maintenance: ''
+	subTot: 0
 	company: '(주)다성 용인지점'
 }
