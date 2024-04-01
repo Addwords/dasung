@@ -8,14 +8,16 @@ import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
 
+let mount = false;
 let jCount = 0;
 let dumpCount = [''];
 let subTot = [];
-let realHH = 6; //업무최초시간
+let realHH = 5; //업무최초시간
 let summId = '';
 let jobIds: {[key:string]:string} = {};
 let job: { [key: string]: string }[] = [];
 let jsize: number, osize: number, rsize: number;
+let opList:StringDictionary = {};
 
 const yyyy = new Date().getFullYear();
 const mm = new Date().getMonth() + 1;
@@ -117,8 +119,8 @@ async function calculate(kind: string, HH: string, MM:string) {
   let todayTotal = document.getElementById(`total`) as HTMLElement;
   todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
   
+  console.log(job)
   MM ? job.push({ [MM+`'`]: kind }) : job.pop();
-  
   const jobObj:{ [key: string]: any; } = {
     servNm: 'setJob',
     jobId: jobIds[HH],
@@ -127,7 +129,7 @@ async function calculate(kind: string, HH: string, MM:string) {
     }),
     subtot:subTot
   }
-
+  console.log(jobObj);
   jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
   await axios.post('/api/table', jobObj);
   //갱신
@@ -189,10 +191,11 @@ function realTime() {
 };
 
 export default function Home ({
+  company,
   jobList,
   summInfo,
   dumpInfo
-}: {jobList:jobProps[], summInfo:any, dumpInfo:any}){
+}: {company:string,jobList:jobProps[], summInfo:any, dumpInfo:any}){
 
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
@@ -233,46 +236,56 @@ export default function Home ({
     };
   }, [handleKeyPress]);
 
-  // 차량용량
-  jsize = dumpInfo.jd;
-  osize = dumpInfo.od;
-  rsize = dumpInfo.rd;
-  //등록된 작업자 목록
-  let opList:StringDictionary = {};
-  jobList.map((obj: {
-    time: string, id: string,
-    operator: string, job: any,
-    jTot: number, oTot: number, rTot: number,
-    subTot:number
-  }) => {
-    opList[obj.time] = {
-      id: obj.id,
-      name: obj.operator,
-      job: Object.keys(obj.job),
-      dump:Object.values(obj.job),
-      jtot:obj.jTot,
-      otot:obj.oTot,
-      rtot:obj.rTot,
-      subtot:obj.subTot,
-    };
-    jobIds[obj.time] = obj.id
-  });
-  jCount = opList[String(new Date().getHours()).padStart(2, '0')].subtot;
-
   const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
 
   useEffect(() => {
-      setMount(true);
-      const intervalId = setInterval(() => {
-        setTime(realTime);
-      }, 100);
+    setMount(true);
+    const intervalId = setInterval(() => {
+      setTime(realTime);
+    }, 100);
     return () => clearInterval(intervalId);
   }, []);
   
-  if (!isMounted) {
-    // console.log('isMounted');
+  if (!isMounted) { //mount once
+      return null;
+  }
+  
+  if(!mount){
+    mount = true;
+    // 차량용량
+    jsize = dumpInfo.jd;
+    osize = dumpInfo.od;
+    rsize = dumpInfo.rd;
+    //등록된 작업자 목록
+    jobList.map((obj: {
+      time: string, id: string,
+      operator: string, job: any,
+      jTot: number, oTot: number, rTot: number,
+      subTot:number
+    }) => {
+      opList[obj.time] = {
+        id: obj.id,
+        name: obj.operator,
+        job: Object.keys(obj.job),
+        dump:Object.values(obj.job),
+        jtot:obj.jTot,
+        otot:obj.oTot,
+        rtot:obj.rTot,
+        subtot:obj.subTot,
+      };
+      jobIds[obj.time] = obj.id
+    });
+    const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
+    setTimeout(() => { //SSR, CSR 이렇게 두번 rendering되면서 전역변수가 초기화 되는데 타이밍을 못찾겠음.
+      if(curObj){
+        jCount = curObj.subtot;
+        dumpCount = curObj.dump;
+        curObj.job.forEach((val:string,idx:number)=>{
+          job.push({[val]:curObj.dump[idx]})
+        });
+      }
+    }, 1000);
     summId = summInfo.id; //업데이트용
-    return null; 
   }
   const today = `${yyyy}년 ${mm}월 ${dd}일`;
 
@@ -295,10 +308,10 @@ export default function Home ({
           <p className="text-3xl">달력 들어올곳</p>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
-              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
+              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl"
               rel="noopener noreferrer"
             >
-              로고들어갈자리{" "}
+              {company}
               {/* <Image
                 src="/vercel.svg"
                 alt="Vercel Logo"
@@ -307,11 +320,6 @@ export default function Home ({
                 height={50}
                 priority
               /> */}
-            </a>
-            <a
-              className="flex place-items-center gap-2 p-8 lg:p-0"
-            >
-              설정
             </a>
           </div>
         </div>

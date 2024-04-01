@@ -1,5 +1,8 @@
+'use client'
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useState } from "react";
+import { SyncLoader } from "react-spinners";
 
 // root location에 반응?
 // console.log('when render?')
@@ -16,13 +19,19 @@ const SetupPage = async (compCd:string) => {
 const selectPage = ()=>{
     const date = new Date();
     const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
+    const [loading,setLoading] = useState(false)
 return(
     <>
     {/* <button>(주)다성 용인지점</button> */}
     {/* <a href={`/001/${today}`}>(주)다성 용인지점</a> */}
         <div className="flex h-lvh justify-center" style={{alignItems:'center'}}>
+            {loading && 
+            <div className="absolute">
+                <SyncLoader color="rgb(54, 215, 183)"/>
+            </div>
+            }
             <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left">
-                <Link href={`/001/${today}`}>
+                <Link href={`/001/${today}`} onClick={()=>setLoading(true)}>
                     <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors
                     hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
                     rel="noopener noreferrer">
@@ -31,20 +40,25 @@ return(
                 </Link>
 
                 {/*  */}
-                <a
+                <a href={`/002/${today}`} onClick={()=>setLoading(true)}
                 className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
                 rel="noopener noreferrer">
-                    <h2 className={`mb-3 text-2xl font-semibold`}>준비중</h2>
+                    <h2 className={`mb-3 text-2xl font-semibold`}>(주)다성 용인제2공장 지점</h2>
                 </a>
-                <a
+                <a href={`/003/${today}`} onClick={()=>setLoading(true)}
                 className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
                 rel="noopener noreferrer">
-                    <h2 className={`mb-3 text-2xl font-semibold`}>준비중</h2>
+                    <h2 className={`mb-3 text-2xl font-semibold`}>(주)다성레미콘</h2>
                 </a>
-                <a
+                <a href={`/004/${today}`} onClick={()=>setLoading(true)}
                 className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
                 rel="noopener noreferrer">
-                    <h2 className={`mb-3 text-2xl font-semibold`}>준비중</h2>
+                    <h2 className={`mb-3 text-2xl font-semibold`}>(주)청정개발</h2>
+                </a>
+                <a href={`/005/${today}`} onClick={()=>setLoading(true)}
+                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
+                rel="noopener noreferrer">
+                    <h2 className={`mb-3 text-2xl font-semibold`}>(주)청정개발지점</h2>
                 </a>
             </div>
         </div>
