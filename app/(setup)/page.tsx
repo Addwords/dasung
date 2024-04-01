@@ -26,8 +26,8 @@ return(
     {/* <a href={`/001/${today}`}>(주)다성 용인지점</a> */}
         <div className="flex h-lvh justify-center" style={{alignItems:'center'}}>
             {loading && 
-            <div className="absolute">
-                <SyncLoader color="rgb(54, 215, 183)"/>
+            <div className="absolute backdrop-brightness-95 loadingwrap">
+                <SyncLoader color="rgb(54, 215, 183)" size={20}/>
             </div>
             }
             <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left">

@@ -37,7 +37,13 @@ body {
 .print {
   display: none;
 }
-
+.loadingwrap{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .wrapper {
   width: 1000px;
   display: grid;
