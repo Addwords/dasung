@@ -106,3 +106,5 @@ websocket url 추가
 ---------------------
 24.04.01
 테이블 데이터 연동시키기
+로딩바
+ ps -ef|grep -E 'npm|next-'|grep -v 'grep'
