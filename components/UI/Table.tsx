@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import OperatorModal from "../modals/operator-modal";
 import { TableProps } from "@/types/type";
-import { axios } from "@/lib/axios";
+import axios from "axios";
 
 async function setOperator(curOperId:string, operNm:string){
 	const operEle = document.getElementById(curOperId) as HTMLElement;
@@ -13,13 +13,16 @@ async function setOperator(curOperId:string, operNm:string){
 }
 
 const Table = ({
+	comcd,
 	joblimit,
-	opLists
+	jobList,
+	operators
  }:TableProps) => {
 	
 	const [showModal, setModal] = useState(false);
-	const [curOp,setOp] = useState('');
-	
+	const [curOp, setOp] = useState('');
+	const date = new Date();
+	const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
 	const opNmRef = useRef<HTMLDivElement[]>([]);
 	const addOpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
 
@@ -27,8 +30,11 @@ const Table = ({
 	
 	return (
 		<>
-		{showModal && <OperatorModal
-			operator={(nm:string)=>{setOperator(curOp,nm)}}
+			{showModal && <OperatorModal
+			today={today}
+			comcd={comcd}
+			oplist={operators}
+			setop={(nm:string)=>{setOperator(curOp,nm)}}
 			onHide={()=>setModal(false)}
 		/>}
 			<div className="wrapper border-4 border-black">
@@ -36,7 +42,7 @@ const Table = ({
 					<div className="min-h-14 text-center pt-1 border border-black">운전자 성명</div>
 					{jobTime.map((val,idx) => (
 						//수정가능해야함
-						<div className="cursor-pointer" key={idx + 1} id={opLists[String(val+idx).padStart(2,'0')]?.id}
+						<div className="cursor-pointer" key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
 							// ref={addPpNmRef}
 							onClick={(evt)=>{
 								console.log('opNmRef:',opNmRef);
@@ -45,7 +51,7 @@ const Table = ({
 								setModal(true);
 							}}
 						>
-							{opLists[String(val+idx).padStart(2,'0')]?.name}
+							{jobList[String(val+idx).padStart(2,'0')]?.name}
 						</div>
 					))}
 				</div>
@@ -64,8 +70,8 @@ const Table = ({
 					{
 						jobTime.map((val, i) => (
 							[...Array(40).fill(1)].map((x, idx) => (
-								<div key={val + idx} id={`t${val + i}-${idx}`} className={opLists[String(val + i).padStart(2, '0')]?.dump[idx]}>
-								{opLists[String(val + i).padStart(2, '0')]?.job[idx]}
+								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')]?.dump[idx]}>
+								{jobList[String(val + i).padStart(2, '0')]?.job[idx]}
 								</div>
 							))
 						))
@@ -74,28 +80,28 @@ const Table = ({
 				<div className="col">
 					<div className="pt-1">자가덤프</div>
 					{jobTime.map((val, idx) => (
-						<div key={val + idx} id={`jd${val + idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.jtot}</div>
+						<div key={val + idx} id={`jd${val + idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.jtot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-1">외부덤프</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`od${val+idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.otot}</div>
+						<div key={val+idx} id={`od${val+idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.otot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-3">로우더</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`rd${val+idx}`} className="">{opLists[String(val+idx).padStart(2,'0')]?.rtot}</div>
+						<div key={val+idx} id={`rd${val+idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.rtot}</div>
 						))
 					}
 				</div>
 				<div className="col">
 					<div className="pt-3 font-bold">계</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`tot${val+idx}`} className="font-bold">{opLists[String(val+idx).padStart(2,'0')]?.subtot}</div>
+						<div key={val+idx} id={`tot${val+idx}`} className="font-bold">{jobList[String(val+idx).padStart(2,'0')]?.subtot}</div>
 						))
 					}
 				</div>

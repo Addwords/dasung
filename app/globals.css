@@ -37,13 +37,19 @@ body {
 .print {
   display: none;
 }
-.loadingwrap{
+
+.loadingwrap {
   height: 100vh;
   width: 100vw;
+  z-index: 100;
+  position: fixed;
+  left: 0;
+  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .wrapper {
   width: 1000px;
   display: grid;
@@ -135,6 +141,18 @@ body {
 
 .rep-list:hover::after {
   content: ' X';
+}
+
+/* PC일 경우 - 작업자 환경 */
+@media (max-width: 1700px) {
+  .btn-area {
+    display: none;
+  }
+}
+
+/* 관리자 영역 */
+.admin {
+  visibility: visible;
 }
 
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/

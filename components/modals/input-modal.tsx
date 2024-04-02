@@ -5,7 +5,8 @@ function InputModal(props: any) {
   return (
     <>
           <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 outline-none focus:outline-none"
+        style={{zIndex:100}}
           >
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
@@ -27,9 +28,9 @@ function InputModal(props: any) {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
 				<div className="mb-3 pt-0">
-							  <input type="number" placeholder="값 입력" className="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+							  <input type="text" placeholder="이름입력" className="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
 								  onChange={(evt) => {
-									  console.log(evt.target.value);
+									  // console.log(evt.target.value);
 									  setVal(evt.target.value);
 								  }} />
 				</div>
@@ -39,7 +40,7 @@ function InputModal(props: any) {
                   <button
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => props.onInput(val)}
+                onClick={() => { props.onInput(val); props.onHide(); } }
                   >
                     입력
                   </button>

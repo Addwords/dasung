@@ -41,9 +41,10 @@ model Jobs {
 }
 
 // 운전자
-model Operator {
+model User {
   id      String @id @default(uuid())
   name    String
+  role    Role   @default(OPERATOR)
   company String
 }
 
@@ -62,4 +63,10 @@ model Summary {
   maintenance String
 
   @@index([date])
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+  GUEST
 }

@@ -80,12 +80,17 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
 	try {
 
-		// const {id, dump, time } = await req.json();
-		// const body = await req.json();
-		// console.log(body);
-		const { jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance } = await req.json();
+		const { servNm, comcd, name, role } = await req.json();
 		// console.log('put req:', jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
-
+		if (servNm == 'setOp') {
+			await db.user.create({
+				data: {
+					name: name,
+					company: comcd,
+					role: role
+				}
+			});
+		}
 		// const table = await db.jobs.upsert({
 		// 	where: {
 		// 		id: jobId,

@@ -11,7 +11,7 @@ export const currentJobs = async (today: string, company: string) => {
     });
 
     if (daywork.length > 0) {
-        return daywork; //있으면
+        return daywork;
     }
 
     let jobObj = {

@@ -18,8 +18,10 @@ export interface StringDictionary {
 }
 
 export interface TableProps {
+	comcd: string
 	joblimit: number
-	opLists: StringDictionary
+	jobList: StringDictionary
+	operators: any[]
 }
 
 export interface jobObj {

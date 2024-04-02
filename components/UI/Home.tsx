@@ -7,6 +7,7 @@ import AlertModal from "@/components/modals/alert-modal";
 import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
+import JobCalendar from "./JobCalendar";
 
 let mount = false;
 let jCount = 0;
@@ -34,15 +35,23 @@ function Dump(kind: string) {
   const HH = now.getHours();
   const MM = now.getMinutes();
 
-  const 마감시간 = 23; //업무종료시간?
+  const startT = 5; //업무종료시간?
 
-  if (HH > 마감시간 || jCount > 39) {
+  if (HH < startT || jCount > 39) {
     alert('불가능 합니다.');
     return
   }
+  
+  //같은minute에 작업 불가?
+  if (jCount > 0) {
+    const prev = document.querySelector(`#t${HH}-${jCount-1}`) as HTMLElement;
+    if (parseInt(prev.textContent || '') == MM) {
+      alert('작업이 진행중 입니다.');
+      return null;
+    }
+  }
 
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
-  console.log(mertalIn);
 
   if (!!mertalIn) {
     mertalIn.textContent = `${MM}'`;  //dialogInput;
@@ -50,7 +59,6 @@ function Dump(kind: string) {
   }
 
   dumpCount[jCount] = kind;
-  console.log('dumpCount', dumpCount);
 
   calculate(kind, String(HH),String(MM));
 
@@ -119,17 +127,16 @@ async function calculate(kind: string, HH: string, MM:string) {
   let todayTotal = document.getElementById(`total`) as HTMLElement;
   todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
   
-  console.log(job)
   MM ? job.push({ [MM+`'`]: kind }) : job.pop();
-  const jobObj:{ [key: string]: any; } = {
+  const jobObj: { [key: string]: any; } = {
     servNm: 'setJob',
-    jobId: jobIds[HH],
+    jobId: jobIds[HH.padStart(2, '0')],
     job: job.reduce((pre, cur) => {
       return Object.assign(pre, cur); //job
     }),
-    subtot:subTot
-  }
-  console.log(jobObj);
+    subtot: subTot
+  };
+
   jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
   await axios.post('/api/table', jobObj);
   //갱신
@@ -192,15 +199,23 @@ function realTime() {
 
 export default function Home ({
   company,
+  operators,
   jobList,
   summInfo,
   dumpInfo
-}: {company:string,jobList:jobProps[], summInfo:any, dumpInfo:any}){
+}: {
+    company: {[key:string]:string},
+    operators : any,
+    jobList   : jobProps[],
+    summInfo  : any,
+    dumpInfo  : any
+}) {
 
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
   const [time, setTime] = useState('');
   const btnRef = useRef<HTMLAnchorElement[]>([]);
+
 
   //단축키 bind
   const shortcutFunc:{[key:string]:()=>void} = {
@@ -256,6 +271,7 @@ export default function Home ({
     jsize = dumpInfo.jd;
     osize = dumpInfo.od;
     rsize = dumpInfo.rd;
+    
     //등록된 작업자 목록
     jobList.map((obj: {
       time: string, id: string,
@@ -275,6 +291,7 @@ export default function Home ({
       };
       jobIds[obj.time] = obj.id
     });
+    
     const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
     setTimeout(() => { //SSR, CSR 이렇게 두번 rendering되면서 전역변수가 초기화 되는데 타이밍을 못찾겠음.
       if(curObj){
@@ -305,13 +322,13 @@ export default function Home ({
             <code className="clock" id="time">{time}</code>
           </p>
           <p className="text-3xl">{today}</p>
-          <p className="text-3xl">달력 들어올곳</p>
+          <JobCalendar/>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
               className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl"
               rel="noopener noreferrer"
             >
-              {company}
+              {company.nm}
               {/* <Image
                 src="/vercel.svg"
                 alt="Vercel Logo"
@@ -328,8 +345,10 @@ export default function Home ({
 
           {/* <TableProvider /> */}
           <Table
+            comcd={company.cd}
+            operators={operators}
             joblimit={jobList.length}
-            opLists={opList}
+            jobList={opList}
           />
         </div>
         <Summary
@@ -356,16 +375,6 @@ export default function Home ({
             onInput={() => { setModal(false); modify(); }}
           />
         }
-        <div style={{
-          position:'fixed',
-          marginLeft:'5%',
-          left: '0',
-          backgroundColor: 'white'
-        }}>
-          패치내용
-          <p>운전자명 저장가능</p>
-          <p>단축키 F1~F8</p>
-        </div>
         <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left non-print btn-area">
           <Button
             text='자가덤프'

@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
@@ -6,20 +7,22 @@ import { SyncLoader } from "react-spinners";
 
 // root location에 반응?
 // console.log('when render?')
-const SetupPage = async (compCd:string) => {
+// const SetupPage = async (compCd:string) => {
 
+//     const date = new Date();
+//     const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
+// 	const company = compCd;
+//     // 현재는 오늘날짜 작업화면으로 이동
+//     // 추후 회사선택 메인화면이나 대시보드 같은 메인화면으로 변경예정😁
+//     return redirect(`/${company}/${today}`);
+// }
+
+const SelectPage = ()=>{
+    
     const date = new Date();
     const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
-	const company = compCd;
-    // 현재는 오늘날짜 작업화면으로 이동
-    // 추후 회사선택 메인화면이나 대시보드 같은 메인화면으로 변경예정😁
-    return redirect(`/${company}/${today}`);
-}
+    const [loading, setLoading] = useState(false);
 
-const selectPage = ()=>{
-    const date = new Date();
-    const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2,'0')}`;
-    const [loading,setLoading] = useState(false)
 return(
     <>
     {/* <button>(주)다성 용인지점</button> */}
@@ -65,4 +68,4 @@ return(
     </>
 )
 }
-export default selectPage;
+export default SelectPage;
