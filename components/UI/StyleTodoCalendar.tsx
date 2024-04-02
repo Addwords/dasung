@@ -8,7 +8,10 @@ export const CalendarBox = styled.div`
   justify-content: center;
 `;
 
+Calendar.propTypes
 export const StyleCalendar = styled(Calendar)`
+  position: absolute;
+  margin-top: 30vh;
   max-width: 100%;
   border: none;
   margin-bottom: 15px;
@@ -38,7 +41,7 @@ export const StyleCalendar = styled(Calendar)`
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
-    font-size: 0.15em;
+    // font-size: 0.15em;
   }
 
   .react-calendar__year-view .react-calendar__tile,

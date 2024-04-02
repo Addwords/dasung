@@ -8,6 +8,7 @@ import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
 import JobCalendar from "./JobCalendar";
+import Image from "next/image";
 
 let mount = false;
 let jCount = 0;
@@ -213,6 +214,7 @@ export default function Home ({
 
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
+  const [calen, setCalen] = useState(false);
   const [time, setTime] = useState('');
   const btnRef = useRef<HTMLAnchorElement[]>([]);
 
@@ -322,7 +324,10 @@ export default function Home ({
             <code className="clock" id="time">{time}</code>
           </p>
           <p className="text-3xl">{today}</p>
-          <JobCalendar/>
+          <Image src="/calendar.png" alt="" className="cursor-pointer" width={40} height={40} onClick={()=>{setCalen(!calen)}}/>
+          <div className="">
+          {calen && <JobCalendar onHide={()=>{setCalen(false)}}/>}
+          </div>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
               className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl"
