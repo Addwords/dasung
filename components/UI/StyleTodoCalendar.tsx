@@ -8,7 +8,6 @@ export const CalendarBox = styled.div`
   justify-content: center;
 `;
 
-Calendar.propTypes
 export const StyleCalendar = styled(Calendar)`
   position: absolute;
   margin-top: 30vh;
