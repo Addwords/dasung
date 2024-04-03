@@ -96,8 +96,8 @@ vi nginx.conf
 4. [nohup]
 sudo apt-get install nohup
 
-kill명령어 대기
-
+kill명령어 멀티?✅
+$ kill -9 `ps -ef|grep -E 'npm|next-'|grep -v 'grep'`
 ---------------------
 24.03.31
 공장선택하는 첫화면 만들기
@@ -108,3 +108,43 @@ websocket url 추가
 테이블 데이터 연동시키기
 로딩바
  ps -ef|grep -E 'npm|next-'|grep -v 'grep'
+
+----------------------
+24.04.03
+[JAVA]☕
+```
+$ sudo apt install openjdk-17-jdk
+```
+[Jenkins]👨‍🍳
+1. key 다운로드?
+```
+$ sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+    https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+```
+2. repository 생성?
+```
+$ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
+```
+3. 설치
+```
+$ sudo apt-get update
+$ sudo apt-get install jenkins
+```
+4. 접속
+http://localhost:8080
+초기 비밀번호 unlock
+vi /var/lib/jenkins/secrets/initialAdminPassword
+
+# jenkins status 확인
+sudo systemctl status jenkins
+
+# jenkins 시작
+sudo systemctl start jenkins
+# jenkins 멈춤
+sudo systemctl stop jenkins
+
+studio랑 젠킨스 메모리 부족 문제로 못돌림..
+----------------------------------------
+

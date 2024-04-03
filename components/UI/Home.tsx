@@ -198,18 +198,20 @@ function realTime() {
   return `${hours < 10 ? '0' + hours : hours}:${minutes}:${seconds}`;
 };
 
-export default function Home ({
+export default function Home({
+  date,
   company,
   operators,
   jobList,
   summInfo,
   dumpInfo
 }: {
-    company: {[key:string]:string},
-    operators : any,
-    jobList   : jobProps[],
-    summInfo  : any,
-    dumpInfo  : any
+    date: string;
+    company: { [key: string]: string };
+    operators: any;
+    jobList: jobProps[];
+    summInfo: any;
+    dumpInfo: any;
 }) {
 
   const [isMounted, setMount] = useState(false);
@@ -306,8 +308,9 @@ export default function Home ({
     }, 1000);
     summId = summInfo.id; //업데이트용
   }
-  const today = `${yyyy}년 ${mm}월 ${dd}일`;
 
+  const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
+  const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -323,10 +326,12 @@ export default function Home ({
                         lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
             <code className="clock" id="time">{time}</code>
           </p>
-          <p className="text-3xl">{today}</p>
-          <Image src="/calendar.png" alt="" className="cursor-pointer" width={40} height={40} onClick={()=>{setCalen(!calen)}}/>
-          <div className="">
-          {calen && <JobCalendar onHide={()=>{setCalen(false)}}/>}
+            <div className="flex">
+              <p className="text-3xl">{today}</p>
+              <Image src="/calendar.png" alt="" className="cursor-pointer ml-2" width={40} height={40} onClick={()=>{setCalen(!calen)}}/>
+            </div>
+          <div className="relative">
+            {calen && <JobCalendar comcd={company.cd} date={calDate} onHide={()=>{setCalen(false)}}/>}
           </div>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a

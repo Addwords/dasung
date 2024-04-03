@@ -9,11 +9,17 @@ export const CalendarBox = styled.div`
 `;
 
 export const StyleCalendar = styled(Calendar)`
-  position: absolute;
-  margin-top: 30vh;
+  position: fixed;
+  left:0;
+  right:0;
+  top:9rem;
+  margin:auto;
+  // width:300px;
+  // margin-top: cal();
   max-width: 100%;
-  border: none;
-  margin-bottom: 15px;
+  border: 1px solid;
+  border-radius: 10px;
+  // margin-bottom: 15px;
   padding: 20px;
 
   .react-calendar__navigation {
@@ -39,14 +45,18 @@ export const StyleCalendar = styled(Calendar)`
   .react-calendar__month-view__weekdays {
     text-align: center;
     text-transform: uppercase;
-    font-weight: bold;
-    // font-size: 0.15em;
+    // font-weight: bold;
+    font-size: 1em;
   }
 
   .react-calendar__year-view .react-calendar__tile,
   .react-calendar__decade-view .react-calendar__tile,
   .react-calendar__century-view .react-calendar__tile {
     padding: 1.2em 0.5em;
+  }
+  
+  .react-calendar__tile abbr{
+    font-size: 1.1em;
   }
 
   .react-calendar__tile--hasActive {

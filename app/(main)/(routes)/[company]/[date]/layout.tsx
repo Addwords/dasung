@@ -28,6 +28,7 @@ const DateLayout = async ({
 		return (
 			<>
 				<Home
+					date={params.date}
 					company={{cd:params.company,nm:company[params.company]}}
 					operators={operators}
 					jobList={jobsData}
