@@ -6,7 +6,7 @@ const Summary = (props: any) => {
 				
 			</div>
 			<div className="col sum-col">
-				<div>합계</div>
+				<div style={{paddingTop:'70%'}}>합계</div>
 				<div>정비 <br/>및 <br/>수리내용</div>
 			</div>
 			<div className="col">

@@ -1,15 +1,17 @@
-'use strict';
+'use client';
 
 import axios from "axios";
 import { useState } from "react";
 import InputModal from "./input-modal";
 import { SyncLoader } from "react-spinners";
+import { useRouter } from "next/dist/client/components/navigation";
 
 export default function OperatorModal(props: any) {
 	
 	const [showModal, setShowModal] = useState(false);
 	const [comCd, setcomCd] = useState(props.comcd);
 	const [loading, setLoading] = useState(false);
+	const router = useRouter();
 	
 	//운전자 생성
 	async function setOperator(nm:string) {
@@ -20,7 +22,10 @@ export default function OperatorModal(props: any) {
 		  };
 		// console.log('operObj:', operObj, props.today);
 		await axios.put('/api/table', operObj)
-		window.location.replace(`/${comCd}/${props.today}`);
+		// window.location.replace(`/${comCd}/${props.today}`);
+		// router.fa
+		location.reload();
+		// router.push(`/${comCd}/${props.today}`)
 	};
 
   return (

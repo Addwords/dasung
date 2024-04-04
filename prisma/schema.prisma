@@ -63,6 +63,17 @@ model Summary {
   maintenance String
 
   @@index([date])
+  @@index([company])
+}
+
+model Assets {
+  comCd String @id @default("001")
+  jDump Int
+  oDump Int
+  rDump Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {

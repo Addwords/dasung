@@ -7,8 +7,10 @@ import AlertModal from "@/components/modals/alert-modal";
 import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
-import JobCalendar from "./JobCalendar";
+// import JobCalendar from "./JobCalendar";
 import Image from "next/image";
+import { JobCalendar } from "./JobCalendar";
+import { useParams } from "next/navigation";
 
 let mount = false;
 let jCount = 0;
@@ -24,6 +26,7 @@ let opList:StringDictionary = {};
 const yyyy = new Date().getFullYear();
 const mm = new Date().getMonth() + 1;
 const dd = new Date().getDate();
+
 
 /**
  * 차량별 작업을 등록한다.
@@ -213,7 +216,8 @@ export default function Home({
     summInfo: any;
     dumpInfo: any;
 }) {
-
+  const testparam = useParams();
+  // console.log(testparam);
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
   const [calen, setCalen] = useState(false);
@@ -223,14 +227,14 @@ export default function Home({
 
   //단축키 bind
   const shortcutFunc:{[key:string]:()=>void} = {
-    'F1':()=>{btnRef.current[0].click();},
-    'F2':()=>{btnRef.current[1].click();},
-    'F3':()=>{btnRef.current[2].click();},
-    'F4':()=>{btnRef.current[3].click();},
-    'F5':()=>{btnRef.current[4].click();},
-    'F6':()=>{btnRef.current[5].click();},
-    'F7':()=>{btnRef.current[6].click();},
-    'F8':()=>{btnRef.current[7].click();},
+    'F1':()=>{btnRef.current[0]?.click();},
+    'F2':()=>{btnRef.current[1]?.click();},
+    'F3':()=>{btnRef.current[2]?.click();},
+    'F4':()=>{btnRef.current[3]?.click();},
+    'F5':()=>{btnRef.current[4]?.click();},
+    'F6':()=>{btnRef.current[5]?.click();},
+    'F7':()=>{btnRef.current[6]?.click();},
+    'F8':()=>{btnRef.current[7]?.click();},
   };
 
   // handle what happens on key press
@@ -272,9 +276,10 @@ export default function Home({
   if(!mount){
     mount = true;
     // 차량용량
-    jsize = dumpInfo.jd;
-    osize = dumpInfo.od;
-    rsize = dumpInfo.rd;
+    console.log(dumpInfo);
+    jsize = dumpInfo.jDump;
+    osize = dumpInfo.oDump;
+    rsize = dumpInfo.rDump;
     
     //등록된 작업자 목록
     jobList.map((obj: {
@@ -306,11 +311,13 @@ export default function Home({
         });
       }
     }, 1000);
+    console.log(curObj);
     summId = summInfo.id; //업데이트용
   }
 
   const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
+  
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -327,11 +334,15 @@ export default function Home({
             <code className="clock" id="time">{time}</code>
           </p>
             <div className="flex">
-              <p className="text-3xl">{today}</p>
+              <p className="text-3xl" style={{wordBreak: 'keep-all'}}>{today}</p>
               <Image src="/calendar.png" alt="" className="cursor-pointer ml-2" width={40} height={40} onClick={()=>{setCalen(!calen)}}/>
             </div>
           <div className="relative">
-            {calen && <JobCalendar comcd={company.cd} date={calDate} onHide={()=>{setCalen(false)}}/>}
+            {calen && <JobCalendar
+              comcd={company.cd}
+              date={calDate}
+              onHide={() => { setCalen(false) }}
+            />}
           </div>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
@@ -352,7 +363,6 @@ export default function Home({
         </div>
 
         <div className="relative flex place-items-center mt-7 mb-5">
-
           {/* <TableProvider /> */}
           <Table
             comcd={company.cd}
@@ -361,16 +371,19 @@ export default function Home({
             jobList={opList}
           />
         </div>
-        <Summary
-          j={jsize}
-          o={osize}
-          r={rsize}
-          jtot={` x ${summInfo.jdump} = ${jsize * summInfo.jdump}`}
-          otot={` x ${summInfo.odump} = ${osize * summInfo.odump}`}
-          rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
-          total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
-          maintenance={summInfo.maintenance}
-        />
+
+        <div className="relative flex place-items-center mt-7 mb-5">
+          <Summary
+            j={jsize}
+            o={osize}
+            r={rsize}
+            jtot={` x ${summInfo.jdump} = ${jsize * summInfo.jdump}`}
+            otot={` x ${summInfo.odump} = ${osize * summInfo.odump}`}
+            rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
+            total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
+            maintenance={summInfo.maintenance}
+          />
+        </div>
         {/* {
           showModal && <InputModal
             title={tit}
@@ -385,7 +398,8 @@ export default function Home({
             onInput={() => { setModal(false); modify(); }}
           />
         }
-        <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left non-print btn-area">
+        {new Date().toDateString() === new Date(calDate).toDateString() && //오늘만 가능함
+          <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
           <Button
             text='자가덤프'
             subText={`${jsize}m<sup>3</sup>`}
@@ -424,7 +438,7 @@ export default function Home({
               />
             ))
           }
-        </div>
+        </div>}
       </main>
     </>
   );

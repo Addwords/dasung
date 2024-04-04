@@ -24,7 +24,7 @@ const Table = ({
 	const date = new Date();
 	const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
 	const opNmRef = useRef<HTMLDivElement[]>([]);
-	const addOpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
+	// const addOpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
 
 	const jobTime = Array(joblimit > 14 ? joblimit : 14).fill(5); //작업기본시간 5~18시..늘려야하나?
 	
@@ -39,13 +39,13 @@ const Table = ({
 		/>}
 			<div className="wrapper border-4 border-black">
 				<div className="col">
-					<div className="min-h-14 text-center pt-1 border border-black">운전자 성명</div>
+					<div className="min-h-14 text-center pt-1 border border-black" style={{wordBreak: 'keep-all'}}>운전자 성명</div>
 					{jobTime.map((val,idx) => (
 						//수정가능해야함
 						<div className="cursor-pointer" key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
 							// ref={addPpNmRef}
 							onClick={(evt)=>{
-								console.log('opNmRef:',opNmRef);
+								// console.log('opNmRef:',opNmRef);
 								let cop = evt.target as HTMLElement;
 								setOp(cop.id);
 								setModal(true);
@@ -92,7 +92,7 @@ const Table = ({
 					}
 				</div>
 				<div className="col">
-					<div className="pt-3">로우더</div>
+					<div className="pt-3" style={{wordBreak:'keep-all'}}>로우더</div>
 					{jobTime.map((val,idx) => (
 						<div key={val+idx} id={`rd${val+idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.rtot}</div>
 						))

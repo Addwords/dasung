@@ -74,4 +74,15 @@ export const daySummary = async (today: string, company: string) => {
             company: company
         }
     });
+};
+
+export const getAssets = async (comcd: string) => {
+
+    const asset = await db.assets.findFirst({
+        where: {
+            comCd: comcd
+        }
+    });
+
+    return asset;
 }
