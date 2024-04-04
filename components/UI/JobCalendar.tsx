@@ -26,7 +26,7 @@ export const JobCalendar = (prop:any) => {
   return (
     <S.CalendarBox>
       <S.StyleCalendar
-        calendarType="iso8601"
+        calendarType="gregory"
         maxDate={maxDate}
         formatDay= {(loca,date)=>formatDate(date,'d')}
         onChange={onChangeToday}

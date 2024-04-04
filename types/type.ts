@@ -18,6 +18,7 @@ export interface StringDictionary {
 }
 
 export interface TableProps {
+	istoday:boolean
 	comcd: string
 	joblimit: number
 	jobList: StringDictionary

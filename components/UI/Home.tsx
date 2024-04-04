@@ -317,10 +317,11 @@ export default function Home({
 
   const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
-  
+  const isToday = new Date().toDateString() === new Date(calDate).toDateString();
+
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <main className="flex min-h-screen flex-col items-center justify-between p-24 print-top">
         {/* 프린트시 보이는 영역 */}
         <div className="print">
           <p className="text-3xl">{today}</p>
@@ -346,18 +347,10 @@ export default function Home({
           </div>
           <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
-              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl"
+              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl font-semibold"
               rel="noopener noreferrer"
             >
               {company.nm}
-              {/* <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className="dark:invert"
-                width={50}
-                height={50}
-                priority
-              /> */}
             </a>
           </div>
         </div>
@@ -365,6 +358,7 @@ export default function Home({
         <div className="relative flex place-items-center mt-7 mb-5">
           {/* <TableProvider /> */}
           <Table
+            istoday={isToday}
             comcd={company.cd}
             operators={operators}
             joblimit={jobList.length}
@@ -374,6 +368,7 @@ export default function Home({
 
         <div className="relative flex place-items-center mt-7 mb-5">
           <Summary
+            istoday={isToday}
             j={jsize}
             o={osize}
             r={rsize}
@@ -398,7 +393,7 @@ export default function Home({
             onInput={() => { setModal(false); modify(); }}
           />
         }
-        {new Date().toDateString() === new Date(calDate).toDateString() && //오늘만 가능함
+        {isToday && //오늘만 가능함
           <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
           <Button
             text='자가덤프'
@@ -411,12 +406,14 @@ export default function Home({
           <Button
             text='외부덤프'
             subText={`${osize}m<sup>3</sup>`}
+            color={'#ffd900'}
             btnRef={(el:any)=>{btnRef.current[1] = el;}}
             func={() => Dump('od')}
           />
           <Button
             text='로우더'
             subText={`${rsize}m<sup>3</sup>`}
+            color={'#00b0f0'}
             btnRef={(el:any)=>{btnRef.current[2] = el;}}
             func={() => Dump('rd')}
           />

@@ -34,13 +34,13 @@ return(
             </div>
             }
             <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left">
-                <Link href={`/001/${today}`} onClick={()=>setLoading(true)}>
+                <a href={`/001/${today}`} onClick={()=>setLoading(true)}>
                     <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors
                     hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
                     rel="noopener noreferrer">
                         <h2 className={`mb-3 text-2xl font-semibold`}>(주)다성 용인지점</h2>
                     </div>
-                </Link>
+                </a>
 
                 {/*  */}
                 <a href={`/002/${today}`} onClick={()=>setLoading(true)}

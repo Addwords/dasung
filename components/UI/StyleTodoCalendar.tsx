@@ -80,4 +80,10 @@ export const StyleCalendar = styled(Calendar)`
   .react-calendar__tile--active:enabled:focus {
     background-color: #6a6a6a;
   }
+  
+  .react-calendar__tile--now,
+  .react-calendar__tile--now:enabled:hover{
+    background: #006edc;
+    border-radius: 7px;
+  }
 `;

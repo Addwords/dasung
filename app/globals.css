@@ -146,7 +146,7 @@ body {
 }
 
 .od {
-  background-color: #ffff00;
+  background-color: #ffd900;
 }
 
 .rd {
@@ -190,6 +190,9 @@ body {
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
+  .print-top{
+    padding-top: 2rem;
+  }
   .wrapper {
     width: 730px;
     display: grid;
@@ -255,3 +258,4 @@ body {
     break-inside: avoid;
   }
 }
+@page {margin:0}

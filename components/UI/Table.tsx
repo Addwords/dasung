@@ -13,6 +13,7 @@ async function setOperator(curOperId:string, operNm:string){
 }
 
 const Table = ({
+	istoday,
 	comcd,
 	joblimit,
 	jobList,
@@ -43,9 +44,10 @@ const Table = ({
 					{jobTime.map((val,idx) => (
 						//수정가능해야함
 						<div className="cursor-pointer" key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
-							// ref={addPpNmRef}
 							onClick={(evt)=>{
-								// console.log('opNmRef:',opNmRef);
+								if(!istoday){
+									return null;
+								}
 								let cop = evt.target as HTMLElement;
 								setOp(cop.id);
 								setModal(true);
