@@ -20,7 +20,7 @@ const Summary = (props: any) => {
 						<p className="font-bold text-xl pt-6">총 <label id="total" htmlFor="">{ props.total }</label> m<sup>3</sup></p> 
 					</div>
 				</div>
-				<div id="rep" style={{textAlign:'left',paddingLeft:'5%',minHeight:'75px'}} className="text-lg">
+				<div id="rep" style={{textAlign:'left',paddingLeft:'5%',minHeight:'80px'}} className="text-lg">
 					{props.maintenance.split(',').map((txt: string, idx: number) => (
 						<p key={idx} className="rep-list" onClick={evt => {
 							const tgt = evt.target as HTMLElement;

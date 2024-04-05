@@ -190,9 +190,14 @@ body {
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
-  .print-top{
+  body {
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-top {
     padding-top: 2rem;
   }
+
   .wrapper {
     width: 730px;
     display: grid;
@@ -230,7 +235,7 @@ body {
     text-align: center;
     min-height: 24px;
     border: 1px solid black;
-    background-color: black;
+    background-color: black !important;
   }
 
   .data-grid div:nth-child(n+41) {
@@ -258,4 +263,7 @@ body {
     break-inside: avoid;
   }
 }
-@page {margin:0}
+
+@page {
+  margin: 0
+}

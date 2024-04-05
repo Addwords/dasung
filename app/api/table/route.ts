@@ -68,6 +68,13 @@ export async function POST(req: Request) {
 					maintenance: maintenance,
 				}
 			})
+		} else if (servNm === 'getjob') {
+			await db.jobs.findMany({
+				where: {
+					date: today,
+					company: '001'
+				},
+			});
 		}
 		// return NextResponse.json(table);
 		return NextResponse.json(`success: ${servNm}`);

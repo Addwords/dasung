@@ -97,7 +97,7 @@ vi nginx.conf
 sudo apt-get install nohup
 
 kill명령어 멀티?✅
-$ kill -9 `ps -ef|grep -E 'npm|next-'|grep -v 'grep'`
+$ kill -9 (`ps -ef|grep -E 'npm|next-'|grep -v 'grep'`)
 ---------------------
 24.03.31
 공장선택하는 첫화면 만들기
@@ -147,4 +147,13 @@ sudo systemctl stop jenkins
 
 studio랑 젠킨스 메모리 부족 문제로 못돌림..
 ----------------------------------------
+
+24.04.05
+job 데이터 구조 key:[]로 변경 -> 중복시간 가능해야함
+공장별 비밀번호 달기 성공
+TODO: 해야할거
+    관리자 대쉬보드 만들고 차트 -> 일별, 월별, 년별 누계 필요
+     ㄴ> 플러스 지난일자 데이터 입력 폼 필요
+    자산(차량,운전자)관리 기능 만들어야함
+    디자인?
 

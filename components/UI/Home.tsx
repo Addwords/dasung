@@ -47,13 +47,13 @@ function Dump(kind: string) {
   }
   
   //같은minute에 작업 불가?
-  if (jCount > 0) {
-    const prev = document.querySelector(`#t${HH}-${jCount-1}`) as HTMLElement;
-    if (parseInt(prev.textContent || '') == MM) {
-      alert('작업이 진행중 입니다.');
-      return null;
-    }
-  }
+  // if (jCount > 0) {
+  //   const prev = document.querySelector(`#t${HH}-${jCount-1}`) as HTMLElement;
+  //   if (parseInt(prev.textContent || '') == MM) {
+  //     alert('작업이 진행중 입니다.');
+  //     return null;
+  //   }
+  // }
 
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
 
@@ -135,9 +135,10 @@ async function calculate(kind: string, HH: string, MM:string) {
   const jobObj: { [key: string]: any; } = {
     servNm: 'setJob',
     jobId: jobIds[HH.padStart(2, '0')],
-    job: job.reduce((pre, cur) => {
-      return Object.assign(pre, cur); //job
-    }),
+    // job: job.reduce((pre, cur) => {
+    //   return Object.assign(pre, cur); //job
+    // }),
+    job: {[HH]:job},
     subtot: subTot
   };
 
@@ -273,10 +274,20 @@ export default function Home({
       return null;
   }
   
+	function madeJob(obj: { job: { [key: string]: any }, time: string }, set: string) {
+		// console.log(obj);
+		if (set === 'key')
+			return obj.job[obj.time]?.map((val: Object) => { return Object.keys(val) })
+									.reduce((pre: Array<String>, cur: Array<String>) => { return pre.concat(cur) }) || [];
+		if (set === 'value')
+			return obj.job[obj.time]?.map((val: Object) => { return Object.values(val) })
+									.reduce((pre: Array<String>, cur: Array<String>) => { return pre.concat(cur) }) || [];
+	}
+	
   if(!mount){
     mount = true;
     // 차량용량
-    console.log(dumpInfo);
+    // console.log(dumpInfo);
     jsize = dumpInfo.jDump;
     osize = dumpInfo.oDump;
     rsize = dumpInfo.rDump;
@@ -291,8 +302,8 @@ export default function Home({
       opList[obj.time] = {
         id: obj.id,
         name: obj.operator,
-        job: Object.keys(obj.job),
-        dump:Object.values(obj.job),
+        job: madeJob(obj,'key'),
+        dump: madeJob(obj,'value'),
         jtot:obj.jTot,
         otot:obj.oTot,
         rtot:obj.rTot,
@@ -311,7 +322,7 @@ export default function Home({
         });
       }
     }, 1000);
-    console.log(curObj);
+    // console.log(curObj);
     summId = summInfo.id; //업데이트용
   }
 
@@ -336,7 +347,7 @@ export default function Home({
           </p>
             <div className="flex">
               <p className="text-3xl" style={{wordBreak: 'keep-all'}}>{today}</p>
-              <Image src="/calendar.png" alt="" className="cursor-pointer ml-2" width={40} height={40} onClick={()=>{setCalen(!calen)}}/>
+              <Image src="/eraser.svg" alt="" className="cursor-pointer ml-2" width={30} height={25} onClick={()=>{setCalen(!calen)}}/>
             </div>
           <div className="relative">
             {calen && <JobCalendar

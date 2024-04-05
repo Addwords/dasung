@@ -20,8 +20,9 @@ const DateLayout = async ({
 		'004': '(주)청정개발',
 		'005': '(주)청정개발지점',
 	};
-	
+	console.time('currentJobs');
 	const jobsData = await currentJobs(params.date, params.company);
+	console.timeEnd('currentJobs');
 	const sumData = await daySummary(params.date, params.company);
 	const operators = await getOperators(params.company);
 	const dumpObj = await getAssets(params.company);
