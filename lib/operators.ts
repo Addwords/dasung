@@ -9,7 +9,6 @@ export const getOperators = async (company: string) => {
 			company: company
 		},
 	});
-
 }
 
 export const setOperator = async (company: string, name: string, role: Role) => {
@@ -22,5 +21,4 @@ export const setOperator = async (company: string, name: string, role: Role) => 
 			role: role
 		}
 	});
-
 }

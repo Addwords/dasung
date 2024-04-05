@@ -21,7 +21,8 @@ export async function POST(req: Request) {
 			rtot,
 			subtot,
 			tot,
-			maintenance
+			maintenance,
+			comCd
 		} = await req.json();
 		// console.log('post req:', servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 
@@ -68,11 +69,10 @@ export async function POST(req: Request) {
 					maintenance: maintenance,
 				}
 			})
-		} else if (servNm === 'getjob') {
-			await db.jobs.findMany({
+		} else if (servNm === 'getAssets') {
+			await db.assets.findMany({
 				where: {
-					date: today,
-					company: '001'
+					comCd:comCd
 				},
 			});
 		}

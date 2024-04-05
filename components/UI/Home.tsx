@@ -278,10 +278,10 @@ export default function Home({
 		// console.log(obj);
 		if (set === 'key')
 			return obj.job[obj.time]?.map((val: Object) => { return Object.keys(val) })
-									.reduce((pre: Array<String>, cur: Array<String>) => { return pre.concat(cur) }) || [];
+									?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) }) || [];
 		if (set === 'value')
 			return obj.job[obj.time]?.map((val: Object) => { return Object.values(val) })
-									.reduce((pre: Array<String>, cur: Array<String>) => { return pre.concat(cur) }) || [];
+									?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) }) || [];
 	}
 	
   if(!mount){

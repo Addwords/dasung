@@ -3,8 +3,8 @@
 import { useParams } from "next/navigation";
 
 const Configure = () => {
-	const param = useParams();
-	console.log('관리자:', param);
+	const param:any = useParams();
+
 	return (
 		<>
 			관리자용 설정화면.

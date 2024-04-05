@@ -43,14 +43,14 @@ return(
                 style={{width:'auto'}}
                 modal
                 onHide={() => setPwModal(false)}
-                content={({ hide }) => (
+                content={() => (
                     <>
                         <h2 className='text-2xl text-white ml-5'>{comnm}</h2>
                     <div className="flex flex-column px-8 py-5 gap-4 pwdialog"
                         style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--primary-400), var(--primary-700))' }}>
                         <OtpInput
                             value={password}
-                            onChange={otp => {
+                            onChange={(otp:string) => {
                                 setPassword(otp);
                                 if (otp.length > 3) {
                                     if (otp === compw['pw']) {
