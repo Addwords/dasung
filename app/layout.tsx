@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// import 'primeicons/primeicons.css';
 import { PrimeReactProvider } from 'primereact/api';
 import Tailwind from 'primereact/passthrough/tailwind';
 // import ThemeSwitcher from './components/themeSwitcher';
@@ -20,6 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+          <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+      </head>
       <body className={inter.className}>
       <PrimeReactProvider value={{ unstyled: false, pt: Tailwind }}>
         {children}

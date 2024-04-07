@@ -7,7 +7,6 @@ const Configure = () => {
 
 	return (
 		<>
-			관리자용 설정화면.
 		</>
 	);
 }
