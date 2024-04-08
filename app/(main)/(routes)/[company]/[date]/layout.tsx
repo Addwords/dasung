@@ -3,7 +3,6 @@ import Home from "@/components/UI/Home";
 import React from "react";
 import { daySummary, getAssets } from "@/lib/summary-util";
 import { getOperators } from "@/lib/operators";
-import { useRouter } from "next/router";
 
 const DateLayout = async ({
     children,
@@ -23,9 +22,9 @@ const DateLayout = async ({
 	console.time('currentJobs');
 	const jobsData = await currentJobs(params.date, params.company);
 	console.timeEnd('currentJobs');
-	const sumData = await daySummary(params.date, params.company);
-	const operators = await getOperators(params.company);
 	const dumpObj = await getAssets(params.company);
+	const sumData = await daySummary(params.date, params.company, dumpObj);
+	const operators = await getOperators(params.company);
 	// console.table(dumpObj);
 	// console.table(sumData);
 	if (jobsData) {
@@ -33,7 +32,7 @@ const DateLayout = async ({
 			<>
 				<Home
 					date={params.date}
-					company={{cd:params.company,nm:company[params.company]}}
+					company={{cd:params.company, nm:company[params.company]}}
 					operators={operators}
 					jobList={jobsData}
 					summInfo={sumData}

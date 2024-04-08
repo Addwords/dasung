@@ -25,6 +25,9 @@ export const NavigationItem = ({
 			router.replace(`/`);
 		} else if (id == 'configuration') {
 			router.replace(`/${params.company}/config`);
+		} else if (id == 'table') {
+			const day = new Date();
+			location.replace(`/${params.company}/${day.getFullYear()}${String(day.getMonth()+1).padStart(2,'0')}${String(day.getDate()).padStart(2,'0')}`);
 		}
 	}
     return (
@@ -51,7 +54,6 @@ export const NavigationItem = ({
 						fill
 						src={imageUrl}
 						alt={name}
-						sizes="2"
 					/>
 				</div>
 			</button>

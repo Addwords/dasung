@@ -30,7 +30,7 @@ model Jobs {
   date     String
   operator String
   time     String
-  job      Json
+  job      Json[]
   jTot     Int
   oTot     Int
   rTot     Int
@@ -56,8 +56,11 @@ model Summary {
   mm          String
   dd          String
   company     String
+  jsize       Int
   jdump       Int
+  osize       Int
   odump       Int
+  rsize       Int
   rdump       Int
   total       Int
   maintenance String

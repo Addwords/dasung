@@ -19,7 +19,7 @@ const Table = ({
 	jobList,
 	operators
  }:TableProps) => {
-	// console.log(jobList)
+	console.log(jobList)
 	const [showModal, setModal] = useState(false);
 	const [curOp, setOp] = useState('');
 	const date = new Date();
@@ -72,8 +72,8 @@ const Table = ({
 					{
 						jobTime.map((val, i) => (
 							[...Array(40).fill(1)].map((x, idx) => (
-								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')].dump[idx]}>
-								{jobList[String(val + i).padStart(2, '0')].job[idx]??''}
+								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')]?.dump[idx]}>
+								{jobList[String(val + i).padStart(2, '0')]?.job[idx]}
 								</div>
 							))
 						))

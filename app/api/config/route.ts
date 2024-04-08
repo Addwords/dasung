@@ -1,13 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { NextApiRequest } from "next";
 
 export async function POST(req: Request) {
 	try {
 
-		// const {id, dump, time } = await req.json();
-		// const body = await req.json();
 		const { servNm,
 			jobId,
 			summId,
@@ -34,6 +30,17 @@ export async function POST(req: Request) {
 					operator: operator
 				}
 			})
+		} else if (servNm === 'setAsset') {
+			await db.assets.update({
+				where: {
+					comCd: comCd
+				},
+				data: {
+					jDump: jsize,
+					oDump: osize,
+					rDump: rsize,
+				}
+			})
 		} else if (servNm === 'setSummary') { //통계 갱신
 			await db.summary.update({
 				where: {
@@ -47,28 +54,6 @@ export async function POST(req: Request) {
 					rsize: rsize,
 					rdump: rtot,
 					total: tot,
-				}
-			})
-		} else if (servNm === 'setJob') { //작업 갱신
-			await db.jobs.update({
-				where: {
-					id: jobId
-				},
-				data: {
-					job: job,
-					jTot: jtot,
-					oTot: otot,
-					rTot: rtot,
-					subTot: subtot,
-				}
-			})
-		} else if (servNm === 'setRepair') { //고장 갱신
-			await db.summary.update({
-				where: {
-					id: summId
-				},
-				data: {
-					maintenance: maintenance,
 				}
 			})
 		} else if (servNm === 'getAssets') {
@@ -86,9 +71,50 @@ export async function POST(req: Request) {
 			return NextResponse.json(response);
 		}
 		// return NextResponse.json(table);
-		return NextResponse.json(`success: ${servNm}`);
+		return NextResponse.json(`success: ${servNm}`, { status: 200 });
 	} catch (err) {
 		console.error('[SERVERS_POST]', err);
+		return new NextResponse('Internal Error', { status: 500 });
+	}
+}
+
+export async function PUT(req: Request) {
+	try {
+
+		const { servNm, comcd, name, role } = await req.json();
+		// console.log('put req:', jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
+		if (servNm == 'setOp') {
+			await db.user.create({
+				data: {
+					name: name,
+					company: comcd,
+					role: role
+				}
+			});
+		}
+		// return NextResponse.json(table);
+		return NextResponse.json('success');
+	} catch (err) {
+		console.error('[SERVERS_PUT]', err);
+		return new NextResponse('Internal Error', { status: 500 });
+	}
+}
+
+export async function DELETE(req: Request) {
+	try {
+		const { servNm, operId, comcd, name } = await req.json();
+		if (servNm == 'delOp') {
+			await db.user.delete({
+				where: {
+					id: operId
+				}
+			});
+		}
+
+		// return NextResponse.json(table);
+		return NextResponse.json('success');
+	} catch (err) {
+		console.error('[SERVERS_DELETE]', err);
 		return new NextResponse('Internal Error', { status: 500 });
 	}
 }

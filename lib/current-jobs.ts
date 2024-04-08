@@ -18,7 +18,7 @@ export const currentJobs = async (today: string, company: string) => {
         date: today
         , operator: ''
         , time: ''
-        , job: {}
+        , job: []
         , jTot: 0
         , oTot: 0
         , rTot: 0

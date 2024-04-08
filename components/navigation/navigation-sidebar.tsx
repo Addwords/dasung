@@ -26,6 +26,11 @@ export const NavigationSideBar = async () => {
                     name={'공장선택'}
                     imageUrl={'/home.png'}
                 />
+                <NavigationItem
+                    id={'table'}
+                    name={'작업'}
+                    imageUrl={'/dump.png'}
+                />
                 {/* {servers.map((server) => (
                     <div key={server.id} className="">
                     </div>

@@ -75,13 +75,13 @@ export default function OperatorModal(props: any) {
 						</button>
 					))
 					}
-						  <button className="bg-indigo-900 text-white active:bg-indigo-950 font-bold uppercase text-lg px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+						  {/* <button className="bg-indigo-900 text-white active:bg-indigo-950 font-bold uppercase text-lg px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 							  style={{flexBasis: '30%',flexGrow:0}}
 						type="button" onClick={() => {
 							setShowModal(true);
 						}}>
 						+
-					</button>	  
+					</button>	   */}
 						  
 				</div>
                 {/*footer*/}

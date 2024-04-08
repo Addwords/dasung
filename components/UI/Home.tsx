@@ -6,7 +6,7 @@ import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
 import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
-import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 // import JobCalendar from "./JobCalendar";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
@@ -19,7 +19,7 @@ let subTot = [];
 let realHH = 5; //업무최초시간
 let summId = '';
 let jobIds: {[key:string]:string} = {};
-let job: { [key: string]: string }[] = [];
+let jobArr: { [key: string]: string }[] = [];
 let jsize: number, osize: number, rsize: number;
 let opList:StringDictionary = {};
 
@@ -131,14 +131,14 @@ async function calculate(kind: string, HH: string, MM:string) {
   let todayTotal = document.getElementById(`total`) as HTMLElement;
   todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
   
-  MM ? job.push({ [MM+`'`]: kind }) : job.pop();
+  MM ? jobArr.push({ [MM+`'`]: kind }) : jobArr.pop();
   const jobObj: { [key: string]: any; } = {
     servNm: 'setJob',
     jobId: jobIds[HH.padStart(2, '0')],
     // job: job.reduce((pre, cur) => {
     //   return Object.assign(pre, cur); //job
     // }),
-    job: {[HH]:job},
+    job: jobArr,
     subtot: subTot
   };
 
@@ -148,9 +148,12 @@ async function calculate(kind: string, HH: string, MM:string) {
   const summObj = {
     servNm: 'setSummary',
     summId: summId,
-    jtot: jdump,
-    otot: odump,
-    rtot: rdump,
+    jsize: jsize,
+    jtot:  jdump,
+    osize: osize,
+    otot:  odump,
+    rsize: rsize,
+    rtot:  rdump,
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
@@ -196,7 +199,7 @@ function realTime() {
     jCount = 0;
     dumpCount = [];
     subTot = [];
-    job = [];
+    jobArr = [];
   };
 
   return `${hours < 10 ? '0' + hours : hours}:${minutes}:${seconds}`;
@@ -274,14 +277,32 @@ export default function Home({
       return null;
   }
   
-	function madeJob(obj: { job: { [key: string]: any }, time: string }, set: string) {
+	function madeJob(obj:any) {
 		// console.log(obj);
-		if (set === 'key')
-			return obj.job[obj.time]?.map((val: Object) => { return Object.keys(val) })
-									?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) }) || [];
-		if (set === 'value')
-			return obj.job[obj.time]?.map((val: Object) => { return Object.values(val) })
-									?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) }) || [];
+    // if (set === 'key')
+    //   return obj.job?.map((val: Object) => { return Object.keys(val)??[] })
+    //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
+    // if (set === 'value')
+    //   return obj.job?.map((val: Object) => { return Object.values(val)??[] })
+    //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
+    if (obj.job.length === 0) {
+      return {job:[],dump:[]};
+    }
+      
+    return {
+      job: obj.job.map((val: any) => {
+        return Object.keys(val)
+        })
+        .reduce((pre:[], cur:[]) => {
+          return pre.concat(cur);
+        }),
+      dump: obj.job.map((val: any) => {
+        return Object.values(val)
+        })
+        .reduce((pre:[], cur:[]) => {
+          return pre.concat(cur);
+        }),
+    }
 	}
 	
   if(!mount){
@@ -302,8 +323,7 @@ export default function Home({
       opList[obj.time] = {
         id: obj.id,
         name: obj.operator,
-        job: madeJob(obj,'key'),
-        dump: madeJob(obj,'value'),
+        ...madeJob(obj),
         jtot:obj.jTot,
         otot:obj.oTot,
         rtot:obj.rTot,
@@ -318,7 +338,7 @@ export default function Home({
         jCount = curObj.subtot;
         dumpCount = curObj.dump;
         curObj.job.forEach((val:string,idx:number)=>{
-          job.push({[val]:curObj.dump[idx]})
+          jobArr.push({[val]:curObj.dump[idx]})
         });
       }
     }, 1000);
