@@ -27,7 +27,7 @@ const DumpInfo = (props: any) => {
 			.then(res => {
 				// console.log(res);
 				if (res?.status === 200) {
-					kind == 'jd' ? setJchange(false) : kind == 'od' ? setOchange(false) : setRchange(false);
+					// kind == 'jd' ? setJchange(false) : kind == 'od' ? setOchange(false) : setRchange(false);
 				}
 			});
 
@@ -54,9 +54,8 @@ const DumpInfo = (props: any) => {
 											mode="decimal"
 										/>
 										<p className="pl-1 pt-2">m<sup>3</sup></p>
-									{jchange && <Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
-										onClick={() => dumpModify('jd')}
-									/>}
+										<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
+										onClick={() => dumpModify('jd')}/>
 									</div>
 								</div>
 							</div>
@@ -78,10 +77,11 @@ const DumpInfo = (props: any) => {
 									<div className="p-inputgroup">
 										<InputNumber
 												inputClassName="font-semibold pt-2 pb-2 pr-1 text-xl"
+												className="w-auto"
 												size={2}
 												value={odumpValue}
 												onValueChange={(e) => {
-													setJdumpValue(e.value ?? 0)
+													setOdumpValue(e.value ?? 0)
 													setOchange(true);
 												}}
 												mode="decimal"
@@ -89,9 +89,8 @@ const DumpInfo = (props: any) => {
 										<p className="pl-1 pt-2">
 											m<sup>3</sup>
 									</p>
-									{ochange && <Button size="small" className="ml-3 mt-2" style={{ width: '1rem', height: '2.2rem' }} label="" icon="pi pi-check"
-										onClick={() => dumpModify('od')}
-									/>}
+									<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
+										onClick={() => dumpModify('od')}/>
 									</div>
 								</div>
 							</div>
@@ -113,10 +112,11 @@ const DumpInfo = (props: any) => {
 									<div className="p-inputgroup">
 										<InputNumber
 												inputClassName="font-semibold pt-2 pb-2 pr-1 text-xl"
+												className="w-auto"
 												size={2}
 												value={rdumpValue}
 												onValueChange={(e) => {
-													setJdumpValue(e.value ?? 0)
+													setRdumpValue(e.value ?? 0)
 													setRchange(true);
 												}}
 												mode="decimal"
@@ -124,9 +124,8 @@ const DumpInfo = (props: any) => {
 										<p className="pl-1 pt-2">
 											m<sup>3</sup>
 										</p>
-									{rchange && <Button size="small" className="ml-3 mt-2" style={{ width: '1rem', height: '2.2rem' }} label="" icon="pi pi-check"
-										onClick={() => dumpModify('rd')}
-									/>}
+										<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
+										onClick={() => dumpModify('rd')}/>
 								</div>
 								</div>
 							</div>

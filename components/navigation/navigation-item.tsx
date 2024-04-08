@@ -52,8 +52,10 @@ export const NavigationItem = ({
 				)}>
 					<Image
 						fill
+						sizes="2"
 						src={imageUrl}
 						alt={name}
+						priority={true}
 					/>
 				</div>
 			</button>
