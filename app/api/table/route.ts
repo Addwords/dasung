@@ -19,6 +19,7 @@ export async function POST(req: Request) {
 			osize, otot,
 			rsize, rtot,
 			subtot,
+			jobtime,
 			tot,
 			maintenance,
 			comCd
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
 					odump: otot,
 					rsize: rsize,
 					rdump: rtot,
+					jobtime: jobtime,
 					total: tot,
 				}
 			})

@@ -29,6 +29,7 @@ export const daySummary = async (today: string, company: string, dumpInfo: any) 
                 odump: 0,
                 rsize: dumpInfo?.rDump || 16,
                 rdump: 0,
+                jobtime: 0,
                 total: 0,
                 maintenance: '',
                 company: company

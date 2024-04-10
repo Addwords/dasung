@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 			osize, otot,
 			rsize, rtot,
 			subtot,
-			tot,
+			jobtime,tot,
 			maintenance,
 			comCd
 		} = await req.json();
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
 					odump: otot,
 					rsize: rsize,
 					rdump: rtot,
+					jobtime:jobtime,
 					total: tot,
 				}
 			})

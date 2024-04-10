@@ -153,6 +153,7 @@ async function calculate(kind: string, HH: string, MM:string) {
     otot:  odump,
     rsize: rsize,
     rtot:  rdump,
+	jobtime: 0, //계산필요
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
