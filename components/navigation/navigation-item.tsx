@@ -19,7 +19,6 @@ export const NavigationItem = ({
 }: NavigationItemProps) => {
 	const params = useParams();
 	const router = useRouter();
-	// console.log('NavigationItem',params);
 	const onClick = () => {
 		if (id == 'home') {
 			router.replace(`/`);

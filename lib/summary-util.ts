@@ -12,6 +12,10 @@ export const daySummary = async (today: string, company: string, dumpInfo: any) 
         return day;
     }
     else {
+        //서버에 반영될떄 이상함
+        const date = new Date();
+        console.log('daySummary:',date.getHours(),date.getMinutes());
+        console.log(today,company);
         // 당일 통계등록
         await db.summary.create({
             data: {

@@ -8,25 +8,21 @@ import { useRouter } from "next/dist/client/components/navigation";
 
 export default function OperatorModal(props: any) {
 	
-	const [showModal, setShowModal] = useState(false);
-	const [comCd, setcomCd] = useState(props.comcd);
+	// const [showModal, setShowModal] = useState(false);
+	// const [comCd, setcomCd] = useState(props.comcd);
 	const [loading, setLoading] = useState(false);
-	const router = useRouter();
+	// const router = useRouter();
 	
 	//운전자 생성
-	async function setOperator(nm:string) {
-		const operObj: { [key: string]: string; } = {
-			servNm: 'setOp',
-			name:nm,
-			comcd:comCd,
-		  };
-		// console.log('operObj:', operObj, props.today);
-		await axios.put('/api/table', operObj)
-		// window.location.replace(`/${comCd}/${props.today}`);
-		// router.fa
-		location.reload();
-		// router.push(`/${comCd}/${props.today}`)
-	};
+	// async function setOperator(nm:string) {
+	// 	const operObj: { [key: string]: string; } = {
+	// 		servNm: 'setOp',
+	// 		name:nm,
+	// 		comcd:comCd,
+	// 	  };
+	// 	await axios.put('/api/table', operObj)
+	// 	location.reload();
+	// };
 
   return (
 	  <>
@@ -35,7 +31,7 @@ export default function OperatorModal(props: any) {
                 <SyncLoader color="rgb(54, 215, 183)" size={20}/>
             </div>
           }
-		  {showModal && <InputModal onHide={() => { setShowModal(false) }} onInput={(nm: string) => { setLoading(true); setOperator(nm);} } />}
+		  {/* {showModal && <InputModal onHide={() => { setShowModal(false) }} onInput={(nm: string) => { setLoading(true); setOperator(nm);} } />} */}
           <div
             className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
           >

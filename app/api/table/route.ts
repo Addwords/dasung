@@ -23,7 +23,6 @@ export async function POST(req: Request) {
 			maintenance,
 			comCd
 		} = await req.json();
-		// console.log('post req:', servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 
 		if (servNm === 'setOperator') { //운전자 갱신
 			await db.jobs.update({

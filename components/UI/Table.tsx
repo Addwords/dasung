@@ -19,7 +19,6 @@ const Table = ({
 	jobList,
 	operators
  }:TableProps) => {
-	// console.log(jobList)
 	const [showModal, setModal] = useState(false);
 	const [curOp, setOp] = useState('');
 	const date = new Date();

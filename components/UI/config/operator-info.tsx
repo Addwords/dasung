@@ -12,7 +12,6 @@ async function setOperator(nm:string,comCd:string) {
 		name:nm,
 		comcd:comCd,
 	  };
-	// console.log('operObj:', operObj, props.today);
 	try {
 		await axios.put('/api/config', operObj)
 	} catch (e) {
@@ -30,7 +29,6 @@ async function delOperator(id:string,comCd:string) {
 		servNm: 'delOp',
 		operId:id
 	  };
-	// console.log('operObj:', operObj, props.today);
 	try {
 		await axios.delete('/api/config', {data: operObj})
 	} catch (e) {

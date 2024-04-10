@@ -93,7 +93,6 @@ function modify() {
  * @param HH :현재시
  */
 async function calculate(kind: string, HH: string, MM:string) {
-  // console.log('dumpCount:', dumpCount);
 
   let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
   let subTot  = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
@@ -157,9 +156,6 @@ async function calculate(kind: string, HH: string, MM:string) {
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
-  // dumpCount
-
-  // console.log('test:', test);
 }
 
 async function repair(res: string) {
@@ -221,7 +217,6 @@ export default function Home({
     dumpInfo: any;
 }) {
   const testparam = useParams();
-  // console.log(testparam);
   const [isMounted, setMount] = useState(false);
   const [showModal, setModal] = useState(false);
   const [calen, setCalen] = useState(false);
@@ -246,7 +241,6 @@ export default function Home({
 
   // handle what happens on key press
   const handleKeyPress = useCallback((event: any) => {
-    // console.log(`Key pressed: ${event.key}`);
     if(event.key == 'Escape'){ //모달 닫기
       setModal(false);
     }
@@ -281,7 +275,6 @@ export default function Home({
   }
   
 	function madeJob(obj:any) {
-		// console.log(obj);
     // if (set === 'key')
     //   return obj.job?.map((val: Object) => { return Object.keys(val)??[] })
     //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
@@ -311,7 +304,6 @@ export default function Home({
   if(!mount){
     mount = true;
     // 차량용량
-    // console.log(dumpInfo);
 	if(isToday){
 		jsize = dumpInfo.jDump;
 		osize = dumpInfo.oDump;
@@ -352,7 +344,6 @@ export default function Home({
         });
       }
     }, 1000);
-    // console.log(curObj);
     summId = summInfo.id; //업데이트용
   }
 

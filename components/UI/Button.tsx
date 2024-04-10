@@ -10,7 +10,6 @@ const Button = (props: any) =>{
 			rel="noopener noreferrer"
       style={{backgroundColor:props.color}}
       ref={(el:any)=>{
-        // console.log(props.btnRef);
         if(typeof props.btnRef == 'function')
           props.btnRef(el);
       }}

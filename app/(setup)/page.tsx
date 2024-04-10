@@ -6,7 +6,6 @@ import { useState } from "react";
 import { SyncLoader } from "react-spinners";
 import OtpInput, { AllowedInputTypes } from "react-otp-input";
 // root location에 반응?
-// console.log('when render?')
 // const SetupPage = async (compCd:string) => {
 
 //     const date = new Date();

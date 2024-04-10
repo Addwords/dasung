@@ -19,7 +19,6 @@ export async function POST(req: Request) {
 			maintenance,
 			comCd
 		} = await req.json();
-		// console.log('post req:', servNm, jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 
 		if (servNm === 'setOperator') { //운전자 갱신
 			await db.jobs.update({
@@ -82,7 +81,6 @@ export async function PUT(req: Request) {
 	try {
 
 		const { servNm, comcd, name, role } = await req.json();
-		// console.log('put req:', jobId, today, operator, curtime, job, jtot, otot, rtot, maintenance);
 		if (servNm == 'setOp') {
 			await db.user.create({
 				data: {

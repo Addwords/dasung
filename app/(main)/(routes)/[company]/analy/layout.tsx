@@ -26,7 +26,6 @@ const ConfLayout = async ({
 	params: any
 }) => {
 
-	// console.log(params);
 	const jobsData = await currentJobs(params.date, params.company);
 	// const sumData = await daySummary(params.date, params.company);
 	// const operObj = await getOperators(params.company);
