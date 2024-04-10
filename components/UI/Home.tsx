@@ -228,6 +228,9 @@ export default function Home({
   const [time, setTime] = useState('');
   const btnRef = useRef<HTMLAnchorElement[]>([]);
 
+  const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
+  const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
+  const isToday = new Date().toDateString() === new Date(calDate).toDateString();
 
   //단축키 bind
   const shortcutFunc:{[key:string]:()=>void} = {
@@ -309,9 +312,16 @@ export default function Home({
     mount = true;
     // 차량용량
     // console.log(dumpInfo);
-    jsize = dumpInfo.jDump;
-    osize = dumpInfo.oDump;
-    rsize = dumpInfo.rDump;
+	if(isToday){
+		jsize = dumpInfo.jDump;
+		osize = dumpInfo.oDump;
+		rsize = dumpInfo.rDump;
+	}else{
+		jsize = summInfo.jsize;
+		osize = summInfo.osize;
+		rsize = summInfo.rsize;
+
+	}
     
     //등록된 작업자 목록
     jobList.map((obj: {
@@ -346,17 +356,30 @@ export default function Home({
     summId = summInfo.id; //업데이트용
   }
 
-  const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
-  const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
-  const isToday = new Date().toDateString() === new Date(calDate).toDateString();
-
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-between p-24 print-top">
         {/* 프린트시 보이는 영역 */}
-        <div className="print">
-          <p className="text-3xl">{today}</p>
-        </div>
+		<div className="print flex justify-between w-full max-w-6xl">
+			<div className="grid">
+				<div className="flex text-2xl">원석투입정보 &nbsp;<div className="text-lg">{company.nm}</div></div>
+				<p className="text-base font-mono">{today}</p>
+			</div>
+			<div className="grid border text-center approval border-black">
+				<div className="border-black border-b border-r text-xs">생산팀장</div>
+				<div className="border-black border-b border-r text-xs">관리담당</div>
+				<div className="border-black border-b border-r text-xs">관리팀장</div>
+				<div className="border-black border-b border-r text-xs">팀장</div>
+				<div className="border-black border-b border-r text-xs">팀장</div>
+				<div className="border-black border-b text-xs">총괄팀장</div>
+				<div className="border-black border-r"></div>
+				<div className="border-black border-r"></div>
+				<div className="border-black border-r"></div>
+				<div className="border-black border-r"></div>
+				<div className="border-black border-r"></div>
+				<div className=""></div>
+			</div>
+		</div>
         {/* 화면에서만 보일영역 */}
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex non-print">
           <p className="fixed left-0 top-0 flex w-full justify-center 

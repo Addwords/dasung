@@ -1,13 +1,11 @@
 import { currentJobs } from "@/lib/current-jobs";
 import React from "react";
 import { daySummary, getAssets } from "@/lib/summary-util";
-import { getOperators } from "@/lib/operators";
 import '@/styles/layout/layout.scss';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 // import { ChartData, ChartOptions } from 'chart.js';
 import DumpInfo from "@/components/UI/config/dump-info";
-import OperatorInfo from "@/components/UI/config/operator-info";
 import { Button } from "primereact/button";
 
 
@@ -31,7 +29,7 @@ const ConfLayout = async ({
 	// console.log(params);
 	const jobsData = await currentJobs(params.date, params.company);
 	// const sumData = await daySummary(params.date, params.company);
-	const operObj = await getOperators(params.company);
+	// const operObj = await getOperators(params.company);
 	const dumpObj = await getAssets(params.company);
 	if (jobsData) {
 		return (
@@ -50,12 +48,6 @@ const ConfLayout = async ({
 						{/*  */}
 						<div className="flex flex-wrap gap-2">
 							<Button className="pointer-events-none" label="운전자 정보" severity="info" text/>
-						</div>
-						<div className="grid">
-							<OperatorInfo
-								obj={operObj}
-								comcd={params.company}
-							/>
 						</div>
 					</div>
 				</div>

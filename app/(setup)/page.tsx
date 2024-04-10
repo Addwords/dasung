@@ -37,7 +37,6 @@ return(
                 <SyncLoader color="rgb(54, 215, 183)" size={20}/>
             </div>
             }
-            <p>임시 비밀번호 순서대로 1111, 2222...</p>
             <Dialog
                 visible={pwModal}
                 style={{width:'auto'}}
@@ -86,7 +85,7 @@ return(
                 
                 <a
                     onClick={() => {
-                        setComNm('(주)다성 용인지점');
+                        setComNm('(주)다성용인지점');
                         setPassword('');
                         setCompw({pw:'1111',location:`/001/${today}`});
                         setPwModal(true);
@@ -99,7 +98,7 @@ return(
                 {/*  */}
                 <a
                     onClick={() => {
-                        setComNm('(주)다성 용인제2공장 지점');
+                        setComNm('(주)다성용인제2공장지점');
                         setPassword('');
                         setCompw({pw:'2222',location:`/002/${today}`});
                         setPwModal(true);

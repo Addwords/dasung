@@ -186,7 +186,10 @@ body {
 .admin {
   visibility: visible;
 }
-
+.approval{
+  grid-template-columns: repeat(6, 40px);
+  grid-template-rows: 1fr 1.5fr;
+}
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
@@ -196,6 +199,14 @@ body {
 
   .print-top {
     padding-top: 2rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  /* 결재영역 */
+  .approval{
+    grid-template-columns: repeat(6, 50px);
+    grid-template-rows: 1fr 2.5fr;
   }
 
   .wrapper {
@@ -214,9 +225,8 @@ body {
     grid-template-columns: 0.7fr 0.7fr 8.5fr;
     color: #444;
     font-size: small;
-    margin-top: 10%;
     page-break-inside: avoid;
-    margin: auto;
+    margin: 0;
   }
 
   .data-grid {
@@ -265,5 +275,10 @@ body {
 }
 
 @page {
-  margin: 0
+  margin: 0;
+  margin-top: 2cm;
+}
+
+@page:first {
+  margin: 0;
 }
