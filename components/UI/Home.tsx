@@ -489,6 +489,11 @@ export default function Home({
               />
             ))
           }
+		  <Button
+		  text='인쇄'
+		  color={'#6d6d6d'}
+		  func={()=>{print()}}
+		  />
         </div>}
       </main>
     </>

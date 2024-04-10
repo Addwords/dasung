@@ -24,7 +24,6 @@ const DumpInfo = (props: any) => {
 		dumpObj[key] = value;
 		await postFetcher('/api/config', dumpObj)
 			.then(res => {
-				console.log(res);
 				if (res?.status === 200) {
 					toast.current?.show({
 						severity: 'info',
