@@ -25,7 +25,7 @@ const Configure = () => {
 
 	const param: any = useParams();
 	const [chartType, setChartType] = useState('bar');
-	const [monthData, setMonthData] = useState([]);
+	const [monthData, setMonthData] = useState([...Array(0)]);
 	const [yearData, setYearData] = useState([]);
 
 	if (!isMounted) {
@@ -33,7 +33,7 @@ const Configure = () => {
 		const date = new Date();
 		const yyyy = String(date.getFullYear());
 		const mm = String(date.getMonth() + 1).padStart(2, '0');
-		getSummaryMonth(param.company, yyyy, null).then(res => {
+		getSummaryMonth(param.company, yyyy, mm).then(res => {
 			console.log(res?.data);
 			setMonthData(res?.data);
 			// getSummary(param.company, yyyy, mm).then(res => {
@@ -58,7 +58,7 @@ const Configure = () => {
 							<Card>
 								<CardHeader>
 									<CardTitle>4월</CardTitle>
-									<CardDescription>
+									<div>
 										<div className="flex justify-end">
 											{/* <div>월을 선택</div> */}
 											<div className="bg-slate-200 rounded-md">
@@ -70,7 +70,7 @@ const Configure = () => {
 													onClick={() => setChartType('pie')}></i> */}
 											</div>
 										</div>
-									</CardDescription>
+									</div>
 								</CardHeader>
 								<CardContent className="space-y-2">
 									{monthData.length > 0 ?
@@ -91,7 +91,7 @@ const Configure = () => {
 							<Card>
 								<CardHeader>
 									<CardTitle>2024년</CardTitle>
-									<CardDescription>
+									<div>
 										<div className="flex justify-end">
 											{/* <div>월을 선택</div> */}
 											<div className="bg-slate-200 rounded-md">
@@ -103,7 +103,7 @@ const Configure = () => {
 													onClick={() => setChartType('pie')}></i>
 											</div>
 										</div>
-									</CardDescription>
+									</div>
 								</CardHeader>
 								<CardContent className="space-y-2">
 									{yearData.length > 0 ?
