@@ -98,19 +98,19 @@ const ChartDemo = (props: any) => {
 		};
 
 		const lineData: ChartData = {
-			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+			labels: [...Array(viewType == 'yearby' ? 12 : 31).fill(1).map((val, idx) => { return viewType == 'yearby' ? `${val + idx}월` : `${val + idx}일` })],
 			datasets: [
 				{
-					label: 'First Dataset',
-					data: [65, 59, 80, 81, 56, 55, 40],
+					label: '생산수량',
+					data: totArr,
 					fill: false,
 					backgroundColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
 					borderColor: documentStyle.getPropertyValue('--primary-500') || '#6366f1',
 					tension: 0.4
 				},
 				{
-					label: 'Second Dataset',
-					data: [28, 48, 40, 19, 86, 27, 90],
+					label: '생산시간',
+					data: timeArr,
 					fill: false,
 					backgroundColor: documentStyle.getPropertyValue('--primary-200') || '#bcbdf9',
 					borderColor: documentStyle.getPropertyValue('--primary-200') || '#bcbdf9',
