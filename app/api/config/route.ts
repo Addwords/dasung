@@ -15,9 +15,10 @@ export async function POST(req: Request) {
 			osize, otot,
 			rsize, rtot,
 			subtot,
-			jobtime,tot,
+			jobtime, tot,
 			maintenance,
-			comCd
+			comCd,
+			yyyy, mm, dd
 		} = await req.json();
 
 		if (servNm === 'setOperator') { //운전자 갱신
@@ -52,16 +53,34 @@ export async function POST(req: Request) {
 					odump: otot,
 					rsize: rsize,
 					rdump: rtot,
-					jobtime:jobtime,
+					jobtime: jobtime,
 					total: tot,
 				}
 			})
 		} else if (servNm === 'getAssets') {
-			return await db.assets.findMany({
-				where: {
-					comCd: comCd
-				},
-			});
+			return NextResponse.json(
+				await db.assets.findMany({
+					where: {
+						comCd: comCd
+					},
+				})
+			);
+		} else if (servNm === 'getSummaryMonth') {
+			return NextResponse.json(
+				await db.summary.findMany({
+					where: {
+						company: comCd,
+						yyyy: yyyy,
+						mm: mm,
+						dd: dd
+					},
+				})
+			);
+		} else if (servNm === 'getCompany') {
+			return NextResponse.json(
+				await db.company.findMany({
+				})
+			);
 		} else if (servNm === 'getOperator') {
 			const response = await db.user.findMany({
 				where: {

@@ -27,6 +27,8 @@ export const NavigationItem = ({
 		} else if (id == 'table') {
 			const day = new Date();
 			location.replace(`/${params.company}/${day.getFullYear()}${String(day.getMonth()+1).padStart(2,'0')}${String(day.getDate()).padStart(2,'0')}`);
+		} else if (id == 'analy') {
+			router.replace(`/${params.company}/analy`);
 		}
 	}
     return (

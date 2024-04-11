@@ -81,21 +81,21 @@ const Table = ({
 				<div className="col">
 					<div className="pt-1">자가덤프</div>
 					{jobTime.map((val, idx) => (
-						<div key={val + idx} id={`jd${val + idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.jtot}</div>
+						<div key={val + idx} id={`jd${val + idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.jtot}</div>
 						))
 					}
 				</div>
 				<div className="col">
-					<div className="pt-1">외부덤프</div>
+					<div className="pt-1 od">외부덤프</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`od${val+idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.otot}</div>
+						<div key={val+idx} id={`od${val+idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.otot}</div>
 						))
 					}
 				</div>
 				<div className="col">
-					<div className="pt-3" style={{wordBreak:'keep-all'}}>로우더</div>
+					<div className="pt-3 rd" style={{wordBreak:'keep-all'}}>로우더</div>
 					{jobTime.map((val,idx) => (
-						<div key={val+idx} id={`rd${val+idx}`} className="">{jobList[String(val+idx).padStart(2,'0')]?.rtot}</div>
+						<div key={val+idx} id={`rd${val+idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.rtot}</div>
 						))
 					}
 				</div>

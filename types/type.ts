@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { ChartData, ChartOptions } from 'chart.js';
 
 export interface jobProps {
 	id: string;
@@ -18,7 +19,7 @@ export interface StringDictionary {
 }
 
 export interface TableProps {
-	istoday:boolean
+	istoday: boolean
 	comcd: string
 	joblimit: number
 	jobList: StringDictionary
@@ -35,4 +36,19 @@ export interface jobObj {
 	rTot: 0
 	subTot: 0
 	company: '(주)다성 용인지점'
+}
+
+export interface ChartDataState {
+	barData?: ChartData;
+	pieData?: ChartData;
+	lineData?: ChartData;
+	polarData?: ChartData;
+	radarData?: ChartData;
+}
+export interface ChartOptionsState {
+	barOptions?: ChartOptions;
+	pieOptions?: ChartOptions;
+	lineOptions?: ChartOptions;
+	polarOptions?: ChartOptions;
+	radarOptions?: ChartOptions;
 }

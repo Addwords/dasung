@@ -18,6 +18,26 @@
     --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 214, 219, 220;
     --background-end-rgb: 255, 255, 255;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 72.22% 50.59%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5% 64.9%;
+    --radius: 0.5rem;
   }
 }
 
@@ -186,10 +206,12 @@ body {
 .admin {
   visibility: visible;
 }
-.approval{
+
+.approval {
   grid-template-columns: repeat(6, 40px);
   grid-template-rows: 1fr 1.5fr;
 }
+
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
@@ -204,7 +226,7 @@ body {
   }
 
   /* 결재영역 */
-  .approval{
+  .approval {
     grid-template-columns: repeat(6, 50px);
     grid-template-rows: 1fr 2.5fr;
   }
@@ -279,6 +301,6 @@ body {
   margin-top: 2cm;
 }
 
-@page:first {
+@page: first {
   margin: 0;
 }
