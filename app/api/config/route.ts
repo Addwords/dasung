@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export async function POST(req: Request) {
 	try {
@@ -67,14 +68,39 @@ export async function POST(req: Request) {
 			);
 		} else if (servNm === 'getSummaryMonth') {
 			return NextResponse.json(
-				await db.summary.findMany({
-					where: {
-						company: comCd,
-						yyyy: yyyy,
-						mm: mm,
-						dd: dd
-					},
-				})
+				await db.$queryRaw(
+					Prisma.sql`
+					SELECT *
+					  FROM "Summary" s
+					 WHERE company = ${comCd}
+					   AND yyyy = ${yyyy}
+					   AND mm   = ${mm}
+					ORDER BY dd
+				`)
+			);
+		} else if (servNm === 'getSummaryYear') {
+			return NextResponse.json(
+				await db.$queryRaw(
+					Prisma.sql`
+					SELECT yyyy, mm,
+						sum(jobtime)::varchar jobtime,
+						sum(total)::varchar total  
+					  FROM "Summary" s
+					 WHERE yyyy  = ${yyyy}
+					   AND company = ${comCd}
+					 GROUP BY yyyy, mm
+				`)
+			);
+		} else if (servNm === 'getSummary') {
+			return NextResponse.json(
+				await db.$queryRaw(
+					Prisma.sql`
+					SELECT *
+					  FROM "Summary" s
+					 WHERE company = ${comCd}
+					   AND yyyy = ${yyyy}
+					ORDER BY mm, dd
+				`)
 			);
 		} else if (servNm === 'getCompany') {
 			return NextResponse.json(

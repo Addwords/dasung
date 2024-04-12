@@ -18,10 +18,10 @@ let dumpCount = [''];
 let subTot = [];
 let realHH = 5; //업무최초시간
 let summId = '';
-let jobIds: {[key:string]:string} = {};
+let jobIds: { [key: string]: string } = {};
 let jobArr: { [key: string]: string }[] = [];
 let jsize: number, osize: number, rsize: number;
-let opList:StringDictionary = {};
+let opList: StringDictionary = {};
 
 const yyyy = new Date().getFullYear();
 const mm = new Date().getMonth() + 1;
@@ -45,7 +45,7 @@ function Dump(kind: string) {
     alert('불가능 합니다.');
     return
   }
-  
+
   //같은minute에 작업 불가?
   // if (jCount > 0) {
   //   const prev = document.querySelector(`#t${HH}-${jCount-1}`) as HTMLElement;
@@ -64,7 +64,7 @@ function Dump(kind: string) {
 
   dumpCount[jCount] = kind;
 
-  calculate(kind, String(HH),String(MM));
+  calculate(kind, String(HH), String(MM));
 
   jCount++;
 }
@@ -83,7 +83,7 @@ function modify() {
     mertalIn.textContent = '';
     mertalIn.style.backgroundColor = ``;
     let kind = dumpCount.pop() || '';
-    calculate(kind, String(HH),'');
+    calculate(kind, String(HH), '');
   }
 }
 
@@ -92,10 +92,10 @@ function modify() {
  * @param kind : 차량종류
  * @param HH :현재시
  */
-async function calculate(kind: string, HH: string, MM:string) {
+async function calculate(kind: string, HH: string, MM: string) {
 
   let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
-  let subTot  = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
+  let subTot = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
 
   let kCount = document.getElementById(`${kind}${HH}`);
   kCount ? kCount.textContent = String(dumpTot) : 0;
@@ -103,34 +103,34 @@ async function calculate(kind: string, HH: string, MM:string) {
   let totCal = document.getElementById(`tot${HH}`);
   totCal ? totCal.textContent = String(subTot) : 0;
 
-  let jdump:number = 0;
-  let odump:number = 0;
-  let rdump:number = 0;
+  let jdump: number = 0;
+  let odump: number = 0;
+  let rdump: number = 0;
 
   //자가덤프 총합
-  document.querySelectorAll('[id^=jd]').forEach((el)=>{
+  document.querySelectorAll('[id^=jd]').forEach((el) => {
     jdump += Number(el.textContent);
   });
   //외부덤프 총합
-  document.querySelectorAll('[id^=od]').forEach((el)=>{
+  document.querySelectorAll('[id^=od]').forEach((el) => {
     odump += Number(el.textContent);
   });
   //로우더 총합
-  document.querySelectorAll('[id^=rd]').forEach((el)=>{
+  document.querySelectorAll('[id^=rd]').forEach((el) => {
     rdump += Number(el.textContent);
   });
 
   let jtot = document.getElementById(`dumpTot-j`) as HTMLElement;
-    jtot.textContent = ` x ${jdump} = ${jdump * jsize}`;
+  jtot.textContent = ` x ${jdump} = ${jdump * jsize}`;
   let otot = document.getElementById(`dumpTot-o`) as HTMLElement;
-    otot.textContent = ` x ${odump} = ${odump * osize}`;
+  otot.textContent = ` x ${odump} = ${odump * osize}`;
   let rtot = document.getElementById(`dumpTot-r`) as HTMLElement;
-    rtot.textContent = ` x ${rdump} = ${rdump * rsize}`;
+  rtot.textContent = ` x ${rdump} = ${rdump * rsize}`;
 
   let todayTotal = document.getElementById(`total`) as HTMLElement;
   todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
-  
-  MM ? jobArr.push({ [MM+`'`]: kind }) : jobArr.pop();
+
+  MM ? jobArr.push({ [MM + `'`]: kind }) : jobArr.pop();
   const jobObj: { [key: string]: any; } = {
     servNm: 'setJob',
     jobId: jobIds[HH.padStart(2, '0')],
@@ -148,12 +148,12 @@ async function calculate(kind: string, HH: string, MM:string) {
     servNm: 'setSummary',
     summId: summId,
     jsize: jsize,
-    jtot:  jdump,
+    jtot: jdump,
     osize: osize,
-    otot:  odump,
+    otot: odump,
     rsize: rsize,
-    rtot:  rdump,
-	jobtime: 0, //계산필요
+    rtot: rdump,
+    jobtime: 0, //계산필요
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
@@ -171,10 +171,10 @@ async function repair(res: string) {
   });
   appCh.textContent = `${HH}시 ${MM}분 ${res}`;
   rep.appendChild(appCh);
-  
-  let maintenance:string[] = [];
+
+  let maintenance: string[] = [];
   Array.from(rep.children).map((el, idx) => {
-    maintenance.push(el.textContent||'');
+    maintenance.push(el.textContent || '');
   })
 
   const repObj = {
@@ -210,12 +210,12 @@ export default function Home({
   summInfo,
   dumpInfo
 }: {
-    date: string;
-    company: { [key: string]: string };
-    operators: any;
-    jobList: jobProps[];
-    summInfo: any;
-    dumpInfo: any;
+  date: string;
+  company: { [key: string]: string };
+  operators: any;
+  jobList: jobProps[];
+  summInfo: any;
+  dumpInfo: any;
 }) {
   const testparam = useParams();
   const [isMounted, setMount] = useState(false);
@@ -224,31 +224,31 @@ export default function Home({
   const [time, setTime] = useState('');
   const btnRef = useRef<HTMLAnchorElement[]>([]);
 
-  const today = `${date.substring(0,4)}년${date.substring(4,6)}월${date.substring(6,8)}일`;
+  const today = `${date.substring(0, 4)}년${date.substring(4, 6)}월${date.substring(6, 8)}일`;
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   const isToday = new Date().toDateString() === new Date(calDate).toDateString();
 
   //단축키 bind
-  const shortcutFunc:{[key:string]:()=>void} = {
-    'F1':()=>{btnRef.current[0]?.click();},
-    'F2':()=>{btnRef.current[1]?.click();},
-    'F3':()=>{btnRef.current[2]?.click();},
-    'F4':()=>{btnRef.current[3]?.click();},
-    'F5':()=>{btnRef.current[4]?.click();},
-    'F6':()=>{btnRef.current[5]?.click();},
-    'F7':()=>{btnRef.current[6]?.click();},
-    'F8':()=>{btnRef.current[7]?.click();},
+  const shortcutFunc: { [key: string]: () => void } = {
+    'F1': () => { btnRef.current[0]?.click(); },
+    'F2': () => { btnRef.current[1]?.click(); },
+    'F3': () => { btnRef.current[2]?.click(); },
+    'F4': () => { btnRef.current[3]?.click(); },
+    'F5': () => { btnRef.current[4]?.click(); },
+    'F6': () => { btnRef.current[5]?.click(); },
+    'F7': () => { btnRef.current[6]?.click(); },
+    'F8': () => { btnRef.current[7]?.click(); },
   };
 
   // handle what happens on key press
   const handleKeyPress = useCallback((event: any) => {
-    if(event.key == 'Escape'){ //모달 닫기
+    if (event.key == 'Escape') { //모달 닫기
       setModal(false);
     }
-    if(event.key == 'Enter'){ //수정하기
+    if (event.key == 'Enter') { //수정하기
       document.getElementById('modi')?.click();
     }
-    if(shortcutFunc[event.key]){
+    if (shortcutFunc[event.key]) {
       event.preventDefault();
       shortcutFunc[event.key]();
     };
@@ -270,12 +270,12 @@ export default function Home({
     }, 100);
     return () => clearInterval(intervalId);
   }, []);
-  
+
   if (!isMounted) { //mount once
-      return null;
+    return null;
   }
-  
-	function madeJob(obj:any) {
+
+  function madeJob(obj: any) {
     // if (set === 'key')
     //   return obj.job?.map((val: Object) => { return Object.keys(val)??[] })
     //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
@@ -283,65 +283,65 @@ export default function Home({
     //   return obj.job?.map((val: Object) => { return Object.values(val)??[] })
     //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
     if (obj.job.length === 0) {
-      return {job:[],dump:[]};
+      return { job: [], dump: [] };
     }
-      
+
     return {
       job: obj.job.map((val: any) => {
         return Object.keys(val)
-        })
-        .reduce((pre:[], cur:[]) => {
+      })
+        .reduce((pre: [], cur: []) => {
           return pre.concat(cur);
         }),
       dump: obj.job.map((val: any) => {
         return Object.values(val)
-        })
-        .reduce((pre:[], cur:[]) => {
+      })
+        .reduce((pre: [], cur: []) => {
           return pre.concat(cur);
         }),
     }
-	}
-	
-  if(!mount){
+  }
+
+  if (!mount) {
     mount = true;
     // 차량용량
-	if(isToday){
-		jsize = dumpInfo.jDump;
-		osize = dumpInfo.oDump;
-		rsize = dumpInfo.rDump;
-	}else{
-		jsize = summInfo.jsize;
-		osize = summInfo.osize;
-		rsize = summInfo.rsize;
+    if (isToday) {
+      jsize = dumpInfo.jDump;
+      osize = dumpInfo.oDump;
+      rsize = dumpInfo.rDump;
+    } else {
+      jsize = summInfo.jsize;
+      osize = summInfo.osize;
+      rsize = summInfo.rsize;
 
-	}
-    
+    }
+
     //등록된 작업자 목록
     jobList.map((obj: {
       time: string, id: string,
       operator: string, job: any,
       jTot: number, oTot: number, rTot: number,
-      subTot:number
+      subTot: number
     }) => {
       opList[obj.time] = {
         id: obj.id,
         name: obj.operator,
         ...madeJob(obj),
-        jtot:obj.jTot,
-        otot:obj.oTot,
-        rtot:obj.rTot,
-        subtot:obj.subTot,
+        jtot: obj.jTot,
+        otot: obj.oTot,
+        rtot: obj.rTot,
+        subtot: obj.subTot,
       };
       jobIds[obj.time] = obj.id
     });
-    
+
     const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
     setTimeout(() => { //SSR, CSR 이렇게 두번 rendering되면서 전역변수가 초기화 되는데 타이밍을 못찾겠음.
-      if(curObj){
+      if (curObj) {
         jCount = curObj.subtot;
         dumpCount = curObj.dump;
-        curObj.job.forEach((val:string,idx:number)=>{
-          jobArr.push({[val]:curObj.dump[idx]})
+        curObj.job.forEach((val: string, idx: number) => {
+          jobArr.push({ [val]: curObj.dump[idx] })
         });
       }
     }, 1000);
@@ -352,26 +352,26 @@ export default function Home({
     <>
       <main className="flex min-h-screen flex-col items-center justify-between p-24 print-top">
         {/* 프린트시 보이는 영역 */}
-		<div className="print flex justify-between w-full max-w-6xl">
-			<div className="grid">
-				<div className="flex text-2xl">원석투입정보 &nbsp;<div className="text-lg">{company.nm}</div></div>
-				<p className="text-base font-mono">{today}</p>
-			</div>
-			<div className="grid border text-center approval border-black">
-				<div className="border-black border-b border-r text-xs">생산팀장</div>
-				<div className="border-black border-b border-r text-xs">관리담당</div>
-				<div className="border-black border-b border-r text-xs">관리팀장</div>
-				<div className="border-black border-b border-r text-xs">팀장</div>
-				<div className="border-black border-b border-r text-xs">팀장</div>
-				<div className="border-black border-b text-xs">총괄팀장</div>
-				<div className="border-black border-r"></div>
-				<div className="border-black border-r"></div>
-				<div className="border-black border-r"></div>
-				<div className="border-black border-r"></div>
-				<div className="border-black border-r"></div>
-				<div className=""></div>
-			</div>
-		</div>
+        <div className="print flex justify-between w-full max-w-6xl">
+          <div className="grid">
+            <div className="flex text-2xl">원석투입정보 &nbsp;<div className="text-lg">{company.nm}</div></div>
+            <p className="text-base font-mono">{today}</p>
+          </div>
+          <div className="grid border text-center approval border-black">
+            <div className="border-black border-b border-r text-xs">생산팀장</div>
+            <div className="border-black border-b border-r text-xs">관리담당</div>
+            <div className="border-black border-b border-r text-xs">관리팀장</div>
+            <div className="border-black border-b border-r text-xs">팀장</div>
+            <div className="border-black border-b border-r text-xs">팀장</div>
+            <div className="border-black border-b text-xs">총괄팀장</div>
+            <div className="border-black border-r"></div>
+            <div className="border-black border-r"></div>
+            <div className="border-black border-r"></div>
+            <div className="border-black border-r"></div>
+            <div className="border-black border-r"></div>
+            <div className=""></div>
+          </div>
+        </div>
         {/* 화면에서만 보일영역 */}
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex non-print">
           <p className="fixed left-0 top-0 flex w-full justify-center 
@@ -380,10 +380,10 @@ export default function Home({
                         lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
             <code className="clock" id="time">{time}</code>
           </p>
-            <div className="flex">
-              <p className="text-3xl" style={{wordBreak: 'keep-all'}}>{today}</p>
-              <Image src="/eraser.svg" alt="" className="cursor-pointer ml-2" width={30} height={25} onClick={()=>{setCalen(!calen)}}/>
-            </div>
+          <div className="flex">
+            <p className="text-3xl" style={{ wordBreak: 'keep-all' }}>{today}</p>
+            <Image src="/eraser.svg" alt="" className="cursor-pointer ml-2" width={30} height={25} onClick={() => { setCalen(!calen) }} />
+          </div>
           <div className="relative">
             {calen && <JobCalendar
               comcd={company.cd}
@@ -441,52 +441,52 @@ export default function Home({
         }
         {isToday && //오늘만 가능함
           <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
-          <Button
-            text='자가덤프'
-            subText={`${jsize}m<sup>3</sup>`}
-            // ref={(el:JSX.Element)=>btnRef.current.push(el)}
-            // btnRef={(el:any)=>{btnRef.current.push(el)}}
-            btnRef={(el:any)=>{btnRef.current[0] = el;}}
-            func={() => Dump('jd')}
-          />
-          <Button
-            text='외부덤프'
-            subText={`${osize}m<sup>3</sup>`}
-            color={'#ffd900'}
-            btnRef={(el:any)=>{btnRef.current[1] = el;}}
-            func={() => Dump('od')}
-          />
-          <Button
-            text='로우더'
-            subText={`${rsize}m<sup>3</sup>`}
-            color={'#00b0f0'}
-            btnRef={(el:any)=>{btnRef.current[2] = el;}}
-            func={() => Dump('rd')}
-          />
-          <Button
-            text='수정'
-            desc=''
-            btnRef={(el:any)=>{btnRef.current[3] = el;}}
-            func={() => {
-              jCount > 0 ? setModal(true) : setModal(false)
-            }}
-          />
-          {
-            btnNm.map((val, idx) => (
-              <Button
-                key={val}
-                text={val}
-                btnRef={(el:any)=>{btnRef.current[idx+4] = el;}}
-                func={() => repair(val)}
-              />
-            ))
-          }
-		  <Button
-		  text='인쇄'
-		  color={'#6d6d6d'}
-		  func={()=>{print()}}
-		  />
-        </div>}
+            <Button
+              text='자가덤프'
+              subText={`${jsize}m<sup>3</sup>`}
+              // ref={(el:JSX.Element)=>btnRef.current.push(el)}
+              // btnRef={(el:any)=>{btnRef.current.push(el)}}
+              btnRef={(el: any) => { btnRef.current[0] = el; }}
+              func={() => Dump('jd')}
+            />
+            <Button
+              text='외부덤프'
+              subText={`${osize}m<sup>3</sup>`}
+              color={'#ffd900'}
+              btnRef={(el: any) => { btnRef.current[1] = el; }}
+              func={() => Dump('od')}
+            />
+            <Button
+              text='로우더'
+              subText={`${rsize}m<sup>3</sup>`}
+              color={'#00b0f0'}
+              btnRef={(el: any) => { btnRef.current[2] = el; }}
+              func={() => Dump('rd')}
+            />
+            <Button
+              text='수정'
+              desc=''
+              btnRef={(el: any) => { btnRef.current[3] = el; }}
+              func={() => {
+                jCount > 0 ? setModal(true) : setModal(false)
+              }}
+            />
+            {
+              btnNm.map((val, idx) => (
+                <Button
+                  key={val}
+                  text={val}
+                  btnRef={(el: any) => { btnRef.current[idx + 4] = el; }}
+                  func={() => repair(val)}
+                />
+              ))
+            }
+            <Button
+              text='인쇄'
+              color={'#6d6d6d'}
+              func={() => { print() }}
+            />
+          </div>}
       </main>
     </>
   );

@@ -1,6 +1,9 @@
 import { db } from "@/lib/db";
-
+import { headers } from "next/headers";
 export const daySummary = async (today: string, company: string, dumpInfo: any) => {
+    const header = headers()
+    const ip = (header.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+    console.log('ip info:', ip);
     // 오늘
     const day = await db.summary.findFirst({
         where: {
@@ -13,12 +16,11 @@ export const daySummary = async (today: string, company: string, dumpInfo: any) 
     }
     else {
         //서버에 반영될떄 이상함
-        const date = new Date();
-        console.log('daySummary:',date.getHours(),date.getMinutes());
-        console.log(today,company);
-        // 당일 통계등록
-        await db.summary.create({
-            data: {
+        // 당월 통계등록
+        try {
+            if (Number.isNaN(parseInt(today)))
+                throw new Error('parameter Error');
+            const obj = {
                 date: today,
                 yyyy: `${today.substring(0, 4)}`,
                 mm: `${today.substring(4, 6)}`,
@@ -34,7 +36,39 @@ export const daySummary = async (today: string, company: string, dumpInfo: any) 
                 maintenance: '',
                 company: company
             }
-        });
+            const objList: any = [];
+            Array(31).fill({}).forEach((val, idx) => {
+                objList.push({
+                    ...obj
+                    , date: `${today.substring(0, 6) + String(idx + 1).padStart(2, '0')}`
+                    , dd: String(idx + 1).padStart(2, '0')
+                })
+            }); //.map()
+            await db.summary.createMany({
+                data: objList
+            });
+            // await db.summary.create({
+            //     data: {
+            //         date: today,
+            //         yyyy: `${today.substring(0, 4)}`,
+            //         mm: `${today.substring(4, 6)}`,
+            //         dd: `${today.substring(6, 8)}`,
+            //         jsize: dumpInfo?.jDump || 16,
+            //         jdump: 0,
+            //         osize: dumpInfo?.oDump || 16,
+            //         odump: 0,
+            //         rsize: dumpInfo?.rDump || 16,
+            //         rdump: 0,
+            //         jobtime: 0,
+            //         total: 0,
+            //         maintenance: '',
+            //         company: company
+            //     }
+            // });
+
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     return await db.summary.findFirst({

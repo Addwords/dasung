@@ -5,13 +5,13 @@ import { daySummary, getAssets } from "@/lib/summary-util";
 import { getOperators } from "@/lib/operators";
 
 const DateLayout = async ({
-    children,
-    params,
+	children,
+	params,
 }: {
-        children: JSX.Element
-		params: any
-	}) => {
-	
+	children: JSX.Element
+	params: any
+}) => {
+
 	const company: { [key: string]: string } = {
 		'001': '(주)다성용인지점',
 		'002': '(주)다성용인제2공장지점',
@@ -19,9 +19,7 @@ const DateLayout = async ({
 		'004': '(주)청정개발',
 		'005': '(주)청정개발지점',
 	};
-	console.time('currentJobs');
 	const jobsData = await currentJobs(params.date, params.company);
-	console.timeEnd('currentJobs');
 	const dumpObj = await getAssets(params.company);
 	const sumData = await daySummary(params.date, params.company, dumpObj);
 	const operators = await getOperators(params.company);
@@ -32,16 +30,16 @@ const DateLayout = async ({
 			<>
 				<Home
 					date={params.date}
-					company={{cd:params.company, nm:company[params.company]}}
+					company={{ cd: params.company, nm: company[params.company] }}
 					operators={operators}
 					jobList={jobsData}
 					summInfo={sumData}
 					dumpInfo={dumpObj}
 				/>
 			</>
-		 );
+		);
 	}
 
 }
- 
+
 export default DateLayout;

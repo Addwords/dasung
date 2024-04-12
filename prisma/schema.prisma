@@ -80,12 +80,12 @@ model Assets {
   updatedAt DateTime @updatedAt
 }
 
-model Company{
-  comCd String @id
-  comNm String
+model Company {
+  comCd    String @id
+  comNm    String
   password String
-  admin String
-  
+  admin    String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -94,4 +94,14 @@ enum Role {
   ADMIN
   OPERATOR
   GUEST
+}
+
+model log {
+  num    Int    @id @default(autoincrement())
+  ip     String
+  servNm String
+
+  createdAt DateTime @default(now())
+
+  @@index([num])
 }
