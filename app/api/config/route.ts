@@ -95,7 +95,7 @@ export async function POST(req: Request) {
 			return NextResponse.json(
 				await db.$queryRaw(
 					Prisma.sql`
-					SELECT *
+					SELECT mm,dd,jobtime,total
 					  FROM "Summary" s
 					 WHERE company = ${comCd}
 					   AND yyyy = ${yyyy}

@@ -36,41 +36,75 @@ async function getSummary(comcd: string, yyyy: string) {
 	});
 }
 
-// let isMounted = false;
+let isMounted = false;
 
 const Configure = () => {
 
 	const param: any = useParams();
-	const [isMounted, setMount] = useState(false);
+	// const [isMounted, setMount] = useState(false);
 	const [chartType, setChartType] = useState('bar');
 	const [monthData, setMonthData] = useState([]);
-	const [yearData, setYearData] = useState([]);
+	const [yearData, setYearData] = useState(new Array());
+	const [tableData, setTableData] = useState({});
 
 	const date = new Date();
-	const yyyy = String(date.getFullYear());
-	const mm = String(date.getMonth() + 1).padStart(2, '0');
-	if (!isMounted) {
-		// isMounted = true;
-		setMount(true);
-		getSummaryMonth(param.company, yyyy, mm).then(mres => {
-			setMonthData(mres?.data);
+	const [yyyy,setYYYY] = useState(String(date.getFullYear()));
+	const [mm,setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
+	// yearArr[0].yyyy = '2024'
+	useEffect(()=> {
+		// setMount(true);
+		if(!isMounted){
+			isMounted = true;
+			getSummaryMonth(param.company, yyyy, mm).then(mres => {
+				setMonthData(mres?.data);
+			});
+			
 			getSummaryYear(param.company, yyyy).then(yres => {
-				setYearData(yres?.data);
+				const yearArr = [...Array(12)].map((obj,idx)=>{
+					const tmp = new String(idx+1).padStart(2,'0');
+					return {
+						yyyy:yyyy,
+						mm:tmp,
+						jobtime:'0',
+						total:'0'
+					};
+				}); //1년치 데이터 쌓이기 전까지..
+				
+				yres?.data.forEach((obj:any)=>{
+					const i = parseInt(obj.mm) -1; //존재하는 월
+					yearArr[i].jobtime = obj.jobtime;
+					yearArr[i].total = obj.total;
+				});
+				setYearData(yearArr);
 			})
-		});
-	};
+	
+			getSummary(param.company, yyyy).then(tres=>{ //max 365
+				// console.log(tres?.data);
+				const tableObj:{[key:string]:any}={};
+				const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+				yearArr.map(v=>{
+					tableObj[v] = [];
+				});
+				for(let obj of tres?.data){
+					tableObj[yearArr[parseInt(obj.mm)-1]].push(obj);
+				}
+				// console.log(tableObj);
+				setTableData(tableObj);
+			});
+		}
+	},[]);
 
 	return (
 		<>
 			<div className="space-y-4 p-8 pt-6">
 				<div>
-					2024년 생산현황
+					{yyyy}년 생산현황
 				</div>
 				<div className="flex items-center justify-between space-y-2">
 					<Tabs defaultValue="overview" className="space-y-4">
 						<TabsList className="">
 							<TabsTrigger value="overview">일별</TabsTrigger>
-							<TabsTrigger value="yearby" disabled>데이터준비중(월별)</TabsTrigger>
+							<TabsTrigger value="yearby" >월별</TabsTrigger>
 						</TabsList>
 						<TabsContent value="overview">
 							<Card>
@@ -142,9 +176,10 @@ const Configure = () => {
 				</div>
 				{/*  */}
 				<div className="flex">
-					<AnalyTable
-
-					/>
+					{Object.keys(tableData).length > 0 && <AnalyTable
+						data={tableData}
+						year={yyyy}
+					/>}
 				</div>
 			</div>
 		</>

@@ -17,6 +17,7 @@ const ChartDemo = (props: any) => {
 		const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
 		const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#dfe7ef';
 		const viewType = props.vtype ?? 'yearby';
+		// console.log(props.vtype,props.data);
 		const totArr = props.data.map((obj: any) => { return obj.total });
 		const timeArr = props.data.map((obj: any) => { return obj.jobtime });
 		const barData: ChartData = {

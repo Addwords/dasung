@@ -211,7 +211,11 @@ body {
   grid-template-columns: repeat(6, 40px);
   grid-template-rows: 1fr 1.5fr;
 }
-
+.cubicTot::after{
+  content: '3';
+  vertical-align: super;
+  font-size: 0.8125em;
+}
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {

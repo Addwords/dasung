@@ -34,7 +34,6 @@ const SelectPage = () => {
         postFetcher('/api/config', {
             servNm: 'getCompany',
         }).then(res => {
-            console.log(res?.data);
             setCompInfo(res?.data);
             setLoading(false);
         });

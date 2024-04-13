@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { ActionTooltip } from "@/components/action-tooltip";
+import { SyncLoader } from "react-spinners";
+import { useState } from "react";
 
 interface NavigationItemProps{
     id: string;
@@ -19,10 +21,12 @@ export const NavigationItem = ({
 }: NavigationItemProps) => {
 	const params = useParams();
 	const router = useRouter();
+	const [loading,setLoading] = useState(false);
 	const onClick = () => {
 		if (id == 'home') {
 			router.replace(`/`);
 		} else if (id == 'configuration') {
+			// setLoading(true);
 			router.replace(`/${params.company}/config`);
 		} else if (id == 'table') {
 			const day = new Date();
@@ -32,6 +36,12 @@ export const NavigationItem = ({
 		}
 	}
     return (
+		<>
+		{loading &&
+			<div className="absolute backdrop-brightness-95 loadingwrap" style={{ zIndex: 1102 }}>
+				<SyncLoader color="rgb(54, 215, 183)" size={20} />
+			</div>
+		}
 		<ActionTooltip
 			side="right"
 			align="center"
@@ -61,5 +71,6 @@ export const NavigationItem = ({
 				</div>
 			</button>
 		</ActionTooltip>
+		</>
     )
 }
