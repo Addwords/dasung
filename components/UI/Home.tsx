@@ -1,6 +1,8 @@
 'use client';
 
 import Button from "@/components/UI/Button";
+import { Button as PButton } from 'primereact/button';
+import 'primeicons/primeicons.css';
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
@@ -391,13 +393,18 @@ export default function Home({
               onHide={() => { setCalen(false) }}
             />}
           </div>
-          <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
+          <div className="fixed bottom-0 left-0 block h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
               className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl font-semibold"
               rel="noopener noreferrer"
             >
               {company.nm}
             </a>
+            <div className="flex justify-end">
+              <PButton label="인쇄" severity="secondary" text onClick={print}>
+                <i className="pi pi-print ml-2"></i>
+              </PButton>
+            </div>
           </div>
         </div>
 
@@ -481,11 +488,11 @@ export default function Home({
                 />
               ))
             }
-            <Button
+            {/* <Button
               text='인쇄'
               color={'#6d6d6d'}
               func={() => { print() }}
-            />
+            /> */}
           </div>}
       </main>
     </>

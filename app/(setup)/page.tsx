@@ -61,6 +61,7 @@ const SelectPage = () => {
                                 style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--primary-400), var(--primary-700))' }}>
                                 <OtpInput
                                     value={password}
+                                    inputType='tel'
                                     onChange={(otp: string) => {
                                         setPassword(otp);
                                         if (otp.length > 3) {

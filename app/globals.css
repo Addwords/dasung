@@ -300,11 +300,11 @@ body {
   }
 }
 
+@page:first {
+  margin: 0;
+}
+
 @page {
   margin: 0;
   margin-top: 2cm;
-}
-
-@page: first {
-  margin: 0;
 }
