@@ -43,6 +43,7 @@ export async function POST(req: Request) {
 				}
 			})
 		} else if (servNm === 'setSummary') { //통계 갱신
+			console.log('setSummary');
 			await db.summary.update({
 				where: {
 					id: summId
@@ -95,7 +96,7 @@ export async function POST(req: Request) {
 			return NextResponse.json(
 				await db.$queryRaw(
 					Prisma.sql`
-					SELECT mm,dd,jobtime,total
+					SELECT id, mm, dd, jobtime, total
 					  FROM "Summary" s
 					 WHERE company = ${comCd}
 					   AND yyyy = ${yyyy}

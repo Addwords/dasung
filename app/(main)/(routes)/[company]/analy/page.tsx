@@ -43,56 +43,61 @@ const Configure = () => {
 	const param: any = useParams();
 	// const [isMounted, setMount] = useState(false);
 	const [chartType, setChartType] = useState('bar');
+	const [tableKey, setTableKey] = useState(1);
+	const [mchartKey, setMChartKey] = useState(1);
+	const [ychartKey, setYChartKey] = useState(1);
 	const [monthData, setMonthData] = useState([]);
 	const [yearData, setYearData] = useState(new Array());
 	const [tableData, setTableData] = useState({});
 
 	const date = new Date();
-	const [yyyy,setYYYY] = useState(String(date.getFullYear()));
-	const [mm,setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
+	const [yyyy, setYYYY] = useState(String(date.getFullYear()));
+	const [mm, setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
 	// yearArr[0].yyyy = '2024'
-	useEffect(()=> {
+	useEffect(() => {
 		// setMount(true);
-		if(!isMounted){
-			isMounted = true;
-			getSummaryMonth(param.company, yyyy, mm).then(mres => {
-				setMonthData(mres?.data);
+		// if(!isMounted){
+		// 	isMounted = true;
+		getSummaryMonth(param.company, yyyy, mm).then(mres => {
+			setMonthData(mres?.data);
+			setMChartKey(Math.random());
+		});
+
+		getSummaryYear(param.company, yyyy).then(yres => {
+			const yearArr = [...Array(12)].map((obj, idx) => {
+				const tmp = new String(idx + 1).padStart(2, '0');
+				return {
+					yyyy: yyyy,
+					mm: tmp,
+					jobtime: '0',
+					total: '0'
+				};
+			}); //1년치 데이터 쌓이기 전까지..
+
+			yres?.data.forEach((obj: any) => {
+				const i = parseInt(obj.mm) - 1; //존재하는 월
+				yearArr[i].jobtime = obj.jobtime;
+				yearArr[i].total = obj.total;
 			});
-			
-			getSummaryYear(param.company, yyyy).then(yres => {
-				const yearArr = [...Array(12)].map((obj,idx)=>{
-					const tmp = new String(idx+1).padStart(2,'0');
-					return {
-						yyyy:yyyy,
-						mm:tmp,
-						jobtime:'0',
-						total:'0'
-					};
-				}); //1년치 데이터 쌓이기 전까지..
-				
-				yres?.data.forEach((obj:any)=>{
-					const i = parseInt(obj.mm) -1; //존재하는 월
-					yearArr[i].jobtime = obj.jobtime;
-					yearArr[i].total = obj.total;
-				});
-				setYearData(yearArr);
-			})
-	
-			getSummary(param.company, yyyy).then(tres=>{ //max 365
-				// console.log(tres?.data);
-				const tableObj:{[key:string]:any}={};
-				const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-				yearArr.map(v=>{
-					tableObj[v] = [];
-				});
-				for(let obj of tres?.data){
-					tableObj[yearArr[parseInt(obj.mm)-1]].push(obj);
-				}
-				// console.log(tableObj);
-				setTableData(tableObj);
+			setYearData(yearArr);
+			setYChartKey(Math.random());
+		})
+
+		getSummary(param.company, yyyy).then(tres => { //max 365
+			// console.log(tres?.data);
+			const tableObj: { [key: string]: any } = {};
+			const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			yearArr.map(v => {
+				tableObj[v] = [];
 			});
-		}
-	},[]);
+			for (let obj of tres?.data) {
+				tableObj[yearArr[parseInt(obj.mm) - 1]].push(obj);
+			}
+			// console.log(tableObj);
+			setTableData(tableObj);
+		});
+		// }
+	}, [tableKey]);
 
 	return (
 		<>
@@ -125,8 +130,9 @@ const Configure = () => {
 									</div>
 								</CardHeader>
 								<CardContent className="space-y-2">
-									{monthData.length > 0 ?
+									{monthData ?
 										<Chart
+											key={mchartKey}
 											vtype={'monthby'}
 											ctype={chartType}
 											data={monthData}
@@ -160,6 +166,7 @@ const Configure = () => {
 								<CardContent className="space-y-2">
 									{yearData.length > 0 ?
 										<Chart
+											key={ychartKey}
 											vtype={'yearby'}
 											ctype={chartType}
 											data={yearData}
@@ -179,6 +186,7 @@ const Configure = () => {
 					{Object.keys(tableData).length > 0 && <AnalyTable
 						data={tableData}
 						year={yyyy}
+						genKey={setTableKey}
 					/>}
 				</div>
 			</div>
