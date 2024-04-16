@@ -1,7 +1,7 @@
 'use client';
 import { ChartData, ChartOptions } from 'chart.js';
 import { Chart } from 'primereact/chart';
-import React, { Suspense, useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import type { ChartDataState, ChartOptionsState } from '@/types/type';
 import { Skeleton } from './Skeleton';

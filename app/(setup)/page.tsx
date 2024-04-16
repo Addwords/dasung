@@ -2,10 +2,11 @@
 
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import OtpInput, { AllowedInputTypes } from "react-otp-input";
 import { postFetcher } from '@/lib/common-fetcher';
+import Image from 'next/image';
 // root location에 반응?
 // const SetupPage = async (compCd:string) => {
 
@@ -16,28 +17,34 @@ import { postFetcher } from '@/lib/common-fetcher';
 //     // 추후 회사선택 메인화면이나 대시보드 같은 메인화면으로 변경예정😁
 //     return redirect(`/${company}/${today}`);
 // }
-let isMounted = false;
 
 const SelectPage = () => {
 
     const date = new Date();
     const today = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+    const isMounted = useRef(false);
+    const setMounted = (flag: boolean) => { isMounted.current = flag; }
     const [loading, setLoading] = useState(true);
     const [pwModal, setPwModal] = useState(false);
     const [password, setPassword] = useState('');
     const [comnm, setComNm] = useState('');
     const [compw, setCompw] = useState({ pw: '', location: '' });
-    const [compInfo, setCompInfo] = useState([]);
+    const [dasungInfo, setDasugnInfo] = useState([]);
+    const [chungjuInfo, setChungjuInfo] = useState([]);
 
-    if (!isMounted) {
-        isMounted = true;
-        postFetcher('/api/config', {
-            servNm: 'getCompany',
-        }).then(res => {
-            setCompInfo(res?.data);
-            setLoading(false);
-        });
-    };
+    useEffect(() => {
+        if (!isMounted.current) {
+            postFetcher('/api/config', {
+                servNm: 'getCompany',
+            }).then(res => {
+                let comp = res?.data;
+                setDasugnInfo(comp.slice(0,3));
+                setChungjuInfo(comp.slice(-2));
+                setLoading(false);
+            });
+        };
+        return setMounted(true);
+    });
 
     return (
         <>
@@ -94,67 +101,48 @@ const SelectPage = () => {
                         </>
                     )}
                 ></Dialog>
-                <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left">
-                    {compInfo.length > 0 &&
-                        compInfo.map((val: any, idx: number) => (
-                            <a key={idx}
-                                onClick={() => {
-                                    setComNm(val.comNm);
-                                    setPassword('');
-                                    setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
-                                    setPwModal(true);
-                                }}
-                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors
-                            hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-                                rel="noopener noreferrer">
-                                <h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
-                            </a>
-                        ))
-                    }
-                    {/* <a
-                        onClick={() => {
-                            setComNm('(주)다성용인제2공장지점');
-                            setPassword('');
-                            setCompw({ pw: '2222', location: `/002/${today}` });
-                            setPwModal(true);
-                        }}
-                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-                        rel="noopener noreferrer">
-                        <h2 className={`mb-3 text-2xl font-semibold`}>(주)다성 용인제2공장 지점</h2>
-                    </a>
-                    <a
-                        onClick={() => {
-                            setComNm('(주)다성레미콘');
-                            setPassword('');
-                            setCompw({ pw: '3333', location: `/003/${today}` });
-                            setPwModal(true);
-                        }}
-                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-                        rel="noopener noreferrer">
-                        <h2 className={`mb-3 text-2xl font-semibold`}>(주)다성레미콘</h2>
-                    </a>
-                    <a
-                        onClick={() => {
-                            setComNm('(주)청정개발');
-                            setPassword('');
-                            setCompw({ pw: '4444', location: `/004/${today}` });
-                            setPwModal(true);
-                        }}
-                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-                        rel="noopener noreferrer">
-                        <h2 className={`mb-3 text-2xl font-semibold`}>(주)청정개발</h2>
-                    </a>
-                    <a
-                        onClick={() => {
-                            setComNm('(주)청정개발지점');
-                            setPassword('');
-                            setCompw({ pw: '5555', location: `/005/${today}` });
-                            setPwModal(true);
-                        }}
-                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-                        rel="noopener noreferrer">
-                        <h2 className={`mb-3 text-2xl font-semibold`}>(주)청정개발지점</h2>
-                    </a> */}
+                {/* <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left"> */}
+                <div className='flex justify-between w-[700px]'>
+					{/* 다성 */}
+					<div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
+						<Image alt='다성' src={'/dasung_logo.png'} width={100} height={100} priority={true} className='mb-10'/>
+						{dasungInfo.length > 0 &&
+							dasungInfo.map((val: any, idx: number) => (
+								<a key={idx}
+									onClick={() => {
+										setComNm(val.comNm);
+										setPassword('');
+										setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
+										setPwModal(true);
+									}}
+									className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
+							hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
+									rel="noopener noreferrer">
+									<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
+								</a>
+							))
+						}
+					</div>
+					{/* 청주 */}
+					<div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
+						<Image alt='다성' src={'/chungju_logo.png'} width={80} height={80} priority={true} className='mb-9'/>
+						{chungjuInfo.length > 0 &&
+							chungjuInfo.map((val: any, idx: number) => (
+								<a key={idx}
+									onClick={() => {
+										setComNm(val.comNm);
+										setPassword('');
+										setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
+										setPwModal(true);
+									}}
+									className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
+							hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
+									rel="noopener noreferrer">
+									<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
+								</a>
+							))
+						}
+					</div>
                 </div>
             </div>
         </>
