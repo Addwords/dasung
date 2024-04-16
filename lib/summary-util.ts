@@ -43,7 +43,7 @@ export const daySummary = async (today: string, company: string, dumpInfo: any) 
                     , date: `${today.substring(0, 6) + String(idx + 1).padStart(2, '0')}`
                     , dd: String(idx + 1).padStart(2, '0')
                 })
-            }); //.map()
+            });
             await db.summary.createMany({
                 data: objList
             });

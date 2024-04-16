@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 				}
 			})
 		} else if (servNm === 'setSummary') { //통계 갱신
-			console.log('setSummary');
+			
 			await db.summary.update({
 				where: {
 					id: summId
@@ -58,7 +58,8 @@ export async function POST(req: Request) {
 					jobtime: jobtime,
 					total: tot,
 				}
-			})
+			});
+
 		} else if (servNm === 'getAssets') {
 			return NextResponse.json(
 				await db.assets.findMany({

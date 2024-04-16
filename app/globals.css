@@ -211,11 +211,13 @@ body {
   grid-template-columns: repeat(6, 40px);
   grid-template-rows: 1fr 1.5fr;
 }
-.cubicTot::after{
+
+.cubicTot::after {
   content: '3';
   vertical-align: super;
   font-size: 0.8125em;
 }
+
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
@@ -263,7 +265,7 @@ body {
 
   .sum-grid {
     display: grid;
-    grid-template-columns: 6.5fr 2fr;
+    grid-template-columns: 6fr 3fr;
   }
 
   .data-grid div:nth-child(-n+40) {

@@ -20,7 +20,6 @@ export const JobCalendar = (prop:any) => {
     // router.refresh();
   };
   function formatDate(date:any,dateType: string) {
-    // console.log('date:', );
     return date.getDate()
   }
   return (

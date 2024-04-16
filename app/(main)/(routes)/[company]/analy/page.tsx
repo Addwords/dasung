@@ -1,15 +1,13 @@
 'use client';
 
-import { daySummary } from "@/lib/summary-util";
 import { useParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/UI/Tabs"
 import { postFetcher } from "@/lib/common-fetcher";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/UI/card";
-import { Input } from "@/components/UI/Input";
-import { Label } from "@/components/UI/Label";
 import Chart from "@/components/UI/Chart";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AnalyTable from "@/components/UI/analy/AnalyTable";
+import { Skeleton } from "@/components/UI/Skeleton";
 
 async function getSummaryMonth(comcd: string, yyyy: string, mm: string | undefined) {
 	return await postFetcher('/api/config', {
@@ -36,12 +34,11 @@ async function getSummary(comcd: string, yyyy: string) {
 	});
 }
 
-let isMounted = false;
-
-const Configure = () => {
+const Analysis = () => {
 
 	const param: any = useParams();
-	// const [isMounted, setMount] = useState(false);
+	const isMounted = useRef(false);
+	const setMounted = (flag:boolean) => { isMounted.current = flag; }
 	const [chartType, setChartType] = useState('bar');
 	const [tableKey, setTableKey] = useState(1);
 	const [mchartKey, setMChartKey] = useState(1);
@@ -53,65 +50,64 @@ const Configure = () => {
 	const date = new Date();
 	const [yyyy, setYYYY] = useState(String(date.getFullYear()));
 	const [mm, setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
-	// yearArr[0].yyyy = '2024'
+	
 	useEffect(() => {
-		// setMount(true);
-		// if(!isMounted){
-		// 	isMounted = true;
-		getSummaryMonth(param.company, yyyy, mm).then(mres => {
-			setMonthData(mres?.data);
-			setMChartKey(Math.random());
-		});
-
-		getSummaryYear(param.company, yyyy).then(yres => {
-			const yearArr = [...Array(12)].map((obj, idx) => {
-				const tmp = new String(idx + 1).padStart(2, '0');
-				return {
-					yyyy: yyyy,
-					mm: tmp,
-					jobtime: '0',
-					total: '0'
-				};
-			}); //1년치 데이터 쌓이기 전까지..
-
-			yres?.data.forEach((obj: any) => {
-				const i = parseInt(obj.mm) - 1; //존재하는 월
-				yearArr[i].jobtime = obj.jobtime;
-				yearArr[i].total = obj.total;
+		
+		if(!isMounted.current){
+			
+			getSummaryMonth(param.company, yyyy, mm).then(mres => {
+				setMonthData(mres?.data);
+				setMChartKey(Math.random());
 			});
-			setYearData(yearArr);
-			setYChartKey(Math.random());
-		})
 
-		getSummary(param.company, yyyy).then(tres => { //max 365
-			// console.log(tres?.data);
-			const tableObj: { [key: string]: any } = {};
-			const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-			yearArr.map(v => {
-				tableObj[v] = [];
+			getSummaryYear(param.company, yyyy).then(yres => {
+				const yearArr = [...Array(12)].map((obj, idx) => {
+					const tmp = new String(idx + 1).padStart(2, '0');
+					return {
+						yyyy: yyyy,
+						mm: tmp,
+						jobtime: '0',
+						total: '0'
+					};
+				}); //1년치 데이터 쌓이기 전까지..
+
+				yres?.data.forEach((obj: any) => {
+					const i = parseInt(obj.mm) - 1; //존재하는 월
+					yearArr[i].jobtime = obj.jobtime;
+					yearArr[i].total = obj.total;
+				});
+				setYearData(yearArr);
+				setYChartKey(Math.random());
+			})
+
+			getSummary(param.company, yyyy).then(tres => { //max 365
+				const tableObj: { [key: string]: any } = {};
+				const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+				yearArr.map(v => {
+					tableObj[v] = [];
+				});
+				for (let obj of tres?.data) {
+					tableObj[yearArr[parseInt(obj.mm) - 1]].push(obj);
+				}
+				setTableData(tableObj);
 			});
-			for (let obj of tres?.data) {
-				tableObj[yearArr[parseInt(obj.mm) - 1]].push(obj);
-			}
-			// console.log(tableObj);
-			setTableData(tableObj);
-		});
-		// }
-	}, [tableKey]);
+		}
+		return setMounted(true);
+	}, [tableKey, yyyy, mm, param.company]);
 
 	return (
 		<>
 			<div className="space-y-4 p-8 pt-6">
-				<div>
-					{yyyy}년 생산현황
+				<div className="flex justify-center">
+					{yyyy}년
 				</div>
 				<div className="flex items-center justify-between space-y-2">
-					<Tabs defaultValue="overview" className="space-y-4">
+					<Tabs defaultValue="monthby" className="space-y-4">
 						<TabsList className="">
-							<TabsTrigger value="overview">일별</TabsTrigger>
+							<TabsTrigger value="monthby">일별</TabsTrigger>
 							<TabsTrigger value="yearby" >월별</TabsTrigger>
 						</TabsList>
-						<TabsContent value="overview">
+						<TabsContent value="monthby">
 							<Card>
 								<CardHeader>
 									<CardTitle>{mm}월</CardTitle>
@@ -130,14 +126,15 @@ const Configure = () => {
 									</div>
 								</CardHeader>
 								<CardContent className="space-y-2">
-									{monthData ?
+									{monthData.length > 0 ?
 										<Chart
 											key={mchartKey}
 											vtype={'monthby'}
 											ctype={chartType}
 											data={monthData}
 										/>
-										: <div>데이터가 없습니다.</div>
+										:
+										<Skeleton className="h-[800px] w-[1500px] rounded-xl bg-slate-300" />
 									}
 								</CardContent>
 								<CardFooter>
@@ -183,10 +180,12 @@ const Configure = () => {
 				</div>
 				{/*  */}
 				<div className="flex">
-					{Object.keys(tableData).length > 0 && <AnalyTable
+					{Object.keys(tableData).length > 0 &&
+					<AnalyTable
 						data={tableData}
 						year={yyyy}
 						genKey={setTableKey}
+						setMount={setMounted}
 					/>}
 				</div>
 			</div>
@@ -194,4 +193,4 @@ const Configure = () => {
 	);
 }
 
-export default Configure;
+export default Analysis;

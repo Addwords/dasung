@@ -48,15 +48,6 @@ function Dump(kind: string) {
     return
   }
 
-  //같은minute에 작업 불가?
-  // if (jCount > 0) {
-  //   const prev = document.querySelector(`#t${HH}-${jCount-1}`) as HTMLElement;
-  //   if (parseInt(prev.textContent || '') == MM) {
-  //     alert('작업이 진행중 입니다.');
-  //     return null;
-  //   }
-  // }
-
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
 
   if (!!mertalIn) {
@@ -136,9 +127,6 @@ async function calculate(kind: string, HH: string, MM: string) {
   const jobObj: { [key: string]: any; } = {
     servNm: 'setJob',
     jobId: jobIds[HH.padStart(2, '0')],
-    // job: job.reduce((pre, cur) => {
-    //   return Object.assign(pre, cur); //job
-    // }),
     job: jobArr,
     subtot: subTot
   };
@@ -229,7 +217,7 @@ export default function Home({
   const today = `${date.substring(0, 4)}년${date.substring(4, 6)}월${date.substring(6, 8)}일`;
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   const isToday = new Date().toDateString() === new Date(calDate).toDateString();
-
+  const jobprint = ()=>{window.print()}
   //단축키 bind
   const shortcutFunc: { [key: string]: () => void } = {
     'F1': () => { btnRef.current[0]?.click(); },
@@ -272,10 +260,6 @@ export default function Home({
     }, 100);
     return () => clearInterval(intervalId);
   }, []);
-
-  if (!isMounted) { //mount once
-    return null;
-  }
 
   function madeJob(obj: any) {
     // if (set === 'key')
@@ -401,7 +385,7 @@ export default function Home({
               {company.nm}
             </a>
             <div className="flex justify-end">
-              <PButton label="인쇄" severity="secondary" text onClick={print}>
+              <PButton label="인쇄" severity="secondary" text onClick={jobprint}>
                 <i className="pi pi-print ml-2"></i>
               </PButton>
             </div>
