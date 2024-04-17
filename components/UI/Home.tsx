@@ -9,7 +9,6 @@ import AlertModal from "@/components/modals/alert-modal";
 import { jobProps, StringDictionary } from "@/types/type";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
-// import JobCalendar from "./JobCalendar";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
 import { useParams } from "next/navigation";
@@ -80,6 +79,18 @@ function modify() {
   }
 }
 
+function runnningTime() {
+  let runTime = 0;
+  let arr: number[] = []
+  document.querySelectorAll('.col div[id^=tot]').forEach(el => {
+    if (el.textContent != '0') {
+      arr.push(Number(el.id.replace('tot', '')));
+    }
+  });
+  runTime = (arr[arr.length-1] - arr[0]) + 1
+  // console.log((Number(HH) - Number(el.id.replace('tot', '')))+1);
+  return runTime;
+}
 /**
  * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
  * @param kind : 차량종류
@@ -95,7 +106,7 @@ async function calculate(kind: string, HH: string, MM: string) {
 
   let totCal = document.getElementById(`tot${HH}`);
   totCal ? totCal.textContent = String(subTot) : 0;
-
+  
   let jdump: number = 0;
   let odump: number = 0;
   let rdump: number = 0;
@@ -143,7 +154,7 @@ async function calculate(kind: string, HH: string, MM: string) {
     otot: odump,
     rsize: rsize,
     rtot: rdump,
-    jobtime: 0, //계산필요
+    jobtime: runnningTime(),
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
@@ -217,7 +228,13 @@ export default function Home({
   const today = `${date.substring(0, 4)}년${date.substring(4, 6)}월${date.substring(6, 8)}일`;
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   const isToday = new Date().toDateString() === new Date(calDate).toDateString();
-  const jobprint = ()=>{window.print()}
+  const jobprint = () => {
+    if (/Android|iPhone/i.test(navigator.userAgent)) {
+      alert('PC환경에서만 가능합니다.');
+    } else {
+      window.print();
+    }
+  }
   //단축키 bind
   const shortcutFunc: { [key: string]: () => void } = {
     'F1': () => { btnRef.current[0]?.click(); },

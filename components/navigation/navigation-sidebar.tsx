@@ -11,7 +11,7 @@ import { NavigationItem } from "@/components/navigation/navigation-item";
 export const NavigationSideBar = async () => {
 
     return (
-        <div className="space-y-4 flex flex-col items-center h-full text-primary w-full bg-[#727274] py-3">
+        <div className="space-y-4 flex flex-col items-center h-full text-primary w-full bg-[#727274] py-3 non-print">
             {/* <NavigatioAction /> */}
             <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-sm w-10 mx-auto"
             />

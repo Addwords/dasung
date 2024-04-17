@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { postFetcher } from '@/lib/common-fetcher';
 import { cn } from '@/lib/utils';
-
+import * as XLSX from 'xlsx';
 interface Sale {
 	[key: string]: any
 }
@@ -17,11 +17,11 @@ interface Sale {
 export default function AnalyTable(props: any) {
 
 	const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	const tempObj: { [key: string]: string } = {};
+	const tempObj: { [key: string]: number } = {};
 	const dataSet: { [key: string]: any } = props?.data;
 	const baseM = new Date().getMonth() + 1;
 	const baseD = new Date().getDate();
-	const [productDialog, setProductDialog] = useState(false);
+	const [modifyDialog, setModifyDialog] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
 	const [modTit, setTit] = useState('');
 	const [modDate, setDate] = useState('');
@@ -30,17 +30,23 @@ export default function AnalyTable(props: any) {
 	const [analy, setAnaly] = useState<Sale[]>([]);
 
 	const isMounted = useRef(false);
-	
+	const analPrint = () => {
+		if (/Android|iPhone/i.test(navigator.userAgent)) {
+			alert('PC환경에서만 가능합니다.');
+		} else {
+			window.print();
+		}
+	}
 	useEffect(() => {
 		// const tableArr:Sale[] = [];
 		if (dataSet && !isMounted.current) {
 			yearArr.map(val => {
-				tempObj[`${val}Time`] = '0';
-				tempObj[`${val}Cubic`] = '0';
+				tempObj[`${val}Time`]  = 0;
+				tempObj[`${val}Cubic`] = 0;
 			});
 
 			const initArr: { [key: string]: string }[] = [...Array(31)].map((val, idx) => {
-				return { ...tempObj, date: `${idx + 1}일` }
+				return { date: `${idx + 1}일`, ...tempObj }
 			});
 
 			yearArr.map((mon, idx) => {
@@ -80,7 +86,7 @@ export default function AnalyTable(props: any) {
 
 	const hideDialog = () => {
 		setSubmitted(false);
-		setProductDialog(false);
+		setModifyDialog(false);
 	};
 
 	const saveProduct = () => {
@@ -101,12 +107,33 @@ export default function AnalyTable(props: any) {
 				props.setMount(false);
 				props.genKey(Math.random());
 			});
-			setProductDialog(false);
+			setModifyDialog(false);
 
 		}
 	};
+	//내보내기
+	const exportExcel = () => {
+		const workbook = XLSX.utils.book_new();
+		const timesheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy, 'Time'));
+		timesheet['!cols'] = [{}]
+		const cubicsheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy,'Cubic'));
+		XLSX.utils.book_append_sheet(workbook, cubicsheet, `생산수량`);
+		XLSX.utils.book_append_sheet(workbook, timesheet,  `생산시간`);
+		XLSX.writeFile(workbook, `다성_${props.year}.xlsx`);
+    };
+	const convertObjectInArr = (param: Sale[], sep:string) => {
+		const newArr = param.map((row) => {
+			let newObj: {[key:string]: number} = {};
+			newObj['일자'] = row['date'];
+			yearArr.map((mon, idx) => {
+				newObj[`${idx + 1}월`] = row[`${mon}${sep}`];
+			});
+			return newObj;
+		});
+		return newArr;
+	};
 
-	const productDialogFooter = (
+	const modifyDialogFooter = (
 		<>
 			<Button label="취소" icon="pi pi-times" text onClick={hideDialog} />
 			<Button label="저장" icon="pi pi-check" text onClick={saveProduct} />
@@ -128,6 +155,7 @@ export default function AnalyTable(props: any) {
 							colSpan={2}
 							style={idx < 11 ? { borderRight: '1px solid' } : {}}
 							headerStyle={{ fontSize: '1rem', padding: '0.5rem' }}
+							headerClassName='analy-month'
 						/>
 					))
 				}
@@ -144,6 +172,7 @@ export default function AnalyTable(props: any) {
 								header={wrap.head}
 								alignHeader={'center'}
 								headerStyle={{ wordBreak: 'keep-all', padding: '0.5rem' }}
+								headerClassName='analy-header'
 								field={`${val}${wrap.field}`}
 							/>
 						))
@@ -203,12 +232,15 @@ export default function AnalyTable(props: any) {
 	const isCellSelectable = (event: DataTableDataSelectableEvent) => isSelectable(event);
 
 	return (
-		<div className="card">
-			{/* <Button type="button" icon="pi pi-file-excel" severity="success" rounded onClick={exportExcel} data-pr-tooltip="XLS" />
-			<Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={exportPdf} data-pr-tooltip="PDF" /> */}
+		<div className="card nav">
+			<div className="flex justify-end non-print">
+			<Button type="button" icon="pi pi-file-excel" severity="success" text onClick={exportExcel} data-pr-tooltip="XLS" />
+			{/* <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={ } data-pr-tooltip="PDF" /> */}
+              <Button type='button' icon='pi pi-print' severity="secondary" text onClick={analPrint} />
+            </div>
 			<DataTable value={analy} headerColumnGroup={headerGroup} footerColumnGroup={footerGroup}
 				tableStyle={{ width: '1500px' }} size='small'
-				tableClassName='analTable'
+				tableClassName='analysis-table'
 				cellSelection selectionMode="single" selection={selectedCell!}
 				isDataSelectable={isCellSelectable}
 				onSelectionChange={(e) => {
@@ -219,7 +251,7 @@ export default function AnalyTable(props: any) {
 					let isTime = cell.cellIndex % 2; //생산시간 or 생산수량
 					let value = cell.value;
 
-					setProductDialog(true);
+					setModifyDialog(true);
 					setTit(`${mon}월${day}일 ${isTime ? '생산시간' : '생산수량'}`);
 					setDate(`${mon}.${day}`);
 					setVal(value);
@@ -228,7 +260,7 @@ export default function AnalyTable(props: any) {
 				<Column field="date"
 					style={{ borderRight: '1px solid', width: '100px' }}
 					bodyStyle={{ textAlign: 'center' }}
-					bodyClassName={'font-bold'}
+					bodyClassName={'font-bold date-col'}
 				/>
 				{yearArr.map((val) => (
 					['Time', 'Cubic'].map((wrap) => (
@@ -236,13 +268,13 @@ export default function AnalyTable(props: any) {
 							key={val + wrap}
 							field={`${val}${wrap}`}
 							style={val == 'Dec' && wrap == 'Cubic' ? {} : { borderRight: '1px solid' }}
-							bodyClassName={cn('hover:bg-gray-200 text-sm')}
+							bodyClassName={cn('hover:bg-gray-200 text-sm analy-col')}
 							bodyStyle={{ textAlign: 'center', padding: '0.5rem', width: '65px' }}
 						/>
 					))
 				))}
 			</DataTable>
-			<Dialog visible={productDialog} style={{ width: '450px' }} header={modTit} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+			<Dialog visible={modifyDialog} style={{ width: '450px' }} header={modTit} modal className="p-fluid" footer={modifyDialogFooter} onHide={hideDialog}>
 				<div className="field">
 					<label htmlFor="name">수정</label>
 					<InputNumber

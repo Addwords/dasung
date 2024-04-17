@@ -217,7 +217,13 @@ body {
   vertical-align: super;
   font-size: 0.8125em;
 }
-
+.invalid-border{
+  border-color: #e24c4c !important;
+  border-width: medium !important;
+}
+.invalid-border:focus{
+  outline: none !important;
+}
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
@@ -290,7 +296,7 @@ body {
   }
 
   .non-print {
-    display: none;
+    display: none !important;
   }
 
   .print {
@@ -300,10 +306,38 @@ body {
   .time-table {
     break-inside: avoid;
   }
+
+  .analysis-table{
+    margin-top: 10rem !important;
+    width: 730px !important;
+  }
+  .analy-month{
+    width: 100px !important;
+    font-size: x-small;
+  }
+  .analy-header{
+    width: 50px !important;
+    font-size: x-small;
+  }
+  .date-col{
+    width: 50px !important;
+    padding: 0 !important;
+    font-size: x-small;
+  }
+  .analy-col{
+    width: 40px !important;
+    padding: 0 !important;
+    height: 20px !important;
+    font-size: x-small;
+  }
+  .nav{
+    padding: 0 !important;
+  }
 }
 
 @page:first {
   margin: 0;
+  padding: 0;
 }
 
 @page {

@@ -31,20 +31,20 @@ const SelectPage = () => {
     const [compw, setCompw] = useState({ pw: '', location: '' });
     const [dasungInfo, setDasugnInfo] = useState([]);
     const [chungjuInfo, setChungjuInfo] = useState([]);
-
+    const [invalid, setInvalid] = useState(false);
     useEffect(() => {
-        if (!isMounted.current) {
+        // if (!isMounted.current) {
             postFetcher('/api/config', {
                 servNm: 'getCompany',
             }).then(res => {
                 let comp = res?.data;
-                setDasugnInfo(comp.slice(0,3));
+                setDasugnInfo(comp.slice(0, 3));
                 setChungjuInfo(comp.slice(-2));
                 setLoading(false);
             });
-        };
-        return setMounted(true);
-    });
+        // };
+        // return setMounted(true);
+    },[]);
 
     return (
         <>
@@ -68,7 +68,7 @@ const SelectPage = () => {
                                 style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--primary-400), var(--primary-700))' }}>
                                 <OtpInput
                                     value={password}
-                                    inputType='tel'
+                                    inputType='password'
                                     onChange={(otp: string) => {
                                         setPassword(otp);
                                         if (otp.length > 3) {
@@ -79,6 +79,10 @@ const SelectPage = () => {
                                                 //비밀번호 틀림처리
                                                 // border-color:'#e24c4c';
                                                 // .pwdialog input
+                                                document.querySelectorAll('.pwdialog div input').forEach(el => {
+                                                    el.className = 'invalid-border';
+                                                });
+                                                setPassword('');
                                             }
                                         }
                                     }}
@@ -87,7 +91,8 @@ const SelectPage = () => {
                                         width: '5rem',
                                         height: '5rem',
                                         fontSize: '2rem',
-                                        borderRadius: '1rem'
+                                        borderRadius: '1rem',
+                                        caretColor: 'transparent'
                                     }}
                                     shouldAutoFocus={true}
                                     renderSeparator={<span>&nbsp;</span>}
@@ -103,46 +108,50 @@ const SelectPage = () => {
                 ></Dialog>
                 {/* <div className="mb-32 grid gap-6 text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-2 lg:text-left"> */}
                 <div className='flex justify-between w-[700px]'>
-					{/* 다성 */}
-					<div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
-						<Image alt='다성' src={'/dasung_logo.png'} width={100} height={100} priority={true} className='mb-10'/>
-						{dasungInfo.length > 0 &&
-							dasungInfo.map((val: any, idx: number) => (
-								<a key={idx}
-									onClick={() => {
-										setComNm(val.comNm);
-										setPassword('');
-										setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
-										setPwModal(true);
-									}}
-									className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
+                    {/* 다성 */}
+                    <div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
+                        <Image alt='다성' src={'/dasung_logo.png'} width={100} height={100} priority={true} className='mb-10' />
+                        <div className='flex flex-col pl-5'>
+                            {dasungInfo.length > 0 &&
+                                dasungInfo.map((val: any, idx: number) => (
+                                    <a key={idx}
+                                        onClick={() => {
+                                            setComNm(val.comNm);
+                                            setPassword('');
+                                            setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
+                                            setPwModal(true);
+                                        }}
+                                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
 							hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-									rel="noopener noreferrer">
-									<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
-								</a>
-							))
-						}
-					</div>
-					{/* 청주 */}
-					<div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
-						<Image alt='다성' src={'/chungju_logo.png'} width={80} height={80} priority={true} className='mb-9'/>
-						{chungjuInfo.length > 0 &&
-							chungjuInfo.map((val: any, idx: number) => (
-								<a key={idx}
-									onClick={() => {
-										setComNm(val.comNm);
-										setPassword('');
-										setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
-										setPwModal(true);
-									}}
-									className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
+                                        rel="noopener noreferrer">
+                                        <h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
+                                    </a>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    {/* 청주 */}
+                    <div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
+                        <Image alt='다성' src={'/chungju_logo.png'} width={80} height={80} priority={true} className='mb-9' />
+                        <div className='flex flex-col pl-5'>
+							{chungjuInfo.length > 0 &&
+								chungjuInfo.map((val: any, idx: number) => (
+									<a key={idx}
+										onClick={() => {
+											setComNm(val.comNm);
+											setPassword('');
+											setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
+											setPwModal(true);
+										}}
+										className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
 							hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-									rel="noopener noreferrer">
-									<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
-								</a>
-							))
-						}
-					</div>
+										rel="noopener noreferrer">
+										<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
+									</a>
+								))
+							}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

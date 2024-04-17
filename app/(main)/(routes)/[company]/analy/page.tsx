@@ -1,13 +1,14 @@
 'use client';
 
 import { useParams } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/UI/Tabs"
-import { postFetcher } from "@/lib/common-fetcher";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/UI/card";
-import Chart from "@/components/UI/Chart";
 import { useEffect, useRef, useState } from "react";
-import AnalyTable from "@/components/UI/analy/AnalyTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/UI/Tabs"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/UI/card";
 import { Skeleton } from "@/components/UI/Skeleton";
+import AnalyTable from "@/components/UI/analy/AnalyTable";
+import Chart from "@/components/UI/Chart";
+import { postFetcher } from "@/lib/common-fetcher";
+import 'primeicons/primeicons.css';
 
 async function getSummaryMonth(comcd: string, yyyy: string, mm: string | undefined) {
 	return await postFetcher('/api/config', {
@@ -52,7 +53,6 @@ const Analysis = () => {
 	const [mm, setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
 	
 	useEffect(() => {
-		
 		if(!isMounted.current){
 			
 			getSummaryMonth(param.company, yyyy, mm).then(mres => {
@@ -61,7 +61,7 @@ const Analysis = () => {
 			});
 
 			getSummaryYear(param.company, yyyy).then(yres => {
-				const yearArr = [...Array(12)].map((obj, idx) => {
+				const baseArr = [...Array(12)].map((obj, idx) => {
 					const tmp = new String(idx + 1).padStart(2, '0');
 					return {
 						yyyy: yyyy,
@@ -71,12 +71,12 @@ const Analysis = () => {
 					};
 				}); //1년치 데이터 쌓이기 전까지..
 
-				yres?.data.forEach((obj: any) => {
+				for(let obj of yres?.data){
 					const i = parseInt(obj.mm) - 1; //존재하는 월
-					yearArr[i].jobtime = obj.jobtime;
-					yearArr[i].total = obj.total;
-				});
-				setYearData(yearArr);
+					baseArr[i].jobtime = obj.jobtime;
+					baseArr[i].total = obj.total;
+				};
+				setYearData(baseArr);
 				setYChartKey(Math.random());
 			})
 
@@ -97,11 +97,11 @@ const Analysis = () => {
 
 	return (
 		<>
-			<div className="space-y-4 p-8 pt-6">
-				<div className="flex justify-center">
+			<div className="space-y-4 p-8 pt-6 nav">
+				<div className="flex justify-center non-print">
 					{yyyy}년
 				</div>
-				<div className="flex items-center justify-between space-y-2">
+				<div className="flex items-center justify-between space-y-2 non-print">
 					<Tabs defaultValue="monthby" className="space-y-4">
 						<TabsList className="">
 							<TabsTrigger value="monthby">일별</TabsTrigger>

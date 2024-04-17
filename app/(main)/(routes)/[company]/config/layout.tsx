@@ -1,6 +1,6 @@
 import { currentJobs } from "@/lib/current-jobs";
 import React from "react";
-import { getAssets } from "@/lib/summary-util";
+import { getAssets, getCompany } from "@/lib/summary-util";
 import { getOperators } from "@/lib/operators";
 import '@/styles/layout/layout.scss';
 import 'primeflex/primeflex.css';
@@ -8,16 +8,10 @@ import 'primeicons/primeicons.css';
 import DumpInfo from "@/components/UI/config/dump-info";
 import OperatorInfo from "@/components/UI/config/operator-info";
 import { Button } from "primereact/button";
+import PasswordInfo from "@/components/UI/config/password-info";
 
 
-const company: { [key: string]: string } = {
-	'001': '(주)다성 용인지점',
-	'002': '(주)다성 용인제2공장 지점',
-	'003': '(주)다성레미콘',
-	'004': '(주)청정개발',
-	'005': '(주)청정개발지점',
-};
-
+const company: { [key: string]: string } = {};
 
 const ConfLayout = async ({
 	children,
@@ -31,12 +25,20 @@ const ConfLayout = async ({
 	// const sumData = await daySummary(params.date, params.company);
 	const operObj = await getOperators(params.company);
 	const dumpObj = await getAssets(params.company);
+	const company = await getCompany(params.company);
+	
 	if (jobsData) {
 		return (
 			<>
 				<div className="layout-main-container">
 					<div className="layout-main">
-						<p className="text-900 font-large text-2xl">{company[params.company]}</p>
+						<p className="text-900 font-large text-2xl">{company?.comNm}</p>
+						<div className="flex flex-wrap gap-2">
+							<Button className="pointer-events-none" label="비밀번호" severity="warning" text />
+						</div>
+						<PasswordInfo
+							password={company?.password}
+						/>
 						{/*  */}
 						<div className="flex flex-wrap gap-2">
 							<Button className="pointer-events-none" label="차량정보" severity="info" text />
@@ -57,7 +59,6 @@ const ConfLayout = async ({
 						</div>
 					</div>
 				</div>
-				{children}
 			</>
 		);
 	}

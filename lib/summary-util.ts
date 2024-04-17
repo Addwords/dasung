@@ -105,3 +105,11 @@ export const getAssets = async (comcd: string) => {
         }
     });
 }
+
+export const getCompany = async (comcd:string) => {
+    return await db.company.findUnique({
+        where: {
+            comCd:comcd
+        }
+    });
+}
