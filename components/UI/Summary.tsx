@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const Summary = (props: any) => {
 	const isToday = true;
-	const [inputNumberValue, setInputNumberValue] = useState<number>(props.total || 0);
+	// const [inputNumberValue, setInputNumberValue] = useState<number>(props.total || 0);
 	return (
 		<div className="summary border-4 border-black">
 			<div className="col border-r-2 border-black">

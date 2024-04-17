@@ -88,7 +88,6 @@ function runnningTime() {
     }
   });
   runTime = (arr[arr.length-1] - arr[0]) + 1
-  // console.log((Number(HH) - Number(el.id.replace('tot', '')))+1);
   return runTime;
 }
 /**
@@ -219,7 +218,8 @@ export default function Home({
   dumpInfo: any;
 }) {
   const testparam = useParams();
-  const [isMounted, setMount] = useState(false);
+  const isMounted = useRef(false);
+  const setMount = (flag:boolean)=>{isMounted.current = flag}
   const [showModal, setModal] = useState(false);
   const [calen, setCalen] = useState(false);
   const [time, setTime] = useState('');
@@ -246,7 +246,18 @@ export default function Home({
     'F7': () => { btnRef.current[6]?.click(); },
     'F8': () => { btnRef.current[7]?.click(); },
   };
-
+  useEffect(()=>{
+    // 차량용량
+    if (isToday) {
+      jsize = dumpInfo.jDump;
+      osize = dumpInfo.oDump;
+      rsize = dumpInfo.rDump;
+    } else {
+      jsize = summInfo.jsize;
+      osize = summInfo.osize;
+      rsize = summInfo.rsize;
+    }
+  },[]);
   // handle what happens on key press
   const handleKeyPress = useCallback((event: any) => {
     if (event.key == 'Escape') { //모달 닫기
@@ -271,7 +282,6 @@ export default function Home({
   const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
 
   useEffect(() => {
-    setMount(true);
     const intervalId = setInterval(() => {
       setTime(realTime);
     }, 100);
@@ -304,52 +314,39 @@ export default function Home({
         }),
     }
   }
-
-  if (!mount) {
-    mount = true;
-    // 차량용량
-    if (isToday) {
-      jsize = dumpInfo.jDump;
-      osize = dumpInfo.oDump;
-      rsize = dumpInfo.rDump;
-    } else {
-      jsize = summInfo.jsize;
-      osize = summInfo.osize;
-      rsize = summInfo.rsize;
-
+  useEffect(()=>{
+    if (!isMounted.current) {
+      //등록된 작업자 목록
+      jobList.map((obj: {
+        time: string, id: string,
+        operator: string, job: any,
+        jTot: number, oTot: number, rTot: number,
+        subTot: number
+      }) => {
+        opList[obj.time] = {
+          id: obj.id,
+          name: obj.operator,
+          ...madeJob(obj),
+          jtot: obj.jTot,
+          otot: obj.oTot,
+          rtot: obj.rTot,
+          subtot: obj.subTot,
+        };
+        jobIds[obj.time] = obj.id
+      });
+  
+      const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
+        if (curObj) {
+          jCount = curObj.subtot;
+          dumpCount = curObj.dump;
+          curObj.job.forEach((val: string, idx: number) => {
+            jobArr.push({ [val]: curObj.dump[idx] })
+          });
+        }
+      summId = summInfo.id; //업데이트용
     }
-
-    //등록된 작업자 목록
-    jobList.map((obj: {
-      time: string, id: string,
-      operator: string, job: any,
-      jTot: number, oTot: number, rTot: number,
-      subTot: number
-    }) => {
-      opList[obj.time] = {
-        id: obj.id,
-        name: obj.operator,
-        ...madeJob(obj),
-        jtot: obj.jTot,
-        otot: obj.oTot,
-        rtot: obj.rTot,
-        subtot: obj.subTot,
-      };
-      jobIds[obj.time] = obj.id
-    });
-
-    const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
-    setTimeout(() => { //SSR, CSR 이렇게 두번 rendering되면서 전역변수가 초기화 되는데 타이밍을 못찾겠음.
-      if (curObj) {
-        jCount = curObj.subtot;
-        dumpCount = curObj.dump;
-        curObj.job.forEach((val: string, idx: number) => {
-          jobArr.push({ [val]: curObj.dump[idx] })
-        });
-      }
-    }, 1000);
-    summId = summInfo.id; //업데이트용
-  }
+    return setMount(true);
+  },[]);
 
   return (
     <>
@@ -421,7 +418,7 @@ export default function Home({
         </div>
 
         <div className="relative flex place-items-center mt-7 mb-5">
-          <Summary
+          {(jsize && osize && rsize) && <Summary
             istoday={isToday}
             j={jsize}
             o={osize}
@@ -431,7 +428,7 @@ export default function Home({
             rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
             total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
             maintenance={summInfo.maintenance}
-          />
+          />}
         </div>
         {/* {
           showModal && <InputModal

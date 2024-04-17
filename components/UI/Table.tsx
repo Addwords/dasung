@@ -44,12 +44,12 @@ const Table = ({
 						//수정가능해야함
 						<div className="cursor-pointer" key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
 							onClick={(evt)=>{
-								if(!istoday){
-									return null;
-								}
+								// if(!istoday){
+								// 	return null;
+								// }
 								let cop = evt.target as HTMLElement;
 								setOp(cop.id);
-								setModal(true);
+								setModal(istoday);
 							}}
 						>
 							{jobList[String(val+idx).padStart(2,'0')]?.name}
