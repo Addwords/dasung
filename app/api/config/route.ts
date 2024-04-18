@@ -111,8 +111,12 @@ export async function POST(req: Request) {
 			);
 		} else if (servNm === 'getCompany') {
 			return NextResponse.json(
-				await db.company.findMany({
-				})
+				await db.$queryRaw(
+					Prisma.sql`
+					SELECT *
+					  FROM "Company" c
+					ORDER BY "comCd"
+				`)
 			);
 		} else if (servNm === 'getOperator') {
 			const response = await db.user.findMany({
