@@ -4,12 +4,13 @@ import "./globals.css";
 import { PrimeReactProvider } from 'primereact/api';
 import Tailwind from 'primereact/passthrough/tailwind';
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { Toaster } from "@/components/UI/shadcn/toaster";
 // import ThemeSwitcher from './components/themeSwitcher';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "다성",
+  title: "factory",
   description: "(주)다성",
 };
 
@@ -32,6 +33,7 @@ export default function RootLayout({
             storageKey="dasung-theme">
             {children}
           </ThemeProvider>
+          <Toaster />
         </PrimeReactProvider>
       </body>
     </html>

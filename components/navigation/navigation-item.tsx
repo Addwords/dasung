@@ -27,7 +27,6 @@ export const NavigationItem = ({
 			router.replace(`/`);
 		} else if (id == 'configuration') {
 			// setLoading(true);
-			router.refresh();
 			router.replace(`/${params.company}/config`);
 		} else if (id == 'table') {
 			const day = new Date();

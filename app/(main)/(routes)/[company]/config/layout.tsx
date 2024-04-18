@@ -1,17 +1,13 @@
-import { currentJobs } from "@/lib/current-jobs";
-import React from "react";
+
 import { getAssets, getCompany } from "@/lib/summary-util";
 import { getOperators } from "@/lib/operators";
-import '@/styles/layout/layout.scss';
-import 'primeflex/primeflex.css';
-import 'primeicons/primeicons.css';
 import DumpInfo from "@/components/UI/config/dump-info";
 import OperatorInfo from "@/components/UI/config/operator-info";
 import { Button } from "primereact/button";
 import PasswordInfo from "@/components/UI/config/password-info";
-
-
-const company: { [key: string]: string } = {};
+import '@/styles/layout/layout.scss';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
 
 const ConfLayout = async ({
 	children,
@@ -19,15 +15,12 @@ const ConfLayout = async ({
 }: {
 	children: JSX.Element
 	params: any
-}) => {
-
-	const jobsData = await currentJobs(params.date, params.company);
-	// const sumData = await daySummary(params.date, params.company);
+	}) => {
+	
 	const operObj = await getOperators(params.company);
 	const dumpObj = await getAssets(params.company);
 	const company = await getCompany(params.company);
 	
-	if (jobsData) {
 		return (
 			<>
 				<div className="layout-main-container">
@@ -37,6 +30,7 @@ const ConfLayout = async ({
 							<Button className="pointer-events-none" label="비밀번호" severity="warning" text />
 						</div>
 						<PasswordInfo
+							comCd={company?.comCd}
 							password={company?.password}
 						/>
 						{/*  */}
@@ -61,8 +55,6 @@ const ConfLayout = async ({
 				</div>
 			</>
 		);
-	}
-
 }
 
 export default ConfLayout;

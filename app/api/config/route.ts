@@ -8,17 +8,12 @@ export async function POST(req: Request) {
 		const { servNm,
 			jobId,
 			summId,
-			today,
 			operator,
-			curtime,
-			job,
 			jsize, jtot,
 			osize, otot,
 			rsize, rtot,
-			subtot,
 			jobtime, tot,
-			maintenance,
-			comCd,
+			comCd, newPassword,
 			yyyy, mm, dd
 		} = await req.json();
 
@@ -60,7 +55,17 @@ export async function POST(req: Request) {
 				}
 			});
 
-		} else if (servNm === 'getAssets') {
+		} else if (servNm == 'setPassword') { //비밀번호 갱신
+			return NextResponse.json(
+				await db.company.update({
+					where: {
+						comCd: comCd
+					}, data: {
+						password: newPassword
+					}
+				})
+			);
+		}else if (servNm === 'getAssets') {
 			return NextResponse.json(
 				await db.assets.findMany({
 					where: {
