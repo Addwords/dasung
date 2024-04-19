@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-
+export const dynamic = 'force-dynamic'
 export const currentJobs = async (today: string, company: string) => {
 
     // 오늘 작업이 존재하냐
