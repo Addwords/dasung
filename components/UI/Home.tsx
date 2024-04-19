@@ -6,12 +6,26 @@ import 'primeicons/primeicons.css';
 import Summary from "@/components/UI/Summary";
 import Table from "@/components/UI/Table";
 import AlertModal from "@/components/modals/alert-modal";
-import { jobProps, StringDictionary } from "@/types/type";
+import { StringDictionary } from "@/types/type";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
 import { useParams } from "next/navigation";
+import { Prisma } from "@prisma/client";
+
+interface jobProps {
+	id: string;
+	date: string
+	operator: string
+	time: string
+	job: Prisma.JsonValue
+	jTot: number
+	oTot: number
+	rTot: number
+	subTot: number
+	company: string
+}
 
 let mount = false;
 let jCount = 0;
