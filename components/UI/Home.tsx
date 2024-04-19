@@ -216,7 +216,8 @@ export default function Home({
   jobList: jobProps[];
   summInfo: any;
   dumpInfo: any;
-}) {
+  }) {
+  
   const testparam = useParams();
   const isMounted = useRef(false);
   const setMount = (flag:boolean)=>{isMounted.current = flag}

@@ -23,6 +23,7 @@ const DateLayout = async ({
 	const dumpObj = await getAssets(params.company);
 	const sumData = await daySummary(params.date, params.company, dumpObj);
 	const operators = await getOperators(params.company);
+	
 	if (jobsData) {
 		return (
 			<>
