@@ -3,6 +3,7 @@ import Home from "@/components/UI/Home";
 import React from "react";
 import { daySummary, getAssets } from "@/lib/summary-util";
 import { getOperators } from "@/lib/operators";
+import { jobProps } from "@/types/type";
 
 const DateLayout = async ({
 	children,
@@ -19,7 +20,7 @@ const DateLayout = async ({
 		'004': '(주)청정개발',
 		'005': '(주)청정개발지점',
 	};
-	const jobsData = await currentJobs(params.date, params.company);
+	const jobsData:jobProps[] = await currentJobs(params.date, params.company);
 	const dumpObj = await getAssets(params.company);
 	const sumData = await daySummary(params.date, params.company, dumpObj);
 	const operators = await getOperators(params.company);
