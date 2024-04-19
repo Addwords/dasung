@@ -5,8 +5,9 @@ import { InputText } from 'primereact/inputtext';
 import { useEffect, useRef, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import OtpInput, { AllowedInputTypes } from "react-otp-input";
-import { postFetcher } from '@/lib/common-fetcher';
+import { postFetcher, putFetcher } from '@/lib/common-fetcher';
 import Image from 'next/image';
+import { Button } from 'primereact/button';
 // root location에 반응?
 // const SetupPage = async (compCd:string) => {
 
@@ -34,22 +35,37 @@ const SelectPage = () => {
     const [invalid, setInvalid] = useState(false);
     useEffect(() => {
         // if (!isMounted.current) {
-            postFetcher('/api/config', {
-                servNm: 'getCompany',
-            }).then(res => {
-                let comp = res?.data;
-                setDasugnInfo(comp.slice(0, 3));
-                setChungjuInfo(comp.slice(-2));
-                setLoading(false);
-            });
+        postFetcher('/api/config', {
+            servNm: 'getCompany',
+        }).then(res => {
+            let comp = res?.data;
+            setDasugnInfo(comp.slice(0, 3));
+            setChungjuInfo(comp.slice(-2));
+            setLoading(false);
+        });
         // };
         // return setMounted(true);
-    },[]);
-
+    }, []);
+    const factoryInit = (year: string, comcd: string) => {
+        putFetcher('/api/config', {
+            servNm: 'summaryInit',
+            year: year,
+            comcd:comcd
+        });
+    }
     return (
         <>
             {/* <button>(주)다성 용인지점</button> */}
             {/* <a href={`/001/${today}`}>(주)다성 용인지점</a> */}
+            {/* <div className='flex flex-col'>
+                {chungjuInfo.length > 0 &&
+                    chungjuInfo.map((obj: any, idx: number) => (
+                        <Button key={idx} label={`${obj.comNm} 초기화`}
+                            onClick={() => factoryInit('2024', obj.comCd)}
+                        />
+                    ))
+                }
+            </div> */}
             <div className="flex h-lvh justify-center" style={{ alignItems: 'center' }}>
                 {loading &&
                     <div className="absolute backdrop-brightness-95 loadingwrap" style={{ zIndex: 1102 }}>
@@ -134,22 +150,22 @@ const SelectPage = () => {
                     <div className="flex flex-col items-center text-center lg:max-w-5xl lg:mb-0 lg:text-left">
                         <Image alt='다성' src={'/chungju_logo.png'} width={80} height={80} priority={true} className='mb-9' />
                         <div className='flex flex-col pl-5'>
-							{chungjuInfo.length > 0 &&
-								chungjuInfo.map((val: any, idx: number) => (
-									<a key={idx}
-										onClick={() => {
-											setComNm(val.comNm);
-											setPassword('');
-											setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
-											setPwModal(true);
-										}}
-										className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
+                            {chungjuInfo.length > 0 &&
+                                chungjuInfo.map((val: any, idx: number) => (
+                                    <a key={idx}
+                                        onClick={() => {
+                                            setComNm(val.comNm);
+                                            setPassword('');
+                                            setCompw({ pw: val.password, location: `/${val.comCd}/${today}` });
+                                            setPwModal(true);
+                                        }}
+                                        className="group rounded-lg border border-transparent px-5 py-4 transition-colors mb-4
 							hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer"
-										rel="noopener noreferrer">
-										<h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
-									</a>
-								))
-							}
+                                        rel="noopener noreferrer">
+                                        <h2 className={`mb-3 text-2xl font-semibold`}>{val.comNm}</h2>
+                                    </a>
+                                ))
+                            }
                         </div>
                     </div>
                 </div>

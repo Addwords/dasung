@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { ActionTooltip } from "@/components/action-tooltip";
 import { SyncLoader } from "react-spinners";
@@ -33,7 +32,8 @@ export const NavigationItem = ({
 			location.replace(`/${params.company}/${day.getFullYear()}${String(day.getMonth() + 1).padStart(2, '0')}${String(day.getDate()).padStart(2, '0')}`);
 		} else if (id == 'analy') {
 			// router.prefetch(`/${params.company}/analy`, { kind: PrefetchKind.FULL });
-			location.replace(`/${params.company}/analy`);
+			router.replace(`/${params.company}/analy`,{scroll:true});
+			// location.replace(`/${params.company}/analy`);
 		}
 	}
 	return (

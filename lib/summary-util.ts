@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { headers } from "next/headers";
+export const dynamic = 'force-dynamic'
 export const daySummary = async (today: string, company: string, dumpInfo: any) => {
     const header = headers()
     const ip = (header.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];

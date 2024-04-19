@@ -46,7 +46,7 @@ function Dump(kind: string) {
     alert('불가능 합니다.');
     return
   }
-
+  
   let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
 
   if (!!mertalIn) {
@@ -334,8 +334,8 @@ export default function Home({
         };
         jobIds[obj.time] = obj.id
       });
-  
-      const curObj = opList[String(new Date().getHours()).padStart(2, '0')];
+      const curHour = new Date().getHours();
+      const curObj = opList[String(curHour).padStart(2, '0')];
         if (curObj) {
           jCount = curObj.subtot;
           dumpCount = curObj.dump;
@@ -343,6 +343,7 @@ export default function Home({
             jobArr.push({ [val]: curObj.dump[idx] })
           });
         }
+      realHH = curHour; //init
       summId = summInfo.id; //업데이트용
     }
     return setMount(true);

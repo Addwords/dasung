@@ -73,11 +73,12 @@ export async function POST(req: Request) {
 				}
 			})
 		} else if (servNm === 'getAssets') {
-			return await db.assets.findMany({
+			const response = await db.assets.findMany({
 				where: {
 					comCd: comCd
 				},
 			});
+			return NextResponse.json(response);
 		} else if (servNm === 'getOperator') {
 			const response = await db.user.findMany({
 				where: {

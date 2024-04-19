@@ -137,7 +137,7 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
 	try {
 
-		const { servNm, comcd, name, role } = await req.json();
+		const { servNm, comcd, name, role, year } = await req.json();
 		if (servNm == 'setOp') {
 			await db.user.create({
 				data: {
@@ -146,6 +146,42 @@ export async function PUT(req: Request) {
 					role: role
 				}
 			});
+		} else if (servNm == 'summaryInit') {
+			const obj = {
+                date: '',
+                yyyy: year,
+                mm: '',
+                dd: '',
+                jsize: 16,
+                jdump: 0,
+                osize: 16,
+                odump: 0,
+                rsize: 16,
+                rdump: 0,
+                jobtime: 0,
+                total: 0,
+                maintenance: '',
+                company: comcd
+            }
+			const objList: any = []; //372
+			for (let mon = 1; mon < 13; mon++) {
+				for (let idx = 1; idx < 32; idx++){
+					let month = String(mon).padStart(2, '0');
+					let day = String(idx).padStart(2, '0');
+					objList.push({
+						...obj
+						, date: `${year + month + day}`
+						, mm : month
+						, dd: day
+					});
+				}
+			}
+
+			
+            await db.summary.createMany({
+                data: objList
+			});
+			
 		}
 		// return NextResponse.json(table);
 		return NextResponse.json('success');

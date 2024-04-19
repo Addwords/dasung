@@ -1,5 +1,5 @@
 'use client';
-
+import 'primeflex/primeflex.css';
 const Configure = () => {
 	return (
 		<>

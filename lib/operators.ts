@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
-
+export const dynamic = 'force-dynamic'
 export const getOperators = async (company: string) => {
 
 	// 회사코드로 운전자들 가져오기

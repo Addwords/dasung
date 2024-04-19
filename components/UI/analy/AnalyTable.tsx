@@ -48,7 +48,7 @@ export default function AnalyTable(props: any) {
 			const initArr: { [key: string]: string }[] = [...Array(31)].map((val, idx) => {
 				return { date: `${idx + 1}일`, ...tempObj }
 			});
-
+			
 			yearArr.map((mon, idx) => {
 				if (dataSet[mon]?.length > 0) {
 					dataSet[mon].map((obj: any, idx: number) => {
@@ -226,7 +226,7 @@ export default function AnalyTable(props: any) {
 		let cell = data.data;
 		let day = cell.rowIndex + 1; //선택일
 		let mon = Math.ceil(cell.cellIndex / 2); //선택월
-		return (baseM > mon || (baseM == mon && baseD > day)) ? true : false;
+		return (baseM > mon || (baseM == mon && baseD > day)) && cell.cellIndex > 0 ? true : false;
 	};
 
 	const isCellSelectable = (event: DataTableDataSelectableEvent) => isSelectable(event);
@@ -234,9 +234,9 @@ export default function AnalyTable(props: any) {
 	return (
 		<div className="card nav">
 			<div className="flex justify-end non-print">
-			<Button type="button" icon="pi pi-file-excel" severity="success" text onClick={exportExcel} data-pr-tooltip="XLS" />
+			<Button type="button" icon="pi pi-file-excel" severity="success" label='엑셀' text onClick={exportExcel} data-pr-tooltip="XLS" />
+              <Button type='button' icon='pi pi-print' severity="secondary" label='인쇄' text onClick={analPrint} />
 			{/* <Button type="button" icon="pi pi-file-pdf" severity="warning" rounded onClick={ } data-pr-tooltip="PDF" /> */}
-              <Button type='button' icon='pi pi-print' severity="secondary" text onClick={analPrint} />
             </div>
 			<DataTable value={analy} headerColumnGroup={headerGroup} footerColumnGroup={footerGroup}
 				tableStyle={{ width: '1500px' }} size='small'
@@ -262,7 +262,7 @@ export default function AnalyTable(props: any) {
 					bodyStyle={{ textAlign: 'center' }}
 					bodyClassName={'font-bold date-col'}
 				/>
-				{yearArr.map((val) => (
+				{yearArr.map((val,i) => (
 					['Time', 'Cubic'].map((wrap) => (
 						<Column
 							key={val + wrap}

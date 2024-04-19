@@ -9,6 +9,7 @@ const AnalyLayout = async ({
 	children: JSX.Element
 	params: any
 }) => {
+	console.log('AnalyLayout📊');
 	return (
 		<>
 			<link id="theme-css" href={`/themes/shadcn/theme.css`} rel="stylesheet"></link>
