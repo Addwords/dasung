@@ -90,7 +90,7 @@ function runnningTime() {
     }
   });
   runTime = (arr[arr.length-1] - arr[0]) + 1
-  return runTime;
+  return Number(runTime);
 }
 /**
  * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
@@ -442,7 +442,7 @@ export default function Home({
           />
         }
         {isToday && //오늘만 가능함
-          <div className="mr-2 grid text-center lg:max-w-5xl lg:mb-0 grid-cols-4 non-print btn-area">
+          <div className="mr-2 grid text-center lg:max-w-5xl lg:mb-0 grid-cols-1 non-print btn-area">
             {(jsize && osize && rsize) &&
               btnList.map((obj, idx) => (
                 <Button
