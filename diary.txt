@@ -67,7 +67,6 @@ sudo apt-get install nodejs
 2. [GIT]
 sudo apt-get install git
 
-
 3. [NGINX]
 sudo apt-get install nginx
 sudo systemctl status nginx
@@ -75,7 +74,11 @@ sudo systemctl status nginx
 
 cd /etc/nginx/conf.d
 touch 도메인명.conf
-vi 도메인명.conf
+vi 도메인명.con
+
+[VIP]
+ 
+
 
 ```
 server {
@@ -181,3 +184,14 @@ postFetcher사용중에 url 오타가 있었더니
 마무리 준비
 초기데이터 적재하는거도 만들어야할듯
 --------------------------------------------
+==24.04.23==
+운영서버설정
+[iwinv]
+dasung04 / 12qwaszx,./
+[VIP]
+49.247.173.105
+[domain]
+dasung.co.kr
+root / 12qwaszx,./
+
+

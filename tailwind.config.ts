@@ -22,7 +22,12 @@ const config: Config = {
         DEFAULT: "hsl(var(--card))",
         foreground: "hsl(var(--card-foreground))",
       },
-    },
+      screens: {
+        'xs': '375px',
+        '3xl':'1710px',
+        'pad': {min:'820px',max:'1024px'}
+      }
+    }
   },
   plugins: [],
 };

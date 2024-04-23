@@ -90,15 +90,20 @@ export const getAssets = async (comcd: string) => {
 
     if (asset)
         return asset;
-
-    await db.assets.create({
-        data: {
-            jDump: 16,
-            oDump: 16,
-            rDump: 16,
-            comCd: comcd
-        }
-    });
+    try {
+        if (Number.isNaN(parseInt(comcd)))
+            throw new Error('create Assets parameter Error');
+        await db.assets.create({
+            data: {
+                jDump: 16,
+                oDump: 16,
+                rDump: 16,
+                comCd: comcd
+            }
+        });
+    } catch (e) {
+        console.error(e);
+    }
 
     return await db.assets.findFirst({
         where: {

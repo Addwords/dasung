@@ -34,30 +34,40 @@ const SelectPage = () => {
     const [chungjuInfo, setChungjuInfo] = useState([]);
     const [invalid, setInvalid] = useState(false);
     useEffect(() => {
-        // if (!isMounted.current) {
-        postFetcher('/api/config', {
-            servNm: 'getCompany',
-        }).then(res => {
-            let comp = res?.data;
-            setDasugnInfo(comp.slice(0, 3));
-            setChungjuInfo(comp.slice(-2));
-            setLoading(false);
-        });
-        // };
-        // return setMounted(true);
+        if (!isMounted.current) {
+            postFetcher('/api/config', {
+                servNm: 'getCompany',
+            }).then(res => {
+                let comp = res?.data;
+                setDasugnInfo(comp.slice(0, 3));
+                setChungjuInfo(comp.slice(-2));
+                setLoading(false);
+            });
+        };
+        return setMounted(true);
     }, []);
     const factoryInit = (year: string, comcd: string) => {
         putFetcher('/api/config', {
             servNm: 'summaryInit',
             year: year,
-            comcd:comcd
+            comcd: comcd
         });
     }
     return (
         <>
             {/* <button>(주)다성 용인지점</button> */}
             {/* <a href={`/001/${today}`}>(주)다성 용인지점</a> */}
+            {/* 공장 초기화🚫🚫🚫 */}
             {/* <div className='flex flex-col'>
+                {dasungInfo.length > 0 &&
+                    dasungInfo.map((obj: any, idx: number) => (
+                        <Button key={idx} label={`${obj.comNm} 초기화`}
+                            onClick={() => factoryInit('2024', obj.comCd)}
+                        />
+                    ))
+                }
+            </div>
+            <div className='flex flex-col'>
                 {chungjuInfo.length > 0 &&
                     chungjuInfo.map((obj: any, idx: number) => (
                         <Button key={idx} label={`${obj.comNm} 초기화`}

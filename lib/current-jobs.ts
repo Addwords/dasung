@@ -13,32 +13,37 @@ export const currentJobs = async (today: string, company: string) => {
     if (daywork.length > 0) {
         return daywork;
     }
+    try {
+        if (Number.isNaN(parseInt(today)))
+            throw new Error('create Job parameter Error');
+        let jobObj = {
+            date: today
+            , operator: ''
+            , time: ''
+            , job: []
+            , jTot: 0
+            , oTot: 0
+            , rTot: 0
+            , subTot: 0
+            , company: company
+        };
 
-    let jobObj = {
-        date: today
-        , operator: ''
-        , time: ''
-        , job: []
-        , jTot: 0
-        , oTot: 0
-        , rTot: 0
-        , subTot: 0
-        , company: company
-    };
+        let objList: any = [];
+        Array(19).fill({}).forEach((val, idx) => {
+            // val['time'] = String(idx + 5).padStart(2, '0');
+            objList.push({
+                ...jobObj
+                , time: String(idx + 5).padStart(2, '0')
+            })
+        });
 
-    let objList: any = [];
-    Array(19).fill({}).forEach((val, idx) => {
-        // val['time'] = String(idx + 5).padStart(2, '0');
-        objList.push({
-            ...jobObj
-            , time: String(idx + 5).padStart(2, '0')
-        })
-    });
-
-    //새작업 세트
-    await db.jobs.createMany({
-        data: objList
-    });
+        //새작업 세트
+        await db.jobs.createMany({
+            data: objList
+        });
+    } catch (e) {
+        console.error(e);
+    }
 
     const newwork = await db.jobs.findMany({
         where: {

@@ -27,7 +27,7 @@ export const ActionTooltip = ({
                     {children}
                 </TooltipTrigger>
                 <TooltipContent side={side} align={ align}>
-                    <p className="font-semibold text-sm capitalize">
+                    <p className="text-sm capitalize" style={{fontWeight: 600}}>
                         {label.toLowerCase()}
                     </p>
                 </TooltipContent>

@@ -12,6 +12,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
 import { useParams } from "next/navigation";
+import ApprovalHeader from "./approval/header";
+import { GridLoader } from "react-spinners";
 
 let mount = false;
 let jCount = 0;
@@ -217,7 +219,7 @@ export default function Home({
   summInfo: any;
   dumpInfo: any;
 }) {
-  const testparam = useParams();
+  const [loading,setLoading] = useState(true);
   const isMounted = useRef(false);
   const setMount = (flag:boolean)=>{isMounted.current = flag}
   const [showModal, setModal] = useState(false);
@@ -229,7 +231,8 @@ export default function Home({
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   const isToday = new Date().toDateString() === new Date(calDate).toDateString();
   const jobprint = () => {
-    if (/Android|iPhone/i.test(navigator.userAgent)) {
+    console.log(navigator.userAgent);
+    if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
       alert('PC환경에서만 가능합니다.');
     } else {
       window.print();
@@ -257,6 +260,7 @@ export default function Home({
       osize = summInfo.osize;
       rsize = summInfo.rsize;
     }
+    setLoading(false);
   },[]);
   // handle what happens on key press
   const handleKeyPress = useCallback((event: any) => {
@@ -279,7 +283,17 @@ export default function Home({
     };
   }, [handleKeyPress]);
 
-  const btnNm = ['고장', '청소', '원자재 불량', '대석파쇄'];
+  const btnList = [
+    { txt: '자가덤프', subTxt: `${jsize}m<sup>3</sup>`, color: '', func: () => { Dump('jd') } },
+    { txt: '자가덤프', subTxt: `${osize}m<sup>3</sup>`, color: '#ffd900', func: () => {Dump('od')} },
+    { txt: '자가덤프', subTxt: `${rsize}m<sup>3</sup>`, color: '#00b0f0', func: () => {Dump('rd')} },
+    { txt: '수정', subTxt: '', color: '', func: () => {jCount > 0 ? setModal(true) : setModal(false) } },
+
+    { txt: '고장', subTxt: '', color: '', func: () => repair('고장') },
+    { txt: '청소', subTxt: '', color: '', func: () => repair('청소') },
+    { txt: '원자재 불량', subTxt: '', color: '', func: () => repair('원자재 불량') },
+    { txt: '대석파쇄', subTxt: '', color: '', func: () => repair('대석파쇄') },
+  ];
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -289,12 +303,6 @@ export default function Home({
   }, []);
 
   function madeJob(obj: any) {
-    // if (set === 'key')
-    //   return obj.job?.map((val: Object) => { return Object.keys(val)??[] })
-    //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
-    // if (set === 'value')
-    //   return obj.job?.map((val: Object) => { return Object.values(val)??[] })
-    //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
     if (obj.job.length === 0) {
       return { job: [], dump: [] };
     }
@@ -351,34 +359,27 @@ export default function Home({
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24 print-top">
+      {loading &&
+          <div className="absolute backdrop-brightness-95 loadingwrap" style={{ zIndex: 1102 }}>
+              <GridLoader color="rgb(103 123 220)" size={20} />
+          </div>
+      }
+      <main className="flex min-h-screen flex-col items-center pad:ml-10 justify-between print-top 3xl:p-24 lg:p-12 mb-24">
         {/* 프린트시 보이는 영역 */}
         <div className="print flex justify-between w-full max-w-6xl">
           <div className="grid">
             <div className="flex text-2xl">원석투입정보 &nbsp;<div className="text-lg">{company.nm}</div></div>
             <p className="text-base font-mono">{today}</p>
           </div>
-          <div className="grid border text-center approval border-black">
-            <div className="border-black border-b border-r text-xs">생산팀장</div>
-            <div className="border-black border-b border-r text-xs">관리담당</div>
-            <div className="border-black border-b border-r text-xs">관리팀장</div>
-            <div className="border-black border-b border-r text-xs">팀장</div>
-            <div className="border-black border-b border-r text-xs">팀장</div>
-            <div className="border-black border-b text-xs">총괄팀장</div>
-            <div className="border-black border-r"></div>
-            <div className="border-black border-r"></div>
-            <div className="border-black border-r"></div>
-            <div className="border-black border-r"></div>
-            <div className="border-black border-r"></div>
-            <div className=""></div>
-          </div>
+          <ApprovalHeader/>
         </div>
         {/* 화면에서만 보일영역 */}
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex non-print">
-          <p className="fixed left-0 top-0 flex w-full justify-center 
+          {/* fixed left-0 top-0 */}
+          <p className="flex w-full justify-center 
                         border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl
                         dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto
-                        lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
+                        lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30 lg:flex">
             <code className="clock" id="time">{time}</code>
           </p>
           <div className="flex">
@@ -392,9 +393,11 @@ export default function Home({
               onHide={() => { setCalen(false) }}
             />}
           </div>
-          <div className="fixed bottom-0 left-0 block h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
+          {/* fixed bottom-0 left-0 */}
+          <div className="block w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black 
+          lg:static lg:h-auto lg:w-auto lg:bg-none non-print">
             <a
-              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl font-semibold"
+              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0 text-2xl font-semibold sm:p-0"
               rel="noopener noreferrer"
             >
               {company.nm}
@@ -431,13 +434,6 @@ export default function Home({
             maintenance={summInfo.maintenance}
           />}
         </div>
-        {/* {
-          showModal && <InputModal
-            title={tit}
-            onHide={() => { setModal(false); }}
-            onInput={(val:string) => { setModal(false); Dump(tit,val); }}
-          />
-        } */}
         {
           showModal && <AlertModal
             // title={tit}
@@ -446,52 +442,19 @@ export default function Home({
           />
         }
         {isToday && //오늘만 가능함
-          <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
-            <Button
-              text='자가덤프'
-              subText={`${jsize}m<sup>3</sup>`}
-              // ref={(el:JSX.Element)=>btnRef.current.push(el)}
-              // btnRef={(el:any)=>{btnRef.current.push(el)}}
-              btnRef={(el: any) => { btnRef.current[0] = el; }}
-              func={() => Dump('jd')}
-            />
-            <Button
-              text='외부덤프'
-              subText={`${osize}m<sup>3</sup>`}
-              color={'#ffd900'}
-              btnRef={(el: any) => { btnRef.current[1] = el; }}
-              func={() => Dump('od')}
-            />
-            <Button
-              text='로우더'
-              subText={`${rsize}m<sup>3</sup>`}
-              color={'#00b0f0'}
-              btnRef={(el: any) => { btnRef.current[2] = el; }}
-              func={() => Dump('rd')}
-            />
-            <Button
-              text='수정'
-              desc=''
-              btnRef={(el: any) => { btnRef.current[3] = el; }}
-              func={() => {
-                jCount > 0 ? setModal(true) : setModal(false)
-              }}
-            />
-            {
-              btnNm.map((val, idx) => (
+          <div className="mr-2 grid text-center lg:max-w-5xl lg:mb-0 grid-cols-4 non-print btn-area">
+            {(jsize && osize && rsize) &&
+              btnList.map((obj, idx) => (
                 <Button
-                  key={val}
-                  text={val}
-                  btnRef={(el: any) => { btnRef.current[idx + 4] = el; }}
-                  func={() => repair(val)}
+                  key={idx}
+                  text={obj.txt}
+                  subText={obj.subTxt}
+                  color={obj.color}
+                  btnRef={(el: any) => { btnRef.current.push(el); }}
+                  func={() => obj.func() }
                 />
               ))
             }
-            {/* <Button
-              text='인쇄'
-              color={'#6d6d6d'}
-              func={() => { print() }}
-            /> */}
           </div>}
       </main>
     </>

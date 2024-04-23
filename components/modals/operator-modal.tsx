@@ -59,7 +59,7 @@ export default function OperatorModal(props: any) {
 								<button
 									key={idx}
 									style={{ flexBasis: '30%', flexGrow: 0 }}
-									className="bg-sky-900 text-white active:bg-indigo-950 font-bold uppercase text-xl px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+									className="bg-sky-900 text-white active:bg-indigo-950 font-bold uppercase text-xl px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:text-sm"
 									type="button"
 									onClick={(evt) => {
 										let opernm = evt.target as HTMLElement;
@@ -71,7 +71,7 @@ export default function OperatorModal(props: any) {
 								</button>
 							))
 							}
-							<button className="bg-orange-400 text-black active:bg-sky-400 font-bold uppercase text-lg px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+							<button className="bg-orange-400 text-black active:bg-sky-400 font-bold uppercase text-lg px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:text-sm"
 								style={{ flexBasis: '30%', flexGrow: 0 }}
 								type="button" onClick={() => {
 									props.setop('');
