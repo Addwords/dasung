@@ -89,8 +89,10 @@ function runnningTime() {
       arr.push(Number(el.id.replace('tot', '')));
     }
   });
-  runTime = (arr[arr.length-1] - arr[0]) + 1
-  return Number(runTime);
+  if (arr.length > 0) {
+    runTime = (arr[arr.length - 1] - arr[0]) + 1
+  }
+  return runTime;
 }
 /**
  * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
@@ -155,7 +157,7 @@ async function calculate(kind: string, HH: string, MM: string) {
     otot: odump,
     rsize: rsize,
     rtot: rdump,
-    jobtime: runnningTime(),
+    jobtime: runnningTime() ?? 0,
     tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
   }
   await axios.post('/api/table', summObj);
