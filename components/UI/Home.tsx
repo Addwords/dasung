@@ -163,7 +163,7 @@ async function calculate(kind: string, HH: string, MM: string) {
   await axios.post('/api/table', summObj);
 }
 
-async function repair(res: string) {
+function repair(res: string) {
   let HH = new Date().getHours();
   let MM = new Date().getMinutes();
   const rep = document.getElementById('rep') as HTMLElement;
@@ -172,10 +172,16 @@ async function repair(res: string) {
   appCh.addEventListener('click', (evt) => {
     const tgt = evt.target as HTMLElement;
     tgt && tgt.remove();
+    updateRepair();
   });
   appCh.textContent = `${HH}시 ${MM}분 ${res}`;
   rep.appendChild(appCh);
 
+  updateRepair();
+}
+
+async function updateRepair() {
+  const rep = document.getElementById('rep') as HTMLElement;
   let maintenance: string[] = [];
   Array.from(rep.children).map((el, idx) => {
     maintenance.push(el.textContent || '');
@@ -186,8 +192,7 @@ async function repair(res: string) {
     summId: summId,
     maintenance: maintenance.join(',')
   }
-  await axios.post('/api/table', repObj);
-
+  await axios.post('/api/table', repObj);  
 }
 
 function realTime() {
@@ -434,6 +439,7 @@ export default function Home({
             rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
             total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
             maintenance={summInfo.maintenance}
+            updateRepair={updateRepair}
           />}
         </div>
         {

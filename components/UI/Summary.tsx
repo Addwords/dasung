@@ -28,7 +28,8 @@ const Summary = (props: any) => {
 					{props.maintenance.split(',').map((txt: string, idx: number) => (
 						<p key={idx} className="rep-list" onClick={evt => {
 							const tgt = evt.target as HTMLElement;
-    						tgt && tgt.remove();
+							tgt && tgt.remove();
+							props.updateRepair();
 						} }>{ txt}</p>
 					))}
 				</div>
