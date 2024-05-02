@@ -143,10 +143,11 @@ export default function AnalyTable(props: any) {
 	const headerGroup = (
 		<ColumnGroup>
 			<Row>
-				<Column header="" rowSpan={3} style={{ borderRight: '1px solid' }} />
+				<Column header="" style={{borderBottom:'none'}} />
 				<Column header={`${props.year}년 생산현황`} alignHeader={'center'} colSpan={24} />
 			</Row>
 			<Row>
+				<Column header="" rowSpan={2} style={{borderRight: '1px solid' }} />
 				{
 					[...Array(12).fill(1)].map((val, idx) => (
 						<Column key={idx}

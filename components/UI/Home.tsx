@@ -15,7 +15,6 @@ import { useParams } from "next/navigation";
 import ApprovalHeader from "./approval/header";
 import { GridLoader } from "react-spinners";
 
-let mount = false;
 let jCount = 0;
 let dumpCount = [''];
 let subTot = [];
@@ -292,8 +291,8 @@ export default function Home({
 
   const btnList = [
     { txt: '자가덤프', subTxt: `${jsize}m<sup>3</sup>`, color: '', func: () => { Dump('jd') } },
-    { txt: '자가덤프', subTxt: `${osize}m<sup>3</sup>`, color: '#ffd900', func: () => {Dump('od')} },
-    { txt: '자가덤프', subTxt: `${rsize}m<sup>3</sup>`, color: '#00b0f0', func: () => {Dump('rd')} },
+    { txt: '외부덤프', subTxt: `${osize}m<sup>3</sup>`, color: '#ffd900', func: () => {Dump('od')} },
+    { txt: '로우더',   subTxt: `${rsize}m<sup>3</sup>`, color: '#00b0f0', func: () => {Dump('rd')} },
     { txt: '수정', subTxt: '', color: '', func: () => {jCount > 0 ? setModal(true) : setModal(false) } },
 
     { txt: '고장', subTxt: '', color: '', func: () => repair('고장') },

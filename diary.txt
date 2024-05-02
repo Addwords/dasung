@@ -110,7 +110,7 @@ websocket url 추가
 24.04.01
 테이블 데이터 연동시키기
 로딩바
- ps -ef|grep -E 'npm|next-'|grep -v 'grep'
+ 'ps -ef|grep -E "npm|next-"|grep -v "grep"'
 ```
    netstat -na --ip                                     : tcp/udp의 세션 목록 표시
    netstat -na | grep ESTABLISHED | wc -l               : 활성화된 세션수 확인
@@ -193,5 +193,3 @@ dasung04 / 12qwaszx,./
 [domain]
 dasung.co.kr
 root / 12qwaszx,./
-
-
