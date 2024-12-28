@@ -67,7 +67,6 @@ sudo apt-get install nodejs
 2. [GIT]
 sudo apt-get install git
 
-
 3. [NGINX]
 sudo apt-get install nginx
 sudo systemctl status nginx
@@ -75,7 +74,11 @@ sudo systemctl status nginx
 
 cd /etc/nginx/conf.d
 touch 도메인명.conf
-vi 도메인명.conf
+vi 도메인명.con
+
+[VIP]
+ 
+
 
 ```
 server {
@@ -97,7 +100,7 @@ vi nginx.conf
 sudo apt-get install nohup
 
 kill명령어 멀티?✅
-$ ps -ef|grep -E 'npm|next-'|grep -v 'grep'|awk '{print $2}'|xargs kill 😎
+$ 'ps -ef|grep -E "npm|next-"|grep -v "grep"|gawk -F `print $2`|xargs kill' 😎
 ---------------------
 24.03.31
 공장선택하는 첫화면 만들기
@@ -107,7 +110,7 @@ websocket url 추가
 24.04.01
 테이블 데이터 연동시키기
 로딩바
- ps -ef|grep -E 'npm|next-'|grep -v 'grep'
+ 'ps -ef|grep -E "npm|next-"|grep -v "grep"'
 ```
    netstat -na --ip                                     : tcp/udp의 세션 목록 표시
    netstat -na | grep ESTABLISHED | wc -l               : 활성화된 세션수 확인
@@ -182,3 +185,12 @@ postFetcher사용중에 url 오타가 있었더니
 초기데이터 적재하는거도 만들어야할듯
 --------------------------------------------
 prisma db push => 현재 테이블 디비에 반영?
+==24.04.23==
+운영서버설정
+[iwinv]
+dasung04 / 12qwaszx,./
+[VIP]
+49.247.173.105
+[domain]
+dasung.co.kr
+root / 12qwaszx,./

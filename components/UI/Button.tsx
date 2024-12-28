@@ -6,7 +6,7 @@ const Button = (props: any) =>{
 		  <a
             className="group rounded-lg border border-slate-300
             px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100
-            hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer mb-2"
+            hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 cursor-pointer mr-2 mb-2"
 			rel="noopener noreferrer"
       style={{backgroundColor:props.color}}
       ref={(el:any)=>{

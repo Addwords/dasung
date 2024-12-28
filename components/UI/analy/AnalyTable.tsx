@@ -91,7 +91,7 @@ export default function AnalyTable(props: any) {
 
 	const saveProduct = () => {
 		setSubmitted(true);
-		if (modVal || modVal === 0) {
+		if ((String(modVal).trim() != '' && modVal) || modVal === 0) {
 			let [m, d] = modDate.split('.');
 			let summId = dataSet[yearArr[Number(m) - 1]][Number(d) - 1].id;
 			let servObj: { [key: string]: any } = {
@@ -143,10 +143,11 @@ export default function AnalyTable(props: any) {
 	const headerGroup = (
 		<ColumnGroup>
 			<Row>
-				<Column header="" rowSpan={3} style={{ borderRight: '1px solid' }} />
+				<Column header="" style={{borderBottom:'none'}} />
 				<Column header={`${props.year}년 생산현황`} alignHeader={'center'} colSpan={24} />
 			</Row>
 			<Row>
+				<Column header="" rowSpan={2} style={{borderRight: '1px solid' }} />
 				{
 					[...Array(12).fill(1)].map((val, idx) => (
 						<Column key={idx}
@@ -178,14 +179,9 @@ export default function AnalyTable(props: any) {
 						))
 					))
 				}
-				{/* {
-                    yearArr.map((val,idx) => (
-                    ))
-                } */}
 			</Row>
 		</ColumnGroup>
 	);
-	///
 	///
 	const footerGroup = (
 		<ColumnGroup>
@@ -287,13 +283,10 @@ export default function AnalyTable(props: any) {
 						autoFocus
 						mode="decimal"
 						inputStyle={{
-							borderColor: submitted && modVal == null ? '#e24c4c' : ''
+							borderColor: submitted && modVal == null && String(modVal).trim() == '' ? '#e24c4c' : ''
 						}}
-					// className={classNames({
-					//     'p-invalid': submitted && modVal == null
-					// })}
 					/>
-					{submitted && modVal == null && <small className="p-invalid" style={{ color: '#e24c4c' }}>필수값입니다.</small>}
+					{submitted && modVal == null && String(modVal).trim() == '' && <small className="p-invalid" style={{ color: '#e24c4c' }}>필수값입니다.</small>}
 				</div>
 			</Dialog>
 		</div>

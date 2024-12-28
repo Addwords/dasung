@@ -56,7 +56,7 @@ const SelectPage = () => {
         putFetcher('/api/config', {
             servNm: 'summaryInit',
             year: year,
-            comcd:comcd
+            comcd: comcd
         });
     }
 
@@ -64,7 +64,17 @@ const SelectPage = () => {
         <>
             {/* <button>(주)다성 용인지점</button> */}
             {/* <a href={`/001/${today}`}>(주)다성 용인지점</a> */}
+            {/* 공장 초기화🚫🚫🚫 */}
             {/* <div className='flex flex-col'>
+                {dasungInfo.length > 0 &&
+                    dasungInfo.map((obj: any, idx: number) => (
+                        <Button key={idx} label={`${obj.comNm} 초기화`}
+                            onClick={() => factoryInit('2024', obj.comCd)}
+                        />
+                    ))
+                }
+            </div>
+            <div className='flex flex-col'>
                 {chungjuInfo.length > 0 &&
                     chungjuInfo.map((obj: any, idx: number) => (
                         <Button key={idx} label={`${obj.comNm} 초기화`}
