@@ -7,6 +7,7 @@ export interface jobProps {
 	operator: string
 	time: string
 	job: Prisma.JsonValue
+	material: string[]
 	jTot: number
 	oTot: number
 	rTot: number
@@ -45,10 +46,17 @@ export interface ChartDataState {
 	polarData?: ChartData;
 	radarData?: ChartData;
 }
+
 export interface ChartOptionsState {
 	barOptions?: ChartOptions;
 	pieOptions?: ChartOptions;
 	lineOptions?: ChartOptions;
 	polarOptions?: ChartOptions;
 	radarOptions?: ChartOptions;
+}
+
+export interface Vehicle{
+	volInternal:number; //내부덤프
+	volExternal:number; //외부덤프
+	volLoader:	number; //로우더
 }

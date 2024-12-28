@@ -26,14 +26,14 @@ export const NavigationItem = ({
 			router.replace(`/`);
 		} else if (id == 'configuration') {
 			// setLoading(true);
-			router.replace(`/${params.company}/config`);
+			router.replace(`/${params.compCd}/config`);
 		} else if (id == 'table') {
 			const day = new Date();
-			location.replace(`/${params.company}/${day.getFullYear()}${String(day.getMonth() + 1).padStart(2, '0')}${String(day.getDate()).padStart(2, '0')}`);
+			location.replace(`/${params.compCd}/${day.getFullYear()}${String(day.getMonth() + 1).padStart(2, '0')}${String(day.getDate()).padStart(2, '0')}`);
 		} else if (id == 'analy') {
-			// router.prefetch(`/${params.company}/analy`, { kind: PrefetchKind.FULL });
-			router.replace(`/${params.company}/analy`,{scroll:true});
-			// location.replace(`/${params.company}/analy`);
+			// router.prefetch(`/${params.compCd}/analy`, { kind: PrefetchKind.FULL });
+			router.replace(`/${params.compCd}/analy`,{scroll:true});
+			// location.replace(`/${params.compCd}/analy`);
 		}
 	}
 	return (

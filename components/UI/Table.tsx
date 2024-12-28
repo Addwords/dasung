@@ -27,7 +27,7 @@ const Table = ({
 	// const addOpNmRef = (el:HTMLDivElement)=>{el&&opNmRef.current.push(el);};
 
 	const jobTime = Array(joblimit > 14 ? joblimit : 14).fill(5); //작업기본시간 5~18시..늘려야하나?
-	
+	// console.log('Table jobList:::',jobList);
 	return (
 		<>
 			{showModal && <OperatorModal
@@ -42,7 +42,7 @@ const Table = ({
 					<div className="min-h-14 text-center pt-1 border border-black" style={{wordBreak: 'keep-all'}}>운전자 성명</div>
 					{jobTime.map((val,idx) => (
 						//수정가능해야함
-						<div className="cursor-pointer" key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
+						<div className={`cursor-pointer oper-${String(val+idx).padStart(2,'0')}`} key={idx + 1} id={jobList[String(val+idx).padStart(2,'0')]?.id}
 							onClick={(evt)=>{
 								// if(!istoday){
 								// 	return null;
@@ -71,7 +71,7 @@ const Table = ({
 					{
 						jobTime.map((val, i) => (
 							[...Array(40).fill(1)].map((x, idx) => (
-								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')]?.dump[idx]}>
+								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')]?.mat[idx] || jobList[String(val + i).padStart(2, '0')]?.dump[idx]}>
 								{jobList[String(val + i).padStart(2, '0')]?.job[idx]}
 								</div>
 							))

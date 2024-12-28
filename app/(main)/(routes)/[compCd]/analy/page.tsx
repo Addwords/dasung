@@ -55,12 +55,12 @@ const Analysis = () => {
 	useEffect(() => {
 		if(!isMounted.current){
 			
-			getSummaryMonth(param.company, yyyy, mm).then(mres => {
+			getSummaryMonth(param.compCd, yyyy, mm).then(mres => {
 				setMonthData(mres?.data);
 				setMChartKey(Math.random());
 			});
 
-			getSummaryYear(param.company, yyyy).then(yres => {
+			getSummaryYear(param.compCd, yyyy).then(yres => {
 				const baseArr = [...Array(12)].map((obj, idx) => {
 					const tmp = new String(idx + 1).padStart(2, '0');
 					return {
@@ -80,7 +80,7 @@ const Analysis = () => {
 				setYChartKey(Math.random());
 			})
 
-			getSummary(param.company, yyyy).then(tres => { //max 365
+			getSummary(param.compCd, yyyy).then(tres => { //max 365
 				const tableObj: { [key: string]: any } = {};
 				const yearArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 				yearArr.map(v => {
@@ -93,7 +93,7 @@ const Analysis = () => {
 			});
 		}
 		return setMounted(true);
-	}, [tableKey, yyyy, mm, param.company]);
+	}, [tableKey, yyyy, mm, param.compCd]);
 
 	return (
 		<>

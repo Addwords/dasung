@@ -1,5 +1,6 @@
 import { InputNumber } from "primereact/inputnumber";
 import { useState } from "react";
+import { jobs } from "@/lib/common/common-job";
 
 const Summary = (props: any) => {
 	const isToday = true;
@@ -29,6 +30,8 @@ const Summary = (props: any) => {
 						<p key={idx} className="rep-list" onClick={evt => {
 							const tgt = evt.target as HTMLElement;
     						tgt && tgt.remove();
+							const rep = document.getElementById('rep') as HTMLElement;
+							jobs.updateMaintenance(rep);
 						} }>{ txt}</p>
 					))}
 				</div>

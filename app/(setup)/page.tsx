@@ -33,19 +33,25 @@ const SelectPage = () => {
     const [dasungInfo, setDasugnInfo] = useState([]);
     const [chungjuInfo, setChungjuInfo] = useState([]);
     const [invalid, setInvalid] = useState(false);
+
     useEffect(() => {
-        // if (!isMounted.current) {
-        postFetcher('/api/config', {
-            servNm: 'getCompany',
-        }).then(res => {
-            let comp = res?.data;
-            setDasugnInfo(comp.slice(0, 3));
-            setChungjuInfo(comp.slice(-2));
-            setLoading(false);
-        });
-        // };
-        // return setMounted(true);
+        if (!isMounted.current) {
+            postFetcher('/api/config', {
+                servNm: 'getCompany',
+            }).then(res => {
+                let comp = res?.data;
+                // console.log(comp);
+                const dasung = /1[0-9]{2}/;
+                const chungjeong = /2[0-9]{2}/;
+                
+                setDasugnInfo(comp.filter((obj: { comCd: string; })=>{return dasung.test(obj.comCd)}));
+                setChungjuInfo(comp.filter((obj: { comCd: string; })=>{return chungjeong.test(obj.comCd)}));
+                setLoading(false);
+            });
+        };
+        return setMounted(true);
     }, []);
+
     const factoryInit = (year: string, comcd: string) => {
         putFetcher('/api/config', {
             servNm: 'summaryInit',
@@ -53,6 +59,7 @@ const SelectPage = () => {
             comcd:comcd
         });
     }
+
     return (
         <>
             {/* <button>(주)다성 용인지점</button> */}

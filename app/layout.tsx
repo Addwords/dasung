@@ -5,6 +5,7 @@ import { PrimeReactProvider } from 'primereact/api';
 import Tailwind from 'primereact/passthrough/tailwind';
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/UI/shadcn/toaster";
+import { useEffect, useState } from "react";
 // import ThemeSwitcher from './components/themeSwitcher';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

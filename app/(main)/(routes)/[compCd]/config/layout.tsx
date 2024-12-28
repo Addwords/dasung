@@ -17,9 +17,9 @@ const ConfLayout = async ({
 	params: any
 }) => {
 	console.log('ConfLayout🔨');
-	const operObj = await getOperators(params.company);
-	const dumpObj = await getAssets(params.company);
-	const company = await getCompany(params.company);
+	const operObj = await getOperators(params.compCd);
+	const dumpObj = await getAssets(params.compCd);
+	const company = await getCompany(params.compCd);
 
 	return (
 		<>
@@ -41,7 +41,7 @@ const ConfLayout = async ({
 					</div>
 					<DumpInfo
 						obj={dumpObj}
-						comcd={params.company}
+						comcd={params.compCd}
 					/>
 					{/*  */}
 					<div className="flex flex-wrap gap-2">
@@ -50,7 +50,7 @@ const ConfLayout = async ({
 					<div className="grid">
 						<OperatorInfo
 							obj={operObj}
-							comcd={params.company}
+							comcd={params.compCd}
 						/>
 					</div>
 				</div>

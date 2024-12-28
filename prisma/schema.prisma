@@ -31,6 +31,7 @@ model Jobs {
   operator String
   time     String
   job      Json[]
+  material String[]
   jTot     Int
   oTot     Int
   rTot     Int
@@ -50,21 +51,29 @@ model User {
 
 // 통계용
 model Summary {
-  id          String @id @default(uuid())
-  date        String
-  yyyy        String
-  mm          String
-  dd          String
-  company     String
-  jsize       Int
-  jdump       Int
-  osize       Int
-  odump       Int
-  rsize       Int
-  rdump       Int
-  jobtime     Int?
-  total       Int
-  maintenance String
+  id              String @id @default(uuid())
+  date            String
+  yyyy            String
+  mm              String
+  dd              String
+  company         String
+  jsize           Int @default(16) 
+  osize           Int @default(16)
+  rsize           Int @default(16)
+  jdump           Int @default(0)
+  odump           Int @default(0)
+  rdump           Int @default(0)
+  pdsize          Int @default(17)
+  plsize          Int @default(7)
+  sdsize          Int @default(17)
+  slsize          Int @default(7)
+  powderDump      Int @default(0)
+  powderLoader    Int @default(0)
+  sedimentDump    Int @default(0)
+  sedimentLoader  Int @default(0)
+  jobtime         Int?
+  total           Int
+  maintenance     String
 
   @@index([date])
   @@index([company])
@@ -75,9 +84,13 @@ model Assets {
   jDump Int
   oDump Int
   rDump Int
+  powderDump Int @default(16)
+  powderLoader Int @default(16)
+  sedimentDump Int @default(16)
+  sedimentLoader Int @default(16)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Company {
@@ -87,7 +100,7 @@ model Company {
   admin    String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 enum Role {

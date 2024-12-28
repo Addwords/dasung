@@ -15,6 +15,7 @@ export async function POST(req: Request) {
 			operator,
 			curtime,
 			job,
+			material,
 			jsize, jtot,
 			osize, otot,
 			rsize, rtot,
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
 				},
 				data: {
 					job: job,
+					material: material,
 					jTot: jtot,
 					oTot: otot,
 					rTot: rtot,

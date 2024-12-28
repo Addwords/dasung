@@ -12,179 +12,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
 import { useParams } from "next/navigation";
+import { jobs } from "@/lib/common/common-job";
+import Summary2 from "./Summary2";
 
-let mount = false;
-let jCount = 0;
-let dumpCount = [''];
-let subTot = [];
+// let mount = false;
+// let subTot = [];
 let realHH = 5; //업무최초시간
-let summId = '';
-let jobIds: { [key: string]: string } = {};
-let jobArr: { [key: string]: string }[] = [];
-let jsize: number, osize: number, rsize: number;
-let opList: StringDictionary = {};
-
-const yyyy = new Date().getFullYear();
-const mm = new Date().getMonth() + 1;
-const dd = new Date().getDate();
-
-
-/**
- * 차량별 작업을 등록한다.
- * @param name: 차량종류
- * @returns 
- */
-function Dump(kind: string) {
-
-  const now = new Date();
-  const HH = now.getHours();
-  const MM = now.getMinutes();
-
-  const startT = 5; //업무종료시간?
-
-  if (HH < startT || jCount > 39) {
-    alert('불가능 합니다.');
-    return
-  }
-  
-  let mertalIn = document.querySelector(`#t${HH}-${jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
-
-  if (!!mertalIn) {
-    mertalIn.textContent = `${MM}'`;  //dialogInput;
-    mertalIn.className = kind; //외부덤프
-  }
-
-  dumpCount[jCount] = kind;
-
-  calculate(kind, String(HH), String(MM));
-
-  jCount++;
-}
-
-
-/**
-    * 수정버튼
-    * desc : 현재시간중 마지막 값을 취소한다.
-    */
-function modify() {
-  --jCount;
-  let HH = new Date().getHours();
-  let mertalIn = document.getElementById(`t${HH}-${jCount}`) as HTMLElement;
-
-  if (!!mertalIn) {
-    mertalIn.textContent = '';
-    mertalIn.style.backgroundColor = ``;
-    let kind = dumpCount.pop() || '';
-    calculate(kind, String(HH), '');
-  }
-}
-
-function runnningTime() {
-  let runTime = 0;
-  let arr: number[] = []
-  document.querySelectorAll('.col div[id^=tot]').forEach(el => {
-    if (el.textContent != '0') {
-      arr.push(Number(el.id.replace('tot', '')));
-    }
-  });
-  runTime = (arr[arr.length-1] - arr[0]) + 1
-  return runTime;
-}
-/**
- * 작업이 수행될때마다 카운트증가와 계산을 시작한다.
- * @param kind : 차량종류
- * @param HH :현재시
- */
-async function calculate(kind: string, HH: string, MM: string) {
-
-  let dumpTot = dumpCount.filter(el => kind === el).length; //차량별 합계
-  let subTot = dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
-
-  let kCount = document.getElementById(`${kind}${HH}`);
-  kCount ? kCount.textContent = String(dumpTot) : 0;
-
-  let totCal = document.getElementById(`tot${HH}`);
-  totCal ? totCal.textContent = String(subTot) : 0;
-  
-  let jdump: number = 0;
-  let odump: number = 0;
-  let rdump: number = 0;
-
-  //자가덤프 총합
-  document.querySelectorAll('[id^=jd]').forEach((el) => {
-    jdump += Number(el.textContent);
-  });
-  //외부덤프 총합
-  document.querySelectorAll('[id^=od]').forEach((el) => {
-    odump += Number(el.textContent);
-  });
-  //로우더 총합
-  document.querySelectorAll('[id^=rd]').forEach((el) => {
-    rdump += Number(el.textContent);
-  });
-
-  let jtot = document.getElementById(`dumpTot-j`) as HTMLElement;
-  jtot.textContent = ` x ${jdump} = ${jdump * jsize}`;
-  let otot = document.getElementById(`dumpTot-o`) as HTMLElement;
-  otot.textContent = ` x ${odump} = ${odump * osize}`;
-  let rtot = document.getElementById(`dumpTot-r`) as HTMLElement;
-  rtot.textContent = ` x ${rdump} = ${rdump * rsize}`;
-
-  let todayTotal = document.getElementById(`total`) as HTMLElement;
-  todayTotal.textContent = `${(jdump * jsize) + (odump * osize) + (rdump * rsize)}`;
-
-  MM ? jobArr.push({ [MM + `'`]: kind }) : jobArr.pop();
-  const jobObj: { [key: string]: any; } = {
-    servNm: 'setJob',
-    jobId: jobIds[HH.padStart(2, '0')],
-    job: jobArr,
-    subtot: subTot
-  };
-
-  jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
-  await axios.post('/api/table', jobObj);
-  //갱신
-  const summObj = {
-    servNm: 'setSummary',
-    summId: summId,
-    jsize: jsize,
-    jtot: jdump,
-    osize: osize,
-    otot: odump,
-    rsize: rsize,
-    rtot: rdump,
-    jobtime: runnningTime(),
-    tot: (jdump * jsize) + (odump * osize) + (rdump * rsize),
-  }
-  await axios.post('/api/table', summObj);
-}
-
-async function repair(res: string) {
-  let HH = new Date().getHours();
-  let MM = new Date().getMinutes();
-  const rep = document.getElementById('rep') as HTMLElement;
-  const appCh = document.createElement('p');
-  appCh.className = 'rep-list';
-  appCh.addEventListener('click', (evt) => {
-    const tgt = evt.target as HTMLElement;
-    tgt && tgt.remove();
-  });
-  appCh.textContent = `${HH}시 ${MM}분 ${res}`;
-  rep.appendChild(appCh);
-
-  let maintenance: string[] = [];
-  Array.from(rep.children).map((el, idx) => {
-    maintenance.push(el.textContent || '');
-  })
-
-  const repObj = {
-    servNm: 'setRepair',
-    summId: summId,
-    maintenance: maintenance.join(',')
-  }
-  await axios.post('/api/table', repObj);
-
-}
+// const yyyy = new Date().getFullYear();
+// const mm = new Date().getMonth() + 1;
+// const dd = new Date().getDate();
 
 function realTime() {
   const now = new Date();
@@ -193,15 +29,17 @@ function realTime() {
   if (realHH < hours) { //변경되는 시간체크
     realHH = hours;
     //시간별 값 초기화
-    jCount = 0;
-    dumpCount = [];
-    subTot = [];
-    jobArr = [];
+    jobs.setJCount(0);
+    jobs.setDumpCount([]);
+    // subTot = [];
+    jobs.setJobArr([]);
+    jobs.setMatArr([]);
   };
 
   return `${hours < 10 ? '0' + hours : hours}:${minutes}:${seconds}`;
 };
 
+//시작😀
 export default function Home({
   date,
   company,
@@ -217,6 +55,17 @@ export default function Home({
   summInfo: any;
   dumpInfo: any;
 }) {
+
+  const [jsize, setJsize] = useState(0);
+  const [osize, setOsize] = useState(0);
+  const [rsize, setRsize] = useState(0);
+  const [pdsize, setPdsize] = useState(0);
+  const [plsize, setPlsize] = useState(0);
+  const [sdsize, setSdsize] = useState(0);
+  const [slsize, setSlsize] = useState(0);
+
+  const [opList,setOpList] = useState({}); 
+  // 
   const testparam = useParams();
   const isMounted = useRef(false);
   const setMount = (flag:boolean)=>{isMounted.current = flag}
@@ -235,6 +84,7 @@ export default function Home({
       window.print();
     }
   }
+
   //단축키 bind
   const shortcutFunc: { [key: string]: () => void } = {
     'F1': () => { btnRef.current[0]?.click(); },
@@ -246,19 +96,39 @@ export default function Home({
     'F7': () => { btnRef.current[6]?.click(); },
     'F8': () => { btnRef.current[7]?.click(); },
   };
+
+  /**
+   * 
+   * @param vehicle : 차량분류 
+   * @param materials : 원자재종류
+   */
+  const jobExec = (vehicle:string, materials:string) => {
+    jobs.dump(vehicle, materials);
+  }
+
   useEffect(()=>{
     // 차량용량
-    if (isToday) {
-      jsize = dumpInfo.jDump;
-      osize = dumpInfo.oDump;
-      rsize = dumpInfo.rDump;
-    } else {
-      jsize = summInfo.jsize;
-      osize = summInfo.osize;
-      rsize = summInfo.rsize;
-    }
+    const today_jSize = isToday ? dumpInfo.jDump : summInfo.jsize;
+    const today_oSize = isToday ? dumpInfo.oDump : summInfo.osize
+    const today_rSize = isToday ? dumpInfo.rDump : summInfo.rsize;
+    const today_pdSize = isToday ? dumpInfo.powderDump : summInfo.pdsize;
+    const today_plSize = isToday ? dumpInfo.powderLoader : summInfo.plsize;
+    const today_sdSize = isToday ? dumpInfo.sedimentDump : summInfo.sdsize;
+    const today_slSize = isToday ? dumpInfo.sedimentLoader : summInfo.slsize;
+    setJsize(today_jSize);
+    setOsize(today_oSize);
+    setRsize(today_rSize);
+    setPdsize(today_pdSize);
+    setPlsize(today_plSize);
+    setSdsize(today_sdSize);
+    setSlsize(today_slSize);
+
+    jobs.setVehicle({volInternal: today_jSize, volExternal: today_oSize, volLoader: today_rSize}); //작업차량 용량 셋팅
   },[]);
-  // handle what happens on key press
+
+  /**
+   * 단축키 설정
+   */
   const handleKeyPress = useCallback((event: any) => {
     if (event.key == 'Escape') { //모달 닫기
       setModal(false);
@@ -296,7 +166,7 @@ export default function Home({
     //   return obj.job?.map((val: Object) => { return Object.values(val)??[] })
     //     ?.reduce((pre: Array<String>, cur: Array<String>) => { return pre?.concat(cur) });
     if (obj.job.length === 0) {
-      return { job: [], dump: [] };
+      return { job: [], dump: [], material:[] };
     }
 
     return {
@@ -314,37 +184,49 @@ export default function Home({
         }),
     }
   }
+
   useEffect(()=>{
     if (!isMounted.current) {
+      let tmpJobIds: { [key: string]: string } 	= {}; // 작업
+      let tmpOpList: StringDictionary = {};
       //등록된 작업자 목록
       jobList.map((obj: {
         time: string, id: string,
-        operator: string, job: any,
+        operator: string, job: any, material:any,
         jTot: number, oTot: number, rTot: number,
         subTot: number
       }) => {
-        opList[obj.time] = {
+        tmpOpList[obj.time] = {
           id: obj.id,
           name: obj.operator,
           ...madeJob(obj),
+          mat: obj.material,
           jtot: obj.jTot,
           otot: obj.oTot,
           rtot: obj.rTot,
           subtot: obj.subTot,
         };
-        jobIds[obj.time] = obj.id
+        tmpJobIds[obj.time] = obj.id
       });
+      // console.log('tmpOpList:',tmpOpList);
+      setOpList(tmpOpList);
+      jobs.setJobIds(tmpJobIds);
+
       const curHour = new Date().getHours();
-      const curObj = opList[String(curHour).padStart(2, '0')];
+      const curObj = tmpOpList[String(curHour).padStart(2, '0')];
         if (curObj) {
-          jCount = curObj.subtot;
-          dumpCount = curObj.dump;
+          jobs.setJCount(curObj.subtot);
+          jobs.setDumpCount(curObj.dump);
+          let tmpArr: { [x: string]: any; }[] = [];
           curObj.job.forEach((val: string, idx: number) => {
-            jobArr.push({ [val]: curObj.dump[idx] })
+            tmpArr.push({ [val]: curObj.dump[idx] })
           });
+          jobs.setJobArr(tmpArr);
+          jobs.setMatArr(curObj.mat);
         }
       realHH = curHour; //init
-      summId = summInfo.id; //업데이트용
+      // console.log('summInfo.id::::',summInfo.id);
+      jobs.setSummId(summInfo.id); //업데이트용
     }
     return setMount(true);
   },[]);
@@ -419,7 +301,32 @@ export default function Home({
         </div>
 
         <div className="relative flex place-items-center mt-7 mb-5">
-          {(jsize && osize && rsize) && <Summary
+          {(jsize && osize && rsize) && 
+          company.cd == '102' ?
+          <Summary2
+            istoday={isToday}
+            j={jsize}
+            o={osize}
+            r={rsize}
+            pd={pdsize}
+            pl={plsize}
+            sd={sdsize}
+            sl={slsize}
+            jdump={summInfo.jdump}
+            odump={summInfo.odump}
+            rdump={summInfo.rdump}
+            ploader={summInfo.powderLoader}
+            pdump={summInfo.powderDump}
+            sloader={summInfo.sedimentLoader}
+            sdump={summInfo.sedimentDump}
+            total={
+              ((jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump))
+              + ((pdsize * summInfo.powderDump) + (plsize * summInfo.powderLoader) + (sdsize * summInfo.sedimentDump) + (slsize * summInfo.sedimentLoader))
+            }
+            maintenance={summInfo.maintenance}
+          />
+          :
+          <Summary
             istoday={isToday}
             j={jsize}
             o={osize}
@@ -429,7 +336,8 @@ export default function Home({
             rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
             total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
             maintenance={summInfo.maintenance}
-          />}
+          />
+          }
         </div>
         {/* {
           showModal && <InputModal
@@ -442,39 +350,39 @@ export default function Home({
           showModal && <AlertModal
             // title={tit}
             onHide={() => { setModal(false); }}
-            onInput={() => { setModal(false); modify(); }}
+            onInput={() => { setModal(false); jobs.modify(); }}
           />
         }
         {isToday && //오늘만 가능함
+        <>
           <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
-            <Button
+            {jsize && <Button
               text='자가덤프'
               subText={`${jsize}m<sup>3</sup>`}
-              // ref={(el:JSX.Element)=>btnRef.current.push(el)}
-              // btnRef={(el:any)=>{btnRef.current.push(el)}}
               btnRef={(el: any) => { btnRef.current[0] = el; }}
-              func={() => Dump('jd')}
-            />
-            <Button
+              func={() => jobExec('jd', 'jd')}
+            />}
+            {osize && <Button
               text='외부덤프'
               subText={`${osize}m<sup>3</sup>`}
               color={'#ffd900'}
               btnRef={(el: any) => { btnRef.current[1] = el; }}
-              func={() => Dump('od')}
-            />
-            <Button
+              func={() => jobExec('od','od')}
+            />}
+            {rsize && <Button
               text='로우더'
               subText={`${rsize}m<sup>3</sup>`}
               color={'#00b0f0'}
               btnRef={(el: any) => { btnRef.current[2] = el; }}
-              func={() => Dump('rd')}
-            />
+              func={() => jobExec('rd','rd')}
+            />}
+            
             <Button
               text='수정'
               desc=''
               btnRef={(el: any) => { btnRef.current[3] = el; }}
               func={() => {
-                jCount > 0 ? setModal(true) : setModal(false)
+                jobs.getJCount() > 0 ? setModal(true) : setModal(false)
               }}
             />
             {
@@ -482,17 +390,46 @@ export default function Home({
                 <Button
                   key={val}
                   text={val}
-                  btnRef={(el: any) => { btnRef.current[idx + 4] = el; }}
-                  func={() => repair(val)}
+                  // btnRef={(el: any) => { btnRef.current[idx + 4] = el; }}
+                  func={() => jobs.repair(val)}
                 />
               ))
             }
-            {/* <Button
-              text='인쇄'
-              color={'#6d6d6d'}
-              func={() => { print() }}
-            /> */}
-          </div>}
+          </div>
+          {/* // 24.12.08 추가요구사항 */}
+          <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area-left">
+            {company.cd == '102' && plsize && <Button
+              text='석분(로더)'
+              subText={`${plsize}m<sup>3</sup>`}
+              color={'#b0b2b1'}
+              btnRef={(el: any) => { btnRef.current[4] = el; }}
+              func={() => jobExec('rd','limestone-powder')}
+            />}
+            {company.cd == '102' && pdsize && <Button
+              text='석분(덤프)'
+              subText={`${pdsize}m<sup>3</sup>`}
+              color={'#b0b2b1'}
+              btnRef={(el: any) => { btnRef.current[5] = el; }}
+              func={() => jobExec('jd','limestone-powder')}
+            />}
+            {company.cd == '102' && slsize && <Button
+              text='토사(로더)'
+              subText={`${slsize}m<sup>3</sup>`}
+              color={'#5acc8d'}
+              btnRef={(el: any) => { btnRef.current[6] = el; }}
+              func={() => jobExec('rd','sediment')}
+            />}
+            {company.cd == '102' && sdsize &&
+              <Button
+              text='토사(덤프)'
+              subText={`${sdsize}m<sup>3</sup>`}
+              color={'#5acc8d'}
+              btnRef={(el: any) => { btnRef.current[7] = el; }}
+              func={() => jobExec('jd','sediment')}
+            />}
+          </div>
+        </>
+        }
       </main>
     </>
   );

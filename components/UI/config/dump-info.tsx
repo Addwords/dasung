@@ -4,143 +4,96 @@ import { postFetcher } from "@/lib/common-fetcher";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Vehicle from "../Vehicle";
+import { useParams } from "next/navigation";
 
 const DumpInfo = (props: any) => {
 
 	const dumpInfo = props.obj;
-	const [jdumpValue, setJdumpValue] = useState<number>(dumpInfo.jDump || 0); //내부덤프
-	const [odumpValue, setOdumpValue] = useState<number>(dumpInfo.oDump || 0); //외부덤프
-	const [rdumpValue, setRdumpValue] = useState<number>(dumpInfo.rDump || 0); //로우더
+	const {compCd} = useParams();
 	const toast = useRef<Toast>(null);
 
-	async function dumpModify(kind: string) {
+	const dumpModify = (kind: string, size:number) => {
 		const dumpObj: { [key: string]: any; } = {
 			servNm: 'setAsset',
 			comCd: props.comcd
-		}
-		const key = kind == 'jd' ? 'jsize' : kind == 'od' ? 'osize' : 'rsize';
-		const value = kind == 'jd' ? jdumpValue : kind == 'od' ? odumpValue : rdumpValue;
-		dumpObj[key] = value;
-		await postFetcher('/api/config', dumpObj)
-			.then(res => {
-				if (res?.status === 200) {
-					toast.current?.show({
-						severity: 'info',
-						summary: 'Confirmed',
-						detail: '변경되었습니다.',
-						life:2000
-					});
+		};
+		const vehicleMap:{ [key: string]: string; } = {
+			'jDump' : 'jsize',	
+			'oDump' : 'jsize',
+			'rDump' : 'jsize',	
+			'powderDump' : 'pdsize',	
+			'powderLoader' : 'plsize',	
+			'sedimentDump' : 'sdsize',	
+			'sedimentLoader' : 'slsize',	
+		};
+		dumpObj[vehicleMap[kind]] = size;
+
+		postFetcher('/api/config', dumpObj)
+		.then(res => {
+			if (res?.status === 200) {
+				toast.current?.show({
+					severity: 'info',
+					summary: 'Confirmed',
+					detail: '변경되었습니다.',
+					life:2000
+				});
+			}
+		});
+	};
+	
+	const [vecArr,setVecArr] = useState<any>([]);
+	
+	useEffect(()=>{
+		let vehicleList: { [x: string]: any; }[] = [
+			{
+			 'jDump' 			: {title:'내부덤프', back:'bg-white', 	color:'text-black'}
+			,'oDump' 			: {title:'외부덤프', back:'bg-yellow-100',	color:'text-yellow-500'}
+			,'rDump' 			: {title:'로우더',	back:'bg-blue-100', 	color:'text-blue-500'}
+			},];
+			if(compCd == '102'){
+				vehicleList.push({
+					'powderDump' 		: {title:'석분덤프', back:'bg-gray-400', 	color:'text-black-400'}
+				   ,'powderLoader' 	: {title:'석분로더', back:'bg-gray-400', 	color:'text-black-400'}
+				   });
+				vehicleList.push({
+				'sedimentDump' 	: {title:'토사덤프', back:'bg-green-100', 	color:'text-green-500'}
+				,'sedimentLoader' 	: {title:'토사로더', back:'bg-green-100', 	color:'text-green-500'}
+				});
+			}
+		vehicleList.forEach((obj)=>{
+			Object.keys(dumpInfo).map((val)=>{
+				if(obj[val]){
+					obj[val].size = dumpInfo[val];
+					obj[val].type = val;
 				}
 			});
+		});
+		console.log('vehicleList:',vehicleList);
+		setVecArr(vehicleList);
+	},[]);
 
-	}
 	return (
 		<>
 			{/* 자가덤프, 외부덤프, 로우더 셋팅 */}
 			<Toast  ref={toast} />
-			<div className="grid">
-				<div className="col-12 lg:col-6 xl:col-3">
-					<div className="card mb-0">
-						<div className="flex justify-content-between mb-3">
-							<div>
-								<span className="block text-500 font-semibold mb-3">내부덤프</span>
-								<div className="text-900 font-medium text-xl">
-									<div className="p-inputgroup">
-										<InputNumber
-											inputClassName="font-semibold pt-2 pb-2 pr-1 text-xl"
-											className="w-auto"
-											size={2}
-											value={jdumpValue}
-											onValueChange={(e) => {
-												setJdumpValue(e.value ?? 0)
-											}}
-											mode="decimal"
-										/>
-										<p className="pl-1 pt-2">m<sup>3</sup></p>
-										<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
-											onClick={() => dumpModify('jd')} />
-									</div>
-								</div>
-							</div>
-							<div className="flex align-items-center justify-content-center bg-gray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-								<i className="pi pi-car text-black text-xl" />
-							</div>
-						</div>
-						{/* <span className="text-green-500 font-medium">24 new </span>
-						<span className="text-500">since last visit</span> */}
-					</div>
+			{vecArr.map((obj:any,idx:number)=>(
+				<div className="grid" key={idx}>
+					{Object.keys(obj).map((val,idx)=>(
+						<Vehicle
+							key={idx}
+							class={"xl:col-3"}
+							name={obj[val].title}
+							type={obj[val].type}
+							value={obj[val].size}
+							backColor={obj[val].back}
+							color={obj[val].color}
+							callback={dumpModify}
+						/>
+					))}
 				</div>
-				{/*  */}
-				<div className="col-12 lg:col-6 xl:col-3">
-					<div className="card mb-0">
-						<div className="flex justify-content-between mb-3">
-							<div>
-								<span className="block text-500 font-semibold mb-3">외부덤프</span>
-								<div className="text-900 font-medium text-xl">
-									<div className="p-inputgroup">
-										<InputNumber
-											inputClassName="font-semibold pt-2 pb-2 pr-1 text-xl"
-											className="w-auto"
-											size={2}
-											value={odumpValue}
-											onValueChange={(e) => {
-												setOdumpValue(e.value ?? 0)
-											}}
-											mode="decimal"
-										/>
-										<p className="pl-1 pt-2">
-											m<sup>3</sup>
-										</p>
-										<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
-											onClick={() => dumpModify('od')} />
-									</div>
-								</div>
-							</div>
-							<div className="flex align-items-center justify-content-center bg-yellow-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-								<i className="pi pi-car text-yellow-500 text-xl" />
-							</div>
-						</div>
-						{/* <span className="text-green-500 font-medium">%52+ </span>
-						<span className="text-500">since last week</span> */}
-					</div>
-				</div>
-				{/*  */}
-				<div className="col-12 lg:col-6 xl:col-3">
-					<div className="card mb-0">
-						<div className="flex justify-content-between mb-3">
-							<div>
-								<span className="block text-500 font-semibold mb-3">로우더</span>
-								<div className="text-900 font-medium text-xl">
-									<div className="p-inputgroup">
-										<InputNumber
-											inputClassName="font-semibold pt-2 pb-2 pr-1 text-xl"
-											className="w-auto"
-											size={2}
-											value={rdumpValue}
-											onValueChange={(e) => {
-												setRdumpValue(e.value ?? 0)
-												// setRchange(true);
-											}}
-											mode="decimal"
-										/>
-										<p className="pl-1 pt-2">
-											m<sup>3</sup>
-										</p>
-										<Button className="ml-3 mt-2" style={{ height: '2.2rem' }} label="save" icon="pi pi-check"
-											onClick={() => dumpModify('rd')} />
-									</div>
-								</div>
-							</div>
-							<div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-								<i className="pi pi-car text-blue-500 text-xl" />
-							</div>
-						</div>
-						{/* <span className="text-green-500 font-medium">520 </span>
-						<span className="text-500">newly registered</span> */}
-					</div>
-				</div>
-			</div>
+			))}
 		</>
 	);
 }

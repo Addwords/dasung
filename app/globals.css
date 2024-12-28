@@ -135,6 +135,15 @@ body {
   /* margin-bottom: 10%; */
 }
 
+/* 왼쪽 버튼영역 */
+.btn-area-left {
+  position: fixed;
+  left: 5%;
+  background-color: white;
+  /* margin-bottom: 10%; */
+}
+
+
 .sum-col {
   display: grid;
   grid-template-rows: 128px auto;
@@ -171,6 +180,14 @@ body {
 
 .rd {
   background-color: #00b0f0;
+}
+
+.limestone-powder{
+  background-color: #b0b2b1;
+}
+
+.sediment{
+  background-color: #5acc8d;
 }
 
 .col div {

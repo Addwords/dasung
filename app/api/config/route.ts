@@ -12,6 +12,7 @@ export async function POST(req: Request) {
 			jsize, jtot,
 			osize, otot,
 			rsize, rtot,
+			pdsize, plsize, sdsize, slsize,
 			jobtime, tot,
 			comCd, newPassword,
 			yyyy, mm, dd
@@ -35,6 +36,10 @@ export async function POST(req: Request) {
 					jDump: jsize,
 					oDump: osize,
 					rDump: rsize,
+					powderDump: pdsize,
+					powderLoader: plsize,
+					sedimentDump: sdsize,
+					sedimentLoader: slsize,
 				}
 			})
 		} else if (servNm === 'setSummary') { //통계 갱신
