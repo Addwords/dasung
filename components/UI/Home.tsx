@@ -12,6 +12,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { JobCalendar } from "./JobCalendar";
 import { useParams } from "next/navigation";
+import ApprovalHeader from "./approval/header";
+import { GridLoader } from "react-spinners";
 import { jobs } from "@/lib/common/common-job";
 import Summary2 from "./Summary2";
 
@@ -67,6 +69,7 @@ export default function Home({
   const [opList,setOpList] = useState({}); 
   // 
   const testparam = useParams();
+  const [loading,setLoading] = useState(true);
   const isMounted = useRef(false);
   const setMount = (flag:boolean)=>{isMounted.current = flag}
   const [showModal, setModal] = useState(false);
@@ -125,6 +128,7 @@ export default function Home({
     setSlsize(today_slSize);
 
     jobs.setVehicle({volInternal: today_jSize, volExternal: today_oSize, volLoader: today_rSize}); //작업차량 용량 셋팅
+    setLoading(false);
   },[]);
 
   /**
@@ -151,15 +155,15 @@ export default function Home({
   }, [handleKeyPress]);
 
   const btnList = [
-    { txt: '자가덤프', subTxt: `${jsize}m<sup>3</sup>`, color: '', func: () => { Dump('jd') } },
-    { txt: '외부덤프', subTxt: `${osize}m<sup>3</sup>`, color: '#ffd900', func: () => {Dump('od')} },
-    { txt: '로우더',   subTxt: `${rsize}m<sup>3</sup>`, color: '#00b0f0', func: () => {Dump('rd')} },
-    { txt: '수정', subTxt: '', color: '', func: () => {jCount > 0 ? setModal(true) : setModal(false) } },
+    { txt: '자가덤프', subTxt: `${jsize}m<sup>3</sup>`, color: '', func: () => { jobExec('jd', 'jd') } },
+    { txt: '외부덤프', subTxt: `${osize}m<sup>3</sup>`, color: '#ffd900', func: () => {jobExec('od', 'od')} },
+    { txt: '로우더',   subTxt: `${rsize}m<sup>3</sup>`, color: '#00b0f0', func: () => {jobExec('rd', 'rd')} },
+    { txt: '수정', subTxt: '', color: '', func: () => {jobs.getJCount() > 0 ? setModal(true) : setModal(false) } },
 
-    { txt: '고장', subTxt: '', color: '', func: () => repair('고장') },
-    { txt: '청소', subTxt: '', color: '', func: () => repair('청소') },
-    { txt: '원자재 불량', subTxt: '', color: '', func: () => repair('원자재 불량') },
-    { txt: '대석파쇄', subTxt: '', color: '', func: () => repair('대석파쇄') },
+    { txt: '고장', subTxt: '', color: '', func: () => jobs.repair('고장') },
+    { txt: '청소', subTxt: '', color: '', func: () => jobs.repair('청소') },
+    { txt: '원자재 불량', subTxt: '', color: '', func: () => jobs.repair('원자재 불량') },
+    { txt: '대석파쇄', subTxt: '', color: '', func: () => jobs.repair('대석파쇄') },
   ];
 
   useEffect(() => {
@@ -238,11 +242,11 @@ export default function Home({
 
   return (
     <>
-      {loading &&
+      {/* {loading &&
           <div className="absolute backdrop-brightness-95 loadingwrap" style={{ zIndex: 1102 }}>
               <GridLoader color="rgb(103 123 220)" size={20} />
           </div>
-      }
+      } */}
       <main className="flex min-h-screen flex-col items-center pad:ml-10 justify-between print-top 3xl:p-24 lg:p-12 mb-24">
         {/* 프린트시 보이는 영역 */}
         <div className="print flex justify-between w-full max-w-6xl">
@@ -348,7 +352,7 @@ export default function Home({
         }
         {isToday && //오늘만 가능함
         <>
-          <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
+          {/* <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
             {jsize && <Button
               text='자가덤프'
               subText={`${jsize}m<sup>3</sup>`}
@@ -378,13 +382,17 @@ export default function Home({
                 jobs.getJCount() > 0 ? setModal(true) : setModal(false)
               }}
             />
-            {
-              btnNm.map((val, idx) => (
+          </div> */}
+           <div className="mr-2 grid text-center lg:max-w-5xl lg:mb-0 grid-cols-1 non-print btn-area">
+            {(jsize && osize && rsize) &&
+              btnList.map((obj, idx) => (
                 <Button
-                  key={val}
-                  text={val}
-                  // btnRef={(el: any) => { btnRef.current[idx + 4] = el; }}
-                  func={() => jobs.repair(val)}
+                  key={idx}
+                  text={obj.txt}
+                  subText={obj.subTxt}
+                  color={obj.color}
+                  btnRef={(el: any) => { btnRef.current.push(el); }}
+                  func={() => obj.func() }
                 />
               ))
             }
