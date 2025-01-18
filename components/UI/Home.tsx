@@ -33,6 +33,7 @@ function realTime() {
     //시간별 값 초기화
     jobs.setJCount(0);
     jobs.setDumpCount([]);
+    jobs.setSubDumpCount([]);
     // subTot = [];
     jobs.setJobArr([]);
     jobs.setMatArr([]);
@@ -68,7 +69,7 @@ export default function Home({
 
   const [opList,setOpList] = useState({}); 
   // 
-  const testparam = useParams();
+  const [dump, setDump] = useState({});
   const [loading,setLoading] = useState(true);
   const isMounted = useRef(false);
   const setMount = (flag:boolean)=>{isMounted.current = flag}
@@ -107,7 +108,10 @@ export default function Home({
    * @param materials : 원자재종류
    */
   const jobExec = (vehicle:string, materials:string) => {
-    jobs.dump(vehicle, materials);
+    jobs.dump(vehicle, materials,(dump:any)=>{
+		console.log('dump:',dump);
+		setDump(dump);
+	});
   }
 
   useEffect(()=>{
@@ -127,7 +131,15 @@ export default function Home({
     setSdsize(today_sdSize);
     setSlsize(today_slSize);
 
-    jobs.setVehicle({volInternal: today_jSize, volExternal: today_oSize, volLoader: today_rSize}); //작업차량 용량 셋팅
+    jobs.setVehicle({
+        volInternal: today_jSize,
+        volExternal: today_oSize,
+        volLoader: today_rSize,
+        volPowderDump: today_pdSize,
+        volPowderLoader: today_plSize,
+        volSedimentDump: today_sdSize,
+        volSedimentLoader: today_slSize
+    }); //작업차량 용량 셋팅
     setLoading(false);
   },[]);
 
@@ -194,51 +206,76 @@ export default function Home({
     }
   }
 
-  useEffect(()=>{
-    if (!isMounted.current) {
-      let tmpJobIds: { [key: string]: string } 	= {}; // 작업
-      let tmpOpList: StringDictionary = {};
-      //등록된 작업자 목록
-      jobList.map((obj: {
-        time: string, id: string,
-        operator: string, job: any, material:any,
-        jTot: number, oTot: number, rTot: number,
-        subTot: number
-      }) => {
-        tmpOpList[obj.time] = {
-          id: obj.id,
-          name: obj.operator,
-          ...madeJob(obj),
-          mat: obj.material,
-          jtot: obj.jTot,
-          otot: obj.oTot,
-          rtot: obj.rTot,
-          subtot: obj.subTot,
-        };
-        tmpJobIds[obj.time] = obj.id
-      });
-      // console.log('tmpOpList:',tmpOpList);
-      setOpList(tmpOpList);
-      jobs.setJobIds(tmpJobIds);
+	useEffect(()=>{
+		if (!isMounted.current) {
+			let tmpJobIds: { [key: string]: string } 	= {}; // 작업
+			let tmpOpList: StringDictionary = {};
+			//등록된 작업자 목록
+			jobList.map((obj: {
+			time: string, id: string,
+			operator: string, job: any, material:any,
+			jTot: number, oTot: number, rTot: number,
+			plTot: number, pdTot: number, slTot: number, sdTot: number,
+			subTot: number
+			}) => {
+			tmpOpList[obj.time] = {
+				id: obj.id,
+				name: obj.operator,
+				...madeJob(obj),
+				mat: obj.material,
+				jtot: obj.jTot,
+				otot: obj.oTot,
+				rtot: obj.rTot,
+				pltot: obj.plTot,
+				pdtot: obj.pdTot,
+				sltot: obj.slTot,
+				sdtot: obj.sdTot,
+				subtot: obj.subTot,
+			};
+			tmpJobIds[obj.time] = obj.id
+			});
+			// console.log('tmpOpList:',tmpOpList);
+			setOpList(tmpOpList);
+			const summaryObj = jobList.reduce((pre,cur)=>{
+					return {
+						jTot : pre.jTot + cur.jTot,
+						oTot : pre.oTot + cur.oTot,
+						rTot : pre.rTot + cur.rTot,
+						plTot : pre.plTot + cur.plTot,
+						pdTot : pre.pdTot + cur.pdTot,
+						slTot : pre.slTot + cur.slTot,
+						sdTot : pre.sdTot + cur.sdTot,
+					}
+				},{jTot:0,oTot:0,rTot:0,plTot:0,pdTot:0,slTot:0,sdTot:0})
+			setDump({
+				jdump 	: summaryObj.jTot, 
+				odump 	: summaryObj.oTot,
+				rdump 	: summaryObj.rTot,
+				ploader : summaryObj.plTot,
+				pdump 	: summaryObj.pdTot,
+				sloader : summaryObj.slTot,
+				sdump 	: summaryObj.sdTot
+			});
+			jobs.setJobIds(tmpJobIds);
 
-      const curHour = new Date().getHours();
-      const curObj = tmpOpList[String(curHour).padStart(2, '0')];
-        if (curObj) {
-          jobs.setJCount(curObj.subtot);
-          jobs.setDumpCount(curObj.dump);
-          let tmpArr: { [x: string]: any; }[] = [];
-          curObj.job.forEach((val: string, idx: number) => {
-            tmpArr.push({ [val]: curObj.dump[idx] })
-          });
-          jobs.setJobArr(tmpArr);
-          jobs.setMatArr(curObj.mat);
-        }
-      realHH = curHour; //init
-      // console.log('summInfo.id::::',summInfo.id);
-      jobs.setSummId(summInfo.id); //업데이트용
-    }
-    return setMount(true);
-  },[]);
+			const curHour = new Date().getHours();
+			const curObj = tmpOpList[String(curHour).padStart(2, '0')];
+			if (curObj) {
+				jobs.setJCount(curObj.subtot);
+				jobs.setDumpCount(curObj.dump);
+				let tmpArr: { [x: string]: any; }[] = [];
+				curObj.job.forEach((val: string, idx: number) => {
+				tmpArr.push({ [val]: curObj.dump[idx] })
+				});
+				jobs.setJobArr(tmpArr);
+				jobs.setMatArr(curObj.mat);
+			}
+			realHH = curHour; //init
+			// console.log('summInfo.id::::',summInfo.id);
+			jobs.setSummId(summInfo.id); //업데이트용
+		}
+		return setMount(true);
+	},[]);
 
   return (
     <>
@@ -306,8 +343,8 @@ export default function Home({
 
         <div className="relative flex place-items-center mt-7 mb-5">
           {(jsize && osize && rsize) && 
-          company.cd == '102' ?
           <Summary2
+            compCd={company.cd}
             istoday={isToday}
             j={jsize}
             o={osize}
@@ -316,29 +353,7 @@ export default function Home({
             pl={plsize}
             sd={sdsize}
             sl={slsize}
-            jdump={summInfo.jdump}
-            odump={summInfo.odump}
-            rdump={summInfo.rdump}
-            ploader={summInfo.powderLoader}
-            pdump={summInfo.powderDump}
-            sloader={summInfo.sedimentLoader}
-            sdump={summInfo.sedimentDump}
-            total={
-              ((jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump))
-              + ((pdsize * summInfo.powderDump) + (plsize * summInfo.powderLoader) + (sdsize * summInfo.sedimentDump) + (slsize * summInfo.sedimentLoader))
-            }
-            maintenance={summInfo.maintenance}
-          />
-          :
-          <Summary
-            istoday={isToday}
-            j={jsize}
-            o={osize}
-            r={rsize}
-            jtot={` x ${summInfo.jdump} = ${jsize * summInfo.jdump}`}
-            otot={` x ${summInfo.odump} = ${osize * summInfo.odump}`}
-            rtot={` x ${summInfo.rdump} = ${rsize * summInfo.rdump}`}
-            total={(jsize * summInfo.jdump) + (osize * summInfo.odump) + (rsize * summInfo.rdump)}
+            dump={dump}
             maintenance={summInfo.maintenance}
           />
           }
@@ -352,37 +367,6 @@ export default function Home({
         }
         {isToday && //오늘만 가능함
         <>
-          {/* <div className="mb-32 grid text-center lg:max-w-5xl lg:mb-0 lg:grid-cols-1 lg:text-left non-print btn-area">
-            {jsize && <Button
-              text='자가덤프'
-              subText={`${jsize}m<sup>3</sup>`}
-              btnRef={(el: any) => { btnRef.current[0] = el; }}
-              func={() => jobExec('jd', 'jd')}
-            />}
-            {osize && <Button
-              text='외부덤프'
-              subText={`${osize}m<sup>3</sup>`}
-              color={'#ffd900'}
-              btnRef={(el: any) => { btnRef.current[1] = el; }}
-              func={() => jobExec('od','od')}
-            />}
-            {rsize && <Button
-              text='로우더'
-              subText={`${rsize}m<sup>3</sup>`}
-              color={'#00b0f0'}
-              btnRef={(el: any) => { btnRef.current[2] = el; }}
-              func={() => jobExec('rd','rd')}
-            />}
-            
-            <Button
-              text='수정'
-              desc=''
-              btnRef={(el: any) => { btnRef.current[3] = el; }}
-              func={() => {
-                jobs.getJCount() > 0 ? setModal(true) : setModal(false)
-              }}
-            />
-          </div> */}
            <div className="mr-2 grid text-center lg:max-w-5xl lg:mb-0 grid-cols-1 non-print btn-area">
             {(jsize && osize && rsize) &&
               btnList.map((obj, idx) => (

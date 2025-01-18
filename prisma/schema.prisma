@@ -32,10 +32,14 @@ model Jobs {
   time     String
   job      Json[]
   material String[]
-  jTot     Int
-  oTot     Int
-  rTot     Int
-  subTot   Int
+  jTot     Int @default(0)
+  oTot     Int @default(0)
+  rTot     Int @default(0)
+  plTot    Int @default(0)
+  pdTot    Int @default(0)
+  slTot    Int @default(0)
+  sdTot    Int @default(0)
+  subTot   Int @default(0)
   company  String
 
   @@index([date])
@@ -71,8 +75,10 @@ model Summary {
   powderLoader    Int @default(0)
   sedimentDump    Int @default(0)
   sedimentLoader  Int @default(0)
-  jobtime         Int?
-  total           Int
+  jobtime         Int @default(0)
+  total           Int @default(0)
+  subTotal        Int @default(0)
+  mm25            Int @default(0)
   maintenance     String
 
   @@index([date])

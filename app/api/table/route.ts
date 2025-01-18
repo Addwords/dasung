@@ -19,6 +19,10 @@ export async function POST(req: Request) {
 			jsize, jtot,
 			osize, otot,
 			rsize, rtot,
+			plsize, pltot,
+			pdsize, pdtot,
+			slsize, sltot,
+			sdsize, sdtot,
 			subtot,
 			jobtime,
 			tot,
@@ -42,13 +46,22 @@ export async function POST(req: Request) {
 				},
 				data: {
 					jsize: jsize,
-					jdump: jtot,
 					osize: osize,
-					odump: otot,
 					rsize: rsize,
+					plsize: plsize,
+					pdsize: pdsize,
+					slsize: slsize,
+					sdsize: sdsize,
+					jdump: jtot,
+					odump: otot,
 					rdump: rtot,
+					powderLoader: pltot,
+					powderDump: pdtot,
+					sedimentLoader: sltot,
+					sedimentDump: sdtot,
 					jobtime: jobtime,
 					total: tot,
+					subTotal: subtot,
 				}
 			})
 		} else if (servNm === 'setJob') { //작업 갱신
@@ -62,6 +75,10 @@ export async function POST(req: Request) {
 					jTot: jtot,
 					oTot: otot,
 					rTot: rtot,
+					plTot: pltot,
+					pdTot: pdtot,
+					slTot: sltot,
+					sdTot: sdtot,
 					subTot: subtot,
 				}
 			})

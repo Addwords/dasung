@@ -85,6 +85,34 @@ const Table = ({
 						))
 					}
 				</div>
+				<div className="col hidden">
+					<div className="pt-1">석분(로더)</div>
+					{jobTime.map((val, idx) => (
+						<div key={val + idx} id={`pl${val + idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.pltot}</div>
+						))
+					}
+				</div>
+				<div className="col hidden">
+					<div className="pt-1">석분(덤프)</div>
+					{jobTime.map((val, idx) => (
+						<div key={val + idx} id={`pd${val + idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.pdtot}</div>
+						))
+					}
+				</div>
+				<div className="col hidden">
+					<div className="pt-1">토사(로더)</div>
+					{jobTime.map((val, idx) => (
+						<div key={val + idx} id={`sl${val + idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.sltot}</div>
+						))
+					}
+				</div>
+				<div className="col hidden">
+					<div className="pt-1">토사(덤프)</div>
+					{jobTime.map((val, idx) => (
+						<div key={val + idx} id={`sd${val + idx}`}>{jobList[String(val+idx).padStart(2,'0')]?.sdtot}</div>
+						))
+					}
+				</div>
 				<div className="col">
 					<div className="pt-1 od">외부덤프</div>
 					{jobTime.map((val,idx) => (

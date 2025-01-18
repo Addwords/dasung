@@ -194,3 +194,14 @@ dasung04 / 12qwaszx,./
 [domain]
 dasung.co.kr
 root / 12qwaszx,./
+
+-----------------------
+25.01.18
+메인공유기 DMZ설정해서 2층 공유기 뚫고
+NEXT공유기 포트포워딩 설정하고
+nginx 설치
+git 설치
+nodejs설치
+npm설치
+pm2설치
+깃헙cli설치

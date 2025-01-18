@@ -4,19 +4,22 @@ import axios from "axios";
 export const jobs = (()=>{
 	
 	let _dumpCount 	= ['']; // 차량합계
+	let _subDumpCount 	= ['']; // 추가차량합계
 	let _jCount 	= 0; 	// 시간별 작업수량
 	let _summId 	= '';	// 종합
+	let subKind = '';
 	let _jobArr: { [key: string]: string }[] = []; // 작업배열
 	let _matArr: string[] = []; // 원자재배열
 	let _jobIds: { [key: string]: string } 	 = {}; // 작업적용할 DB아이디
 	let _vehicle: Vehicle;
+	let _dumpJob: { [key: string]: number } = {};
 
 	/**
 	* 차량별 작업을 등록한다.
 	* @param name: 차량종류
 	* @returns 
 	*/
-    const _dump = (kind: string, materials: string) => {
+    const _dump = (kind: string, materials: string, callback:Function) => {
 		const now = new Date();
 		const HH = now.getHours();
 		const MM = now.getMinutes();
@@ -40,8 +43,27 @@ export const jobs = (()=>{
 		}
 	
 		_dumpCount[_jCount] = kind;
+		switch(kind) {
+			case 'jd':
+				if (materials === 'limestone-powder') {
+					subKind = 'pd';
+				}else if(materials === 'sediment'){
+					subKind = 'sd';
+				}
+				break;
+			case 'rd':
+				if (materials === 'limestone-powder') {
+					subKind = 'pl';
+				}else if(materials === 'sediment'){
+					subKind = 'sl';
+				}
+				break;
+			default: subKind = '';
+		}
+		_subDumpCount[_jCount] = subKind;
 		console.log('_dumpCount::',_dumpCount);
-		_calculate(kind, materials, String(HH), String(MM));
+		console.log('_subDumpCount::',_subDumpCount);
+		_calculate(kind, materials, String(HH), String(MM),callback);
 	
 		_jCount++;
     };
@@ -51,13 +73,18 @@ export const jobs = (()=>{
    * @param kind : 차량종류
    * @param HH :현재시
    */
-	const _calculate = (kind: string, materials: string, HH: string, MM: string) => {
+	const _calculate = (kind: string, materials: string, HH: string, MM: string, callback:Function) => {
 
 		let dumpTot = _dumpCount.filter(el => kind === el).length; //차량별 합계
+		let subDumpTot = _subDumpCount.filter(el => el === subKind).length; //추가차량별 합계
+
 		let subTot  = _dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
 
 		let kCount = document.getElementById(`${kind}${HH}`);
-		kCount ? kCount.textContent = String(dumpTot) : 0;
+			kCount ? kCount.textContent = String(dumpTot) : 0;
+
+		let sCount = document.getElementById(`${subKind}${HH}`);
+			sCount ? sCount.textContent = String(subDumpTot) : 0;
 
 		let totCal = document.getElementById(`tot${HH}`);
 		totCal ? totCal.textContent = String(subTot) : 0;
@@ -65,6 +92,10 @@ export const jobs = (()=>{
 		let jdump: number = 0;
 		let odump: number = 0;
 		let rdump: number = 0;
+		let powderLoader: number = 0;
+		let powderDump: number = 0;
+		let sedimentLoader: number = 0;
+		let sedimentDump: number = 0;
 
 		//자가덤프 총합
 		document.querySelectorAll('[id^=jd]').forEach((el) => {
@@ -78,8 +109,29 @@ export const jobs = (()=>{
 		document.querySelectorAll('[id^=rd]').forEach((el) => {
 			rdump += Number(el.textContent);
 		});
-		console.log(_vehicle);
-		_monitoring(jdump,odump,rdump);
+		////
+		//석분덤프 총합
+		document.querySelectorAll('[id^=pl], [id^=pd], [id^=sl], [id^=sd]').forEach((el) => {
+			if(el.id.includes('pl')) powderLoader += Number(el.textContent);
+			if(el.id.includes('pd')) powderDump += Number(el.textContent);
+			if(el.id.includes('sl')) sedimentLoader += Number(el.textContent);
+			if(el.id.includes('sd')) sedimentDump += Number(el.textContent);
+		});
+
+		console.log(jdump, odump, rdump);
+		console.log(powderLoader, powderDump, sedimentLoader, sedimentDump);
+		_setDumpJob({
+			jdump 	: jdump, 
+			odump 	: odump,
+			rdump 	: rdump,
+			ploader : powderLoader,
+			pdump 	: powderDump,
+			sloader : sedimentLoader,
+			sdump 	: sedimentDump 
+		});
+		callback && callback(_getDumpJob());
+		// console.log(_vehicle);
+		// _monitoring(jdump, odump, rdump);
 
 		MM ? _jobArr.push({ [MM + `'`]: kind }) : _jobArr.pop();
 		MM ? _matArr.push(materials) : _matArr.pop();
@@ -92,6 +144,14 @@ export const jobs = (()=>{
 		};
 		
 		jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
+		// jobObj[subKind == 'pl' ? 'pltot' : subKind == 'pd' ? 'pdtot' : subKind == 'sl' ? 'sltot' : 'sdtot'] = subDumpTot;
+		switch(subKind){
+			case 'pl': jobObj['pltot'] = subDumpTot; break;
+			case 'pd': jobObj['pdtot'] = subDumpTot; break;
+			case 'sl': jobObj['sltot'] = subDumpTot; break;
+			case 'sd': jobObj['sdtot'] = subDumpTot; break;
+		}
+		jobObj
 		axios.post('/api/table', jobObj);
 
 		//갱신
@@ -99,13 +159,19 @@ export const jobs = (()=>{
 			servNm: 'setSummary',
 			summId: _summId,
 			jsize: _vehicle['volInternal'],
-			jtot: jdump,
 			osize: _vehicle['volExternal'],
-			otot: odump,
 			rsize: _vehicle['volLoader'],
+			jtot: jdump,
+			otot: odump,
 			rtot: rdump,
+			pltot: powderLoader,
+			pdtot: powderDump,
+			sltot: sedimentLoader,
+			sdtot: sedimentDump,
 			jobtime: _runnningTime(),
 			tot: (jdump * _vehicle['volInternal']) + (odump * _vehicle['volExternal']) + (rdump * _vehicle['volLoader']),
+			// tot: ((jdump - powderDump) * _vehicle['volInternal']) + (odump * _vehicle['volExternal']) + (rdump * _vehicle['volLoader']),
+			subtot: (powderLoader * _vehicle['volPowderLoader']) + (powderDump * _vehicle['volPowderDump']) + (sedimentLoader * _vehicle['volSedimentLoader']) + (sedimentDump * _vehicle['volSedimentDump']),
 		}
 		axios.post('/api/table', summObj);
 	};
@@ -143,7 +209,7 @@ export const jobs = (()=>{
 			mertalIn.textContent = '';
 			mertalIn.style.backgroundColor = ``;
 			let kind = _dumpCount.pop() || '';
-			_calculate(kind,'', String(HH), '');
+			_calculate(kind,'', String(HH), '',()=>{});
 		}
 	};
 
@@ -198,7 +264,11 @@ export const jobs = (()=>{
 
 		axios.post('/api/table', repObj);
 	};
-	  
+	
+	/**
+	 * VO
+	 * @param 
+	 */
 	const _setJcount = (num:number=0)=>{
 		_jCount = num;
 	};
@@ -213,6 +283,14 @@ export const jobs = (()=>{
 
 	const _getDumpCount = ()=>{
 		return _dumpCount;
+	};
+
+	const _setSubDumpCount = (dump:[])=>{
+		_subDumpCount = dump;
+	};
+
+	const _getSubDumpCount = ()=>{
+		return _subDumpCount;
 	};
 
 	const _setJobArr = (jobs:{[key: string]: string}[]  )=>{
@@ -252,6 +330,14 @@ export const jobs = (()=>{
 		_vehicle = todayVec;
 	};
 
+	const _setDumpJob = (dumpJob:{ [key: string]: number })=>{
+		_dumpJob = dumpJob;
+	};
+
+	const _getDumpJob = ()=>{
+		return _dumpJob;
+	};
+
 	return{
 		 dump : _dump
 		,modify : _modify
@@ -261,6 +347,8 @@ export const jobs = (()=>{
 		,getJCount : _getJcount
 		,setDumpCount : _setDumpCount
 		,getDumpCount : _getDumpCount
+		,setSubDumpCount : _setSubDumpCount
+		,getSubDumpCount : _getSubDumpCount
 		,setJobArr : _setJobArr
 		,getJobArr : _getJobArr
 		,setMatArr : _setMatArr
@@ -270,6 +358,8 @@ export const jobs = (()=>{
 		,setSummId : _setSummId
 		,getSummId : _getSummId
 		,setVehicle : _setVehicle
+		,setDumpJob : _setDumpJob
+		,getDumpJob : _getDumpJob
 		,updateMaintenance : _updateMaintenance
 	}
 })();

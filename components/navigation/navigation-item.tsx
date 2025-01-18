@@ -34,6 +34,8 @@ export const NavigationItem = ({
 			// router.prefetch(`/${params.compCd}/analy`, { kind: PrefetchKind.FULL });
 			router.replace(`/${params.compCd}/analy`,{scroll:true});
 			// location.replace(`/${params.compCd}/analy`);
+		} else if (id == 'analy2') {
+			router.replace(`/${params.compCd}/analy2`);
 		}
 	}
 	return (

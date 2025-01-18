@@ -11,6 +11,10 @@ export interface jobProps {
 	jTot: number
 	oTot: number
 	rTot: number
+	plTot: number
+	pdTot: number
+	slTot: number
+	sdTot: number
 	subTot: number
 	company: string
 }
@@ -59,4 +63,8 @@ export interface Vehicle{
 	volInternal:number; //내부덤프
 	volExternal:number; //외부덤프
 	volLoader:	number; //로우더
+	volPowderLoader:number; //석분로더
+	volPowderDump:number; //석분덤프
+	volSedimentLoader:	number; //토사로더
+	volSedimentDump:	number; //토사덤프
 }

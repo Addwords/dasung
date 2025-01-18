@@ -1,6 +1,6 @@
 import { NavigationSideBar } from "@/components/navigation/navigation-sidebar";
 
-const MainLayout = async ({
+const MainLayout = ({
     children
 }: {
     children:React.ReactNode

@@ -47,8 +47,8 @@ export default function AnalyTable(props: any) {
 	useEffect(() => {
 		tempObj = {};
 		yearArr.map(val => {
-			tempObj[`${val}Time`]  = 0;
-			tempObj[`${val}Cubic`] = 0;
+			tempObj[`${val}Powder`]  = 0;
+			tempObj[`${val}25mm`] = 0;
 		});
 		
 		initArr = [...Array(31)].map((val, idx) => {
@@ -58,8 +58,8 @@ export default function AnalyTable(props: any) {
 		yearArr.map((mon, idx) => {
 			if (dataSet[mon]?.length > 0) {
 				dataSet[mon].map((obj: any, idx: number) => {
-					initArr[idx][`${mon}Time`] = obj.jobtime;
-					initArr[idx][`${mon}Cubic`] = obj.total;
+					initArr[idx][`${mon}Powder`] = obj.subTotal;
+					initArr[idx][`${mon}25mm`] = obj.mm25;
 				})
 			}
 			setAnaly(initArr);
@@ -76,12 +76,12 @@ export default function AnalyTable(props: any) {
 		return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	};
 
-	const cubicTotal = () => {
+	const PowderTotal = () => {
 		let cubic = 0;
 		for (let mon of yearArr) {
 			let total = 0;
 			for (let m of analy) {
-				total += parseInt(m[`${mon}Cubic`]);
+				total += parseInt(m[`${mon}Powder`]);
 			}
 			cubic += total;
 		}
@@ -102,10 +102,10 @@ export default function AnalyTable(props: any) {
 				servNm: 'setSummary',
 				summId: summId
 			};
-			servObj[modTit.includes('시간') ? 'jobtime' : 'tot'] = modVal;
+			servObj[modTit.includes('루베') ? 'subTotal' : 'mm25'] = modVal;
 			if (selectedCell) {
 				let cell = selectedCell;
-				cell.rowData[`${yearArr[Number(m) - 1]}${modTit.includes('시간') ? 'Time' : 'Cubic'}`] = modVal;
+				cell.rowData[`${yearArr[Number(m) - 1]}${modTit.includes('루베') ? 'subTotal' : 'mm25'}`] = modVal;
 			}
 			postFetcher('/api/config', servObj).then(() => {
 				props.setMount(false);
@@ -121,8 +121,8 @@ export default function AnalyTable(props: any) {
 		const timesheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy, 'Time'));
 		timesheet['!cols'] = [{}]
 		const cubicsheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy,'Cubic'));
-		XLSX.utils.book_append_sheet(workbook, cubicsheet, `생산수량`);
-		XLSX.utils.book_append_sheet(workbook, timesheet,  `생산시간`);
+		XLSX.utils.book_append_sheet(workbook, cubicsheet, `석+토(루베)`);
+		XLSX.utils.book_append_sheet(workbook, timesheet,  `25mm`);
 		XLSX.writeFile(workbook, `다성_${props.year}.xlsx`);
     };
 	const convertObjectInArr = (param: Sale[], sep:string) => {
@@ -168,11 +168,11 @@ export default function AnalyTable(props: any) {
 			<Row>
 				{
 					yearArr.map((val) => (
-						[{ head: '생산 시간', field: 'Time' }, { head: '생산 수량', field: 'Cubic' }].map((wrap) => (
+						[{ head: '석+토(루베)', field: 'Powder' }, { head: '25mm', field: '25mm' }].map((wrap) => (
 							<Column key={val + wrap.field}
 								style={{
 									fontSize: '0.8rem',
-									borderRight: val == 'Dec' && wrap.field == 'Cubic' ? '' : '1px solid'
+									borderRight: val == 'Dec' && wrap.field == '25mm' ? '' : '1px solid'
 								}}
 								header={wrap.head}
 								alignHeader={'center'}
@@ -195,13 +195,13 @@ export default function AnalyTable(props: any) {
 					footerStyle={{ textAlign: 'center' }}
 				/>
 				{yearArr.map((val) => (
-					['Time', 'Cubic'].map((wrap, idx) => (
+					['Powder', '25mm'].map((wrap, idx) => (
 						<Column key={val + wrap}
 							footer={colTotal(`${val}${wrap}`)}
 							footerClassName='text-sm'
 							footerStyle={{ textAlign: 'center' }}
 							style={{
-								borderRight: val == 'Dec' && wrap == 'Cubic' ? '' : '1px solid',
+								borderRight: val == 'Dec' && wrap == '25mm' ? '' : '1px solid',
 								backgroundColor: idx ? 'rgb(231 233 236 / 75%)' : 'rgb(248 250 252)'
 							}}
 						/>
@@ -214,7 +214,7 @@ export default function AnalyTable(props: any) {
 					footerStyle={{ textAlign: 'center' }}
 				/>
 				<Column
-					footer={cubicTotal()}
+					footer={PowderTotal()}
 					footerClassName='cubicTot'
 					colSpan={24}
 				/>
@@ -264,11 +264,11 @@ export default function AnalyTable(props: any) {
 					bodyClassName={'font-bold date-col'}
 				/>
 				{yearArr.map((val,i) => (
-					['Time', 'Cubic'].map((wrap) => (
+					['Powder', '25mm'].map((wrap) => (
 						<Column
 							key={val + wrap}
 							field={`${val}${wrap}`}
-							style={val == 'Dec' && wrap == 'Cubic' ? {} : { borderRight: '1px solid' }}
+							style={val == 'Dec' && wrap == '25mm' ? {} : { borderRight: '1px solid' }}
 							bodyClassName={cn('hover:bg-gray-200 text-sm analy-col')}
 							bodyStyle={{ textAlign: 'center', padding: '0.5rem', width: '65px' }}
 						/>

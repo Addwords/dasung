@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 			osize, otot,
 			rsize, rtot,
 			pdsize, plsize, sdsize, slsize,
-			jobtime, tot,
+			jobtime, tot, subtot,
 			comCd, newPassword,
 			yyyy, mm, dd
 		} = await req.json();
@@ -57,6 +57,7 @@ export async function POST(req: Request) {
 					rdump: rtot,
 					jobtime: jobtime,
 					total: tot,
+					subTotal: subtot
 				}
 			});
 
@@ -108,6 +109,17 @@ export async function POST(req: Request) {
 				await db.$queryRaw(
 					Prisma.sql`
 					SELECT id, mm, dd, jobtime, total
+					  FROM "Summary" s
+					 WHERE company = ${comCd}
+					   AND yyyy = ${yyyy}
+					ORDER BY mm, dd
+				`)
+			);
+		} else if (servNm === 'getSummaryPowder') {
+			return NextResponse.json(
+				await db.$queryRaw(
+					Prisma.sql`
+					SELECT id, mm, dd, "subTotal", mm25
 					  FROM "Summary" s
 					 WHERE company = ${comCd}
 					   AND yyyy = ${yyyy}

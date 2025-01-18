@@ -23,10 +23,6 @@ export const currentJobs = async (today: string, company: string) => {
             , time: ''
             , job: []
             , material: []
-            , jTot: 0
-            , oTot: 0
-            , rTot: 0
-            , subTot: 0
             , company: company
         };
         let objList: any = [];

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 // import { NavigatioAction } from "@/components/navigation/navigation-action";
 import { Separator } from "@/components/UI/separator";
 import { ScrollArea } from "@/components/UI/scroll-area";
@@ -9,7 +9,6 @@ import { NavigationItem } from "@/components/navigation/navigation-item";
 // import { LangToggle } from "../lang-toggle";
 
 export const NavigationSideBar = async () => {
-
     return (
         <div className="space-y-4 flex flex-col items-center h-full text-primary w-full bg-[#727274] py-3 non-print">
             {/* <NavigatioAction /> */}
@@ -35,6 +34,11 @@ export const NavigationSideBar = async () => {
                     id={'analy'}
                     name={'통계'}
                     imageUrl={'/analysis.png'}
+                />
+                <NavigationItem
+                    id={'analy2'}
+                    name={'통계2'}
+                    imageUrl={'/analysis2.png'}
                 />
                 {/* {servers.map((server) => (
                     <div key={server.id} className="">
