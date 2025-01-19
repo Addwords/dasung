@@ -118,9 +118,9 @@ export default function AnalyTable(props: any) {
 	//내보내기
 	const exportExcel = () => {
 		const workbook = XLSX.utils.book_new();
-		const timesheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy, 'Time'));
+		const timesheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy, '25mm'));
 		timesheet['!cols'] = [{}]
-		const cubicsheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy,'Cubic'));
+		const cubicsheet = XLSX.utils.json_to_sheet(convertObjectInArr(analy,'Powder'));
 		XLSX.utils.book_append_sheet(workbook, cubicsheet, `석+토(루베)`);
 		XLSX.utils.book_append_sheet(workbook, timesheet,  `25mm`);
 		XLSX.writeFile(workbook, `다성_${props.year}.xlsx`);

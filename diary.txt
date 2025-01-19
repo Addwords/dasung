@@ -205,3 +205,7 @@ nodejs설치
 npm설치
 pm2설치
 깃헙cli설치
+$ gh auth login~
+sudo npm install -g serve
+
+$ pm2 start npm --name "dasung" --start

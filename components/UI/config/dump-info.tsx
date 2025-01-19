@@ -21,8 +21,8 @@ const DumpInfo = (props: any) => {
 		};
 		const vehicleMap:{ [key: string]: string; } = {
 			'jDump' : 'jsize',	
-			'oDump' : 'jsize',
-			'rDump' : 'jsize',	
+			'oDump' : 'osize',
+			'rDump' : 'rsize',	
 			'powderDump' : 'pdsize',	
 			'powderLoader' : 'plsize',	
 			'sedimentDump' : 'sdsize',	
