@@ -63,7 +63,7 @@ const Analysis = () => {
 	const [selectMonth,setSelectMonth] = useState<number[]>();
 
 	useEffect(() => {
-		console.log('onChanged!!');
+		
 		let arr:number[] = [];
 		for(let i=2024;i<=date.getFullYear();i++){
 			arr.push(i);

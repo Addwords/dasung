@@ -145,7 +145,7 @@ export const jobs = (()=>{
 		
 		jobObj[kind == 'jd' ? 'jtot' : kind == 'od' ? 'otot' : 'rtot'] = dumpTot;
 		// jobObj[subKind == 'pl' ? 'pltot' : subKind == 'pd' ? 'pdtot' : subKind == 'sl' ? 'sltot' : 'sdtot'] = subDumpTot;
-		switch(subKind){
+		switch(materials){
 			case 'pl': jobObj['pltot'] = subDumpTot; break;
 			case 'pd': jobObj['pdtot'] = subDumpTot; break;
 			case 'sl': jobObj['sltot'] = subDumpTot; break;
