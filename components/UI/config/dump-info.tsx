@@ -54,11 +54,11 @@ const DumpInfo = (props: any) => {
 			},];
 			if(compCd == '102'){
 				vehicleList.push({
-					'powderDump' 		: {title:'석분덤프', back:'bg-gray-400', 	color:'text-black-400'}
-				   ,'powderLoader' 	: {title:'석분로더', back:'bg-gray-400', 	color:'text-black-400'}
+					'powderDump' 	: {title:'석분덤프', back:'bg-gray-500', 	color:'text-white'}
+				   ,'powderLoader' 	: {title:'석분로더', back:'bg-gray-300', 	color:'text-black-300'}
 				   });
 				vehicleList.push({
-				'sedimentDump' 	: {title:'토사덤프', back:'bg-green-100', 	color:'text-green-500'}
+				'sedimentDump' 		: {title:'토사덤프', back:'bg-green-400', 	color:'text-white'}
 				,'sedimentLoader' 	: {title:'토사로더', back:'bg-green-100', 	color:'text-green-500'}
 				});
 			}

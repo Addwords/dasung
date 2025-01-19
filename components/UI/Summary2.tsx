@@ -47,8 +47,11 @@ const Summary = (props: any) => {
 						<p>토사로우더 	{props.sl}m<sup>3</sup> x {props.dump.sloader} = { numberFormat(props.sl * props.dump.sloader) }m<sup>3</sup></p>
 						<p>토사덤프 	{props.sd}m<sup>3</sup> x {props.dump.sdump}   = { numberFormat(props.sd * props.dump.sdump)   }m<sup>3</sup></p>
 					</div>
-					<div className="">
+					<div className="flex-col">
 						<p className="font-bold text-xl pt-6">총 <label id="total" htmlFor="">{subSum('powder')}</label>m<sup>3</sup></p>
+						<br/>
+						1공장<br/>
+						▶2공장 이동
 					</div>
 				</div>
 				<div className="flex border-l-2 border-gray-800">

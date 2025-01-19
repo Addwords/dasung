@@ -141,7 +141,7 @@ export default function Home({
         volSedimentLoader: today_slSize
     }); //작업차량 용량 셋팅
     setLoading(false);
-  },[]);
+  },[dumpInfo]);
 
   /**
    * 단축키 설정
@@ -393,7 +393,7 @@ export default function Home({
             {company.cd == '102' && pdsize && <Button
               text='석분(덤프)'
               subText={`${pdsize}m<sup>3</sup>`}
-              color={'#b0b2b1'}
+              color={'#6b7280'}
               btnRef={(el: any) => { btnRef.current[5] = el; }}
               func={() => jobExec('jd','limestone-powder')}
             />}
@@ -408,7 +408,7 @@ export default function Home({
               <Button
               text='토사(덤프)'
               subText={`${sdsize}m<sup>3</sup>`}
-              color={'#5acc8d'}
+              color={'#1ea97c'}
               btnRef={(el: any) => { btnRef.current[7] = el; }}
               func={() => jobExec('jd','sediment')}
             />}

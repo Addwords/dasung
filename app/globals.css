@@ -175,20 +175,26 @@ body {
   border: 1px solid black;
 }
 
-.od {
+.od-od {
   background-color: #ffd900;
 }
 
-.rd {
+.rd-rd {
   background-color: #00b0f0;
 }
 
-.limestone-powder{
+.limestone-powder-rd{
   background-color: #b0b2b1;
 }
+.limestone-powder-jd{
+  background-color: #6b7280;
+}
 
-.sediment{
+.sediment-rd{
   background-color: #5acc8d;
+}
+.sediment-jd{
+  background-color: #1ea97c;
 }
 
 .col div {

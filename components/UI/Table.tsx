@@ -71,7 +71,7 @@ const Table = ({
 					{
 						jobTime.map((val, i) => (
 							[...Array(40).fill(1)].map((x, idx) => (
-								<div key={val + idx} id={`t${val + i}-${idx}`} className={jobList[String(val + i).padStart(2, '0')]?.mat[idx] || jobList[String(val + i).padStart(2, '0')]?.dump[idx]}>
+								<div key={val + idx} id={`t${val + i}-${idx}`} className={`${jobList[String(val + i).padStart(2, '0')]?.mat[idx]}-${jobList[String(val + i).padStart(2, '0')]?.dump[idx]}`}>
 								{jobList[String(val + i).padStart(2, '0')]?.job[idx]}
 								</div>
 							))
