@@ -74,7 +74,7 @@ sudo systemctl status nginx
 
 cd /etc/nginx/conf.d
 touch 도메인명.conf
-vi 도메인명.con
+vi 도메인명.conf
 
 [VIP]
  
@@ -82,14 +82,45 @@ vi 도메인명.con
 
 ```
 server {
-        listen 80;
-        listen [::]:80;
-        server_name www.hexastudio.site hexastudio.site;
-        root /var/www/dasung/; // dev켜놓을거라 상관없는듯 static일때 사용하는듯
+        # SSL configuration
+
+        listen 443 ssl http2 default_server;
+        listen [::]:443 ssl http2 default_server;
+        client_max_body_size 10M;
+
+        server_name www.dasung.co.kr dasung.co.kr;
+        ssl_certificate "/etc/letsencrypt/live/dasung.co.kr/fullchain.pem";
+        ssl_certificate_key "/etc/letsencrypt/live/dasung.co.kr/privkey.pem";
+        add_header Strict-Transport-Security "max-age=31536000";
+
         location / {
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header X-Real-IP $remote_addr;
                 proxy_pass http://localhost:3000;
         }
 }
+
+server {
+        listen 80;
+        listen [::]:80;
+        server_name www.dasung.co.kr dasung.co.kr;
+        root /var/www/dasung/out/;
+        location / {
+                return 301 https://dasung.co.kr;
+        }
+        location /_next/webpack-hmr{
+                proxy_pass http://localhost:3000/_next/webpack-hmr;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+        }
+
+}
+/home/admin/dev/dasung/dasung
 
 ```
 cd..
@@ -199,13 +230,24 @@ root / 12qwaszx,./
 25.01.18
 메인공유기 DMZ설정해서 2층 공유기 뚫고
 NEXT공유기 포트포워딩 설정하고
-nginx 설치
-git 설치
-nodejs설치
-npm설치
-pm2설치
+nginx 설치 : : sudo apt install nginx
+git 설치 : sudo apt install git
+nodejs설치 : sudo apt install nodejs
+npm설치 : sudo apt install npm
+pm2설치 : sudo npm install pm2 -g
+
 깃헙cli설치
+```
+(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+        && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& sudo apt install gh -y
+```
+깃헙 로그인
 $ gh auth login~
-sudo npm install -g serve
 
 $ pm2 start npm --name "dasung" --start
