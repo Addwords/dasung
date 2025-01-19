@@ -31,7 +31,7 @@ model Jobs {
   operator String
   time     String
   job      Json[]
-  material String[]
+  material String[] @default([""])
   jTot     Int @default(0)
   oTot     Int @default(0)
   rTot     Int @default(0)
