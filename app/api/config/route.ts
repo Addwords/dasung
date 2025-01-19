@@ -28,6 +28,7 @@ export async function POST(req: Request) {
 				}
 			})
 		} else if (servNm === 'setAsset') {
+			if(Number.isNaN(Number(comCd))) return NextResponse.json('error');
 			await db.assets.update({
 				where: {
 					comCd: comCd

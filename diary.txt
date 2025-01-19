@@ -248,7 +248,7 @@ pm2설치 : sudo npm install pm2 -g
 	&& sudo apt install gh -y
 ```
 깃헙 로그인
-$ gh auth login~
+$ gh auth login
 소스 클론
 $ gh repo clone Addwords/dasung
 

@@ -106,13 +106,13 @@ export const getAssets = async (comcd: string) => {
 
     await db.assets.create({
         data: {
-            jDump: 16,
-            oDump: 16,
-            rDump: 16,
-            powderDump: 16,
-            powderLoader: 16,
-            sedimentDump: 16,
-            sedimentLoader: 16,
+            jDump: 17,
+            oDump: 17,
+            rDump: 7,
+            powderLoader: 7,
+            powderDump: 17,
+            sedimentLoader: 7,
+            sedimentDump: 17,
             comCd: comcd
         }
     });
