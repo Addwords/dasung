@@ -109,9 +109,8 @@ export default function Home({
    */
   const jobExec = (vehicle:string, materials:string) => {
     jobs.dump(vehicle, materials,(dump:any)=>{
-		console.log('dump:',dump);
-		setDump(dump);
-	});
+		  setDump(dump);
+	  });
   }
 
   useEffect(()=>{
@@ -212,11 +211,11 @@ export default function Home({
 			let tmpOpList: StringDictionary = {};
 			//등록된 작업자 목록
 			jobList.map((obj: {
-			time: string, id: string,
-			operator: string, job: any, material:any,
-			jTot: number, oTot: number, rTot: number,
-			plTot: number, pdTot: number, slTot: number, sdTot: number,
-			subTot: number
+        time: string, id: string,
+        operator: string, job: any, material:any,
+        jTot: number, oTot: number, rTot: number,
+        plTot: number, pdTot: number, slTot: number, sdTot: number,
+        subTot: number
 			}) => {
 			tmpOpList[obj.time] = {
 				id: obj.id,
@@ -263,12 +262,13 @@ export default function Home({
 			if (curObj) {
 				jobs.setJCount(curObj.subtot);
 				jobs.setDumpCount(curObj.dump);
+				jobs.setSubDumpCount(structuredClone(curObj.mat));
 				let tmpArr: { [x: string]: any; }[] = [];
 				curObj.job.forEach((val: string, idx: number) => {
-				tmpArr.push({ [val]: curObj.dump[idx] })
+          tmpArr.push({ [val]: curObj.dump[idx] })
 				});
 				jobs.setJobArr(tmpArr);
-				jobs.setMatArr(curObj.mat);
+        jobs.setMatArr(curObj.mat);
 			}
 			realHH = curHour; //init
 			// console.log('summInfo.id::::',summInfo.id);
@@ -362,7 +362,10 @@ export default function Home({
           showModal && <AlertModal
             // title={tit}
             onHide={() => { setModal(false); }}
-            onInput={() => { setModal(false); jobs.modify(); }}
+            onInput={() => { setModal(false); jobs.modify((dump:any)=>{
+              console.log('modify:',dump);
+              setDump(dump);
+            }); }}
           />
         }
         {isToday && //오늘만 가능함

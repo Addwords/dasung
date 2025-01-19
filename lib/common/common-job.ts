@@ -63,7 +63,7 @@ export const jobs = (()=>{
 		_subDumpCount[_jCount] = subKind;
 		console.log('_dumpCount::',_dumpCount);
 		console.log('_subDumpCount::',_subDumpCount);
-		_calculate(kind, materials, String(HH), String(MM),callback);
+		_calculate(kind, subKind, String(HH), String(MM),callback);
 	
 		_jCount++;
     };
@@ -76,14 +76,14 @@ export const jobs = (()=>{
 	const _calculate = (kind: string, materials: string, HH: string, MM: string, callback:Function) => {
 
 		let dumpTot = _dumpCount.filter(el => kind === el).length; //차량별 합계
-		let subDumpTot = _subDumpCount.filter(el => el === subKind).length; //추가차량별 합계
+		let subDumpTot = _subDumpCount.filter(el => el === materials).length; //추가차량별 합계
 
 		let subTot  = _dumpCount.filter(el => new RegExp(/([jd,rd,od])/).test(el)).length; //시간별 합계
 
 		let kCount = document.getElementById(`${kind}${HH}`);
 			kCount ? kCount.textContent = String(dumpTot) : 0;
 
-		let sCount = document.getElementById(`${subKind}${HH}`);
+		let sCount = document.getElementById(`${materials}${HH}`);
 			sCount ? sCount.textContent = String(subDumpTot) : 0;
 
 		let totCal = document.getElementById(`tot${HH}`);
@@ -200,7 +200,7 @@ export const jobs = (()=>{
 	 * 수정버튼
 	 * desc : 현재시간중 마지막 값을 취소한다.
 	 */
-	const _modify = () => {
+	const _modify = (callback:Function) => {
 		--_jCount;
 		let HH = new Date().getHours();
 		let mertalIn = document.getElementById(`t${HH}-${_jCount}`) as HTMLElement;
@@ -209,7 +209,9 @@ export const jobs = (()=>{
 			mertalIn.textContent = '';
 			mertalIn.style.backgroundColor = ``;
 			let kind = _dumpCount.pop() || '';
-			_calculate(kind,'', String(HH), '',()=>{});
+			let materials = _subDumpCount.pop() || '';
+			console.log('%c 수정>>>>','background-color:orange',kind, materials);
+			_calculate(kind, materials, String(HH), '', callback);
 		}
 	};
 
@@ -221,8 +223,10 @@ export const jobs = (()=>{
 				arr.push(Number(el.id.replace('tot', '')));
 			}
 		});
-		runTime = (arr[arr.length-1] - arr[0]) + 1
-		return runTime;
+		if(arr.length > 0)
+			runTime = (arr[arr.length-1] - arr[0]) + 1
+		console.log('runTime::',runTime);
+		return runTime ?? 0;
 	};
 
 	/**

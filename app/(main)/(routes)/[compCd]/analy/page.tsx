@@ -60,14 +60,26 @@ const Analysis = () => {
 	const [mm, setMM] = useState(String(date.getMonth() + 1).padStart(2, '0'));
 	
 	const [selectYear,setSelectYear] = useState<number[]>();
+	const [selectMonth,setSelectMonth] = useState<number[]>();
 
 	useEffect(() => {
-		// console.log('useEffect!!',isMounted.current);
+		console.log('onChanged!!');
 		let arr:number[] = [];
 		for(let i=2024;i<=date.getFullYear();i++){
 			arr.push(i);
 		}
 		setSelectYear(arr);
+		let arrM:number[] = [];
+		if(Number(yyyy) === date.getFullYear()){
+			for(let i=1;i<=(date.getMonth() + 1);i++){
+				arrM.push(i);
+			}
+		}else{
+			for(let i=1;i<=12;i++){
+				arrM.push(i);
+			}
+		}
+		setSelectMonth(arrM);
 		getSummaryMonth(param.compCd, yyyy, mm).then(mres => {
 			setMonthData(mres?.data);
 			setMChartKey(Math.random());
@@ -113,16 +125,16 @@ const Analysis = () => {
 				<Select onValueChange={e=>{
 					setYYYY(e)
 				}}>
-				<SelectTrigger className="w-[180px]">
-					<SelectValue placeholder={`${yyyy}년`} />
-				</SelectTrigger>
-				<SelectContent>
-					{selectYear?.map((year,idx) => (
-						<SelectItem key={idx} value={year.toString()}>
-							{year}년
-						</SelectItem>
-					))}
-				</SelectContent>
+					<SelectTrigger className="w-[180px]">
+						<SelectValue placeholder={`${yyyy}년`} />
+					</SelectTrigger>
+					<SelectContent>
+						{selectYear?.map((year,idx) => (
+							<SelectItem key={idx} value={year.toString()}>
+								{year}년
+							</SelectItem>
+						))}
+					</SelectContent>
 				</Select>
 				</div>
 				<div className="flex items-center justify-between space-y-2 non-print">
@@ -134,7 +146,23 @@ const Analysis = () => {
 						<TabsContent value="monthby">
 							<Card>
 								<CardHeader>
-									<CardTitle>{mm}월</CardTitle>
+									<Select onValueChange={e=>{
+										console.log('onValueChange::',String(e).padStart(2, '0'))
+										setMM(String(e).padStart(2, '0'))
+									}}>
+										<SelectTrigger className="w-[150px]">
+											<SelectValue placeholder={`${mm}월`} >
+												<CardTitle>{mm}월</CardTitle>
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											{selectMonth?.map((mon,idx) => (
+												<SelectItem key={idx} value={mon.toString()}>
+													{mon}월
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
 									<div>
 										<div className="flex justify-end">
 											{/* <div>월을 선택</div> */}
