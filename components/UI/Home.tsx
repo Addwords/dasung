@@ -68,7 +68,7 @@ export default function Home({
   const [slsize, setSlsize] = useState(0);
 
   const [opList,setOpList] = useState({}); 
-  // 
+
   const [dump, setDump] = useState({});
   const [loading,setLoading] = useState(true);
   const isMounted = useRef(false);
@@ -82,7 +82,6 @@ export default function Home({
   const calDate = `${date.substring(0, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
   const isToday = new Date().toDateString() === new Date(calDate).toDateString();
   const jobprint = () => {
-    console.log(navigator.userAgent);
     if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
       alert('PC환경에서만 가능합니다.');
     } else {
@@ -221,7 +220,7 @@ export default function Home({
 				id: obj.id,
 				name: obj.operator,
 				...madeJob(obj),
-				mat: obj.material,
+				mat: obj.material ?? '',
 				jtot: obj.jTot,
 				otot: obj.oTot,
 				rtot: obj.rTot,

@@ -34,15 +34,7 @@ export const jobs = (()=>{
 		let currentOperator = document.querySelector(`.oper-${String(HH).padStart(2,'0')}`)?.textContent;
 		if(currentOperator == '')
 			alert('운전자를 선택해주세요.');
-		
-		let mertalIn = document.querySelector(`#t${HH}-${_jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
-	
-		if (!!mertalIn) {
-			mertalIn.textContent = `${MM}'`;  //dialogInput;
-			mertalIn.className = materials; //외부덤프
-		}
-	
-		_dumpCount[_jCount] = kind;
+		subKind = '';
 		switch(kind) {
 			case 'jd':
 				if (materials === 'limestone-powder') {
@@ -58,11 +50,18 @@ export const jobs = (()=>{
 					subKind = 'sl';
 				}
 				break;
-			default: subKind = '';
 		}
+		let mertalIn = document.querySelector(`#t${HH}-${_jCount}`) as HTMLElement; //현재시간+횟수에 해당하는 칸
+	
+		if (!!mertalIn) {
+			mertalIn.textContent = `${MM}'`;  //dialogInput;
+			mertalIn.className = `${subKind ?? kind}-${kind}`; //외부덤프
+		}
+	
+		_dumpCount[_jCount] = kind;
 		_subDumpCount[_jCount] = subKind;
-		console.log('_dumpCount::',_dumpCount);
-		console.log('_subDumpCount::',_subDumpCount);
+		// console.log('_dumpCount::',_dumpCount);
+		// console.log('_subDumpCount::',_subDumpCount);
 		_calculate(kind, subKind, String(HH), String(MM),callback);
 	
 		_jCount++;
@@ -118,8 +117,8 @@ export const jobs = (()=>{
 			if(el.id.includes('sd')) sedimentDump += Number(el.textContent);
 		});
 
-		console.log(jdump, odump, rdump);
-		console.log(powderLoader, powderDump, sedimentLoader, sedimentDump);
+		// console.log(jdump, odump, rdump);
+		// console.log(powderLoader, powderDump, sedimentLoader, sedimentDump);
 		_setDumpJob({
 			jdump 	: jdump, 
 			odump 	: odump,
@@ -210,7 +209,7 @@ export const jobs = (()=>{
 			mertalIn.style.backgroundColor = ``;
 			let kind = _dumpCount.pop() || '';
 			let materials = _subDumpCount.pop() || '';
-			console.log('%c 수정>>>>','background-color:orange',kind, materials);
+			// console.log('%c 수정>>>>','background-color:orange',kind, materials);
 			_calculate(kind, materials, String(HH), '', callback);
 		}
 	};
