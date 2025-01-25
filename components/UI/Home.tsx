@@ -17,12 +17,10 @@ import { GridLoader } from "react-spinners";
 import { jobs } from "@/lib/common/common-job";
 import Summary2 from "./Summary2";
 
-// let mount = false;
-// let subTot = [];
 let realHH = 5; //업무최초시간
 // const yyyy = new Date().getFullYear();
 // const mm = new Date().getMonth() + 1;
-// const dd = new Date().getDate();
+const dd = new Date().getDate();
 
 function realTime() {
   const now = new Date();
@@ -34,7 +32,6 @@ function realTime() {
     jobs.setJCount(0);
     jobs.setDumpCount([]);
     jobs.setSubDumpCount([]);
-    // subTot = [];
     jobs.setJobArr([]);
     jobs.setMatArr([]);
   };

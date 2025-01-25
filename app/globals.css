@@ -119,15 +119,6 @@ body {
   /* color: #16cc86; */
 }
 
-.summary {
-  width: 1000px;
-  display: grid;
-  grid-template-columns: 0.7fr 0.7fr 8.5fr;
-  /* grid-template-rows: repeat(auto, minmax(12.5%, auto)); */
-  color: #444;
-  font-size: small;
-}
-
 /* 버튼영역 */
   .btn-area {
     position: fixed;
@@ -279,12 +270,15 @@ body {
 
   .summary {
     width: 730px;
-    display: grid;
-    grid-template-columns: 0.7fr 0.7fr 8.5fr;
+    /* grid-template-columns: 0.7fr 0.7fr 8.5fr; */
     color: #444;
-    font-size: small;
     page-break-inside: avoid;
     margin: 0;
+  }
+  .print-font{
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+    border: none;
   }
 
   .data-grid {
