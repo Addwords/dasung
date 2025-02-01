@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 			pdsize, pdtot,
 			slsize, sltot,
 			sdsize, sdtot,
-			subtot,
+			subtot, mm25,
 			jobtime,
 			tot,
 			maintenance,
@@ -62,6 +62,7 @@ export async function POST(req: Request) {
 					jobtime: jobtime,
 					total: tot,
 					subTotal: subtot,
+					mm25: mm25,
 				}
 			})
 		} else if (servNm === 'setJob') { //작업 갱신

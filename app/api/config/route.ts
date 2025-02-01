@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 			osize, otot,
 			rsize, rtot,
 			pdsize, plsize, sdsize, slsize,
-			jobtime, tot, subtot,
+			jobtime, tot, subtot, mm25,
 			comCd, newPassword,
 			yyyy, mm, dd
 		} = await req.json();
@@ -58,7 +58,8 @@ export async function POST(req: Request) {
 					rdump: rtot,
 					jobtime: jobtime,
 					total: tot,
-					subTotal: subtot
+					subTotal: subtot,
+					mm25: mm25
 				}
 			});
 

@@ -102,10 +102,11 @@ export default function AnalyTable(props: any) {
 				servNm: 'setSummary',
 				summId: summId
 			};
-			servObj[modTit.includes('루베') ? 'subTotal' : 'mm25'] = modVal;
+			servObj[modTit.includes('루베') ? 'subtot' : 'mm25'] = modVal;
 			if (selectedCell) {
 				let cell = selectedCell;
-				cell.rowData[`${yearArr[Number(m) - 1]}${modTit.includes('루베') ? 'subTotal' : 'mm25'}`] = modVal;
+				cell.rowData[`${yearArr[Number(m) - 1]}${modTit.includes('루베') ? 'Powder' : 'mm25'}`] = modVal;
+				cell.value = modVal;
 			}
 			postFetcher('/api/config', servObj).then(() => {
 				props.setMount(false);
@@ -242,7 +243,7 @@ export default function AnalyTable(props: any) {
 			<DataTable value={analy} headerColumnGroup={headerGroup} footerColumnGroup={footerGroup}
 				tableStyle={{ width: '1500px' }} size='small'
 				tableClassName='analysis-table'
-				cellSelection selectionMode="single" selection={selectedCell!}
+				cellSelection selectionMode="single" selection={selectedCell}
 				isDataSelectable={isCellSelectable}
 				onSelectionChange={(e) => {
 					const cell = e.value ?? selectedCell;
@@ -253,7 +254,7 @@ export default function AnalyTable(props: any) {
 					let value = cell.value;
 
 					setModifyDialog(true);
-					setTit(`${mon}월${day}일 ${isTime ? '생산시간' : '생산수량'}`);
+					setTit(`${mon}월${day}일 ${isTime ? '석+토(루베)' : '25mm'}`);
 					setDate(`${mon}.${day}`);
 					setVal(value);
 				}}
