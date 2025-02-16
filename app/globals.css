@@ -242,6 +242,17 @@ body {
 /* 인쇄시 설정되는 부분 😎😎😎😎😎*/
 
 @media print {
+  .summary {
+    width: 730px;
+    color: #444;
+    page-break-inside: avoid;
+    margin: 0;
+  }
+  .print-font{
+    padding: 0.4rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5rem !important;
+  }
   body {
     -webkit-print-color-adjust: exact;
   }
@@ -266,19 +277,6 @@ body {
     color: #444;
     font-size: small;
     margin: auto;
-  }
-
-  .summary {
-    width: 730px;
-    /* grid-template-columns: 0.7fr 0.7fr 8.5fr; */
-    color: #444;
-    page-break-inside: avoid;
-    margin: 0;
-  }
-  .print-font{
-    font-size: 1rem !important;
-    line-height: 1.5rem !important;
-    border: none;
   }
 
   .data-grid {

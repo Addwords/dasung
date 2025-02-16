@@ -36,7 +36,7 @@ const Summary = (props: any) => {
 						<p>외부덤프 {props.o}m<sup>3</sup> x {props.dump.odump} = { numberFormat(props.o * props.dump.odump) }m<sup>3</sup></p>
 						<p>로우더 	{props.r}m<sup>3</sup> x {props.dump.rdump - props.dump.ploader - props.dump.sloader} = { numberFormat(props.r * (props.dump.rdump - props.dump.ploader - props.dump.sloader)) }m<sup>3</sup></p>
 					</div>
-					<div className="non-print">
+					<div className="">
 						<p className="font-bold text-xl pt-6 print-font">총 <label id="total" htmlFor="">{subSum('stone')}</label>m<sup>3</sup></p>
 					</div>
 				</div>
@@ -47,7 +47,7 @@ const Summary = (props: any) => {
 						<p>토사로우더 	{props.sl}m<sup>3</sup> x {props.dump.sloader} = { numberFormat(props.sl * props.dump.sloader) }m<sup>3</sup></p>
 						<p>토사덤프 	{props.sd}m<sup>3</sup> x {props.dump.sdump}   = { numberFormat(props.sd * props.dump.sdump)   }m<sup>3</sup></p>
 					</div>
-					<div className="flex-col non-print">
+					<div className="flex-col">
 						<p className="font-bold text-xl pt-6 print-font">총 <label id="total" htmlFor="">{subSum('powder')}</label>m<sup>3</sup></p>
 						<br/>
 						1공장<br/>
@@ -55,9 +55,9 @@ const Summary = (props: any) => {
 					</div>
 				</div>
 				<div className="flex border-l-2 border-gray-800">
-					<div className="font-bold text-xl p-5">
+					<div className="font-bold text-xl p-5 print-font">
 						합계
-						<p>{`${subSum('stone')} + ${subSum('powder')}`}</p>
+						<p className="">{`${subSum('stone')} + ${subSum('powder')}`}</p>
 						<p><label htmlFor="">{numberFormat(Number(subSum('stone')) + Number(subSum('powder')))}</label>m<sup>3</sup></p>
 					</div>
 				</div>

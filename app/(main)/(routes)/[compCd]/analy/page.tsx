@@ -152,7 +152,7 @@ const Analysis = () => {
 									}}>
 										<SelectTrigger className="w-[150px]">
 											<SelectValue placeholder={`${mm}월`} >
-												<CardTitle>{mm}월</CardTitle>
+												{mm}월
 											</SelectValue>
 										</SelectTrigger>
 										<SelectContent>
